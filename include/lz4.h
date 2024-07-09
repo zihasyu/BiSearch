@@ -554,8 +554,8 @@ extern "C"
 #define LZ4_DECOMPRESS_INPLACE_MARGIN(compressedSize) (((compressedSize) >> 8) + 32)
 #define LZ4_DECOMPRESS_INPLACE_BUFFER_SIZE(decompressedSize) ((decompressedSize) + LZ4_DECOMPRESS_INPLACE_MARGIN(decompressedSize)) /**< note: presumes that compressedSize < decompressedSize. note2: margin is overestimated a bit, since it could use compressedSize instead */
 
-#ifndef LZ4_DISTANCE_MAX        /* history window size; can be user-defined at compile time */
-#define LZ4_DISTANCE_MAX 131072 /* set to maximum value by default */
+#ifndef LZ4_DISTANCE_MAX       /* history window size; can be user-defined at compile time */
+#define LZ4_DISTANCE_MAX 65535 /* set to maximum value by default */
 #endif
 
 #define LZ4_COMPRESS_INPLACE_MARGIN (LZ4_DISTANCE_MAX + 32)                                                     /* LZ4_DISTANCE_MAX can be safely replaced by srcSize when it's smaller */

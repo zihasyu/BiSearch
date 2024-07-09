@@ -27,7 +27,7 @@ set(BOOST_LIBRARY_OBJ boost_thread boost_system boost_serialization)
 
 set(OPENSSL_LIBRARY_OBJ ssl crypto)
 
-set(INSIDE_OBJ chunksetcore methodcore utilcore)
+set(INSIDE_OBJ methodcore utilcore chunkcore)
 
 set(ZLIB_LIBRARY_OBJ ${ZLIB_LIBRARIES})
 
@@ -36,3 +36,4 @@ set(FINAL_OBJ ${OPENSSL_LIBRARY_OBJ} ${INSIDE_OBJ} ${BOOST_LIBRARY_OBJ} ${ZLIB_L
 add_subdirectory(app)
 add_subdirectory(method)
 add_subdirectory(util)
+add_subdirectory(chunking)

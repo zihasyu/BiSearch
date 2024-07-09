@@ -30,6 +30,6 @@ public:
     ~absMethod();
     virtual void ProcessOneTrace() = 0;
     void SetInputMQ(MessageQueue<Chunk_t> *mq) { recieveQueue = mq; }
-    bool compareNat(const std::string &a, const std::string &b);
+    static bool compareNat(const std::string &a, const std::string &b);
 };
 #endif
