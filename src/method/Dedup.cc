@@ -51,7 +51,7 @@ void Dedup::ProcessTrace()
             }
             else
             {
-                tmpChunk = chunkSet_->Get_Chunk_MetaInfo(findRes);
+                tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes; // 好像没用
             }
             logicalchunkNum++;

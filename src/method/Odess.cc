@@ -57,7 +57,7 @@ void Odess::ProcessTrace()
                     int basechunkId = FP_Find(ret);
                     if (basechunkId != -1)
                     {
-                        auto basechunkInfo = chunkSet_->Get_Chunk_Info(basechunkId);
+                        auto basechunkInfo = dataWrite_->Get_Chunk_Info(basechunkId);
                         uint8_t *deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkInfo.chunkPtr, basechunkInfo.chunkSize, &tmpChunk.saveSize, deltaMaxChunkBuffer);
                         if (tmpChunk.saveSize == 0)
                         {
@@ -113,7 +113,7 @@ void Odess::ProcessTrace()
             else
             {
                 // Dedup chunk found
-                tmpChunk = chunkSet_->Get_Chunk_MetaInfo(findRes);
+                tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes;
                 PrevDedupChunkid = findRes;
                 DedupGap = 0;

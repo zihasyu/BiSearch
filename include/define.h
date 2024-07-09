@@ -337,7 +337,7 @@ enum METHOD_TYPE
     DEDUP = 0,
     FINESSE,
     ODESS,
-    BiSearch
+    BiSEARCH
 };
 
 enum DELTA_TYPE

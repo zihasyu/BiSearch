@@ -23,13 +23,16 @@ typedef struct
     int basechunkid;
     uint8_t deltaFlag;
     bool loadFromDisk;
+    // offset and containerId
+    uint64_t offset;
+    uint64_t containerID;
 } Chunk_t;
 
 typedef struct
 {
     uint64_t size;
     uint64_t chunkNum;
-    uint64_t containerId;
+    uint64_t containerID;
     uint8_t data[CONTAINER_MAX_SIZE];
 } Container_t;
 

@@ -71,17 +71,17 @@ void BiSearch::ProcessTrace()
                     uint8_t *deltachunk;
                     uint64_t tmpdeltachunksize = 0;
                     Chunk_t tmpbaseChunkinfo;
-                    Chunk_t tmpLocalChunkInfo = chunkSet_->Get_Chunk_MetaInfo(plchunk.chunkId + DedupGap);
+                    Chunk_t tmpLocalChunkInfo = dataWrite_->Get_Chunk_MetaInfo(plchunk.chunkId + DedupGap);
 
                     int recursiveRestoreFlag = 0;
                     if (tmpLocalChunkInfo.deltaFlag == FINESSE_DELTA || tmpLocalChunkInfo.deltaFlag == LOCAL_DELTA)
                     {
-                        tmpbaseChunkinfo = chunkSet_->Get_Chunk_Info(tmpLocalChunkInfo.basechunkid);
+                        tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(tmpLocalChunkInfo.basechunkid);
                         tmpChunk.basechunkid = tmpLocalChunkInfo.basechunkid;
                     }
                     else
                     {
-                        tmpbaseChunkinfo = chunkSet_->Get_Chunk_Info(plchunk.chunkId + DedupGap);
+                        tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(plchunk.chunkId + DedupGap);
                         tmpChunk.basechunkid = plchunk.chunkId + DedupGap;
                     }
                     endTime = std::chrono::high_resolution_clock::now();
@@ -218,12 +218,12 @@ void BiSearch::ProcessTrace()
                         else
                         {
                             // cout << "finesse 1 start" << endl;
-                            int basechunkid = chunkSet_->FP_Find(ret);
+                            int basechunkid = FP_Find(ret);
                             Chunk_t basechunkinfo;
                             uint8_t *deltachunk;
                             tmpChunk.saveSize = 0;
                             startTime = std::chrono::high_resolution_clock::now();
-                            basechunkinfo = chunkSet_->Get_Chunk_Info(basechunkid);
+                            basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkid);
                             endTime = std::chrono::high_resolution_clock::now();
                             fetchBaseChunkTime += (endTime - startTime);
                             if (basechunkinfo.chunkID == LocalityFoundId)
@@ -374,7 +374,7 @@ void BiSearch::ProcessTrace()
                         tmpChunk.saveSize = 0;
                         uint8_t *deltachunk;
                         int basechunkid = FP_Find(ret);
-                        basechunkinfo = chunkSet_->Get_Chunk_Info(basechunkid);
+                        basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkid);
 
                         if (basechunkinfo.chunkID == LocalityFoundId)
                             sameCount++;
@@ -443,7 +443,7 @@ void BiSearch::ProcessTrace()
             }
             else
             {
-                auto tmpInfo = chunkSet_->Get_Chunk_MetaInfo(findRes);
+                auto tmpInfo = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunk = tmpInfo;
                 localFlag = true;
                 tmpChunkid = findRes;

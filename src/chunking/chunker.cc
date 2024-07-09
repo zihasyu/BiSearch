@@ -138,7 +138,7 @@ void Chunker::Chunking()
             }
             chunk.chunkPtr = (uint8_t *)malloc(cp);
             memcpy(chunk.chunkPtr, readFileBuffer + localOffset, cp);
-            chunk.chunkSize = FixedChunkSize;
+            chunk.chunkSize = cp;
             // chunk.chunkID = chunkID++;太早了
             if (cp == 0)
             {

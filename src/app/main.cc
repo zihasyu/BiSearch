@@ -3,7 +3,7 @@
 #include <csignal>
 #include <sstream>
 
-#include "../../include/absmethod.h"
+#include "../../include/allmethod.h"
 
 using namespace std;
 
@@ -62,20 +62,33 @@ int main(int argc, char **argv)
     Chunker *chunkerObj = new Chunker(chunkingType);
 
     MessageQueue<Chunk_t> *chunkerMQ = new MessageQueue<Chunk_t>(CHUNK_QUEUE_SIZE);
+    MessageQueue<Chunk_t> *chunkReWriteMQ = new MessageQueue<Chunk_t>(CHUNK_QUEUE_SIZE);
+
     chunkerObj->SetOutputMQ(chunkerMQ);
 
     switch (compressionMethod)
     {
-    case 0:
-        // lz4 comapre
-        // absMethodObj = new lz4Compare();
+    case DEDUP:
+    {
+        absMethodObj = new Dedup();
         break;
-    case 1:
-        // absMethodObj = new lz4Baseline();
+    }
+    case FINESSE:
+    {
+        absMethodObj = new Finesse();
         break;
-    case 2:
+    }
+    case ODESS:
+    {
+        absMethodObj = new Odess();
         // absMethodObj = new lz4ClusterBaseline(fileName);
         break;
+    }
+    case BiSEARCH:
+    {
+        absMethodObj = new BiSearch(8.0);
+        break;
+    }
     default:
         break;
     }
@@ -83,22 +96,27 @@ int main(int argc, char **argv)
     tool::traverse_dir(dirName, readfileList, nofilter);
     sort(readfileList.begin(), readfileList.end(), AbsMethod::compareNat);
 
-    boost::thread *thTmp;
+    vector<boost::thread *> thTmp;
     boost::thread::attributes attrs;
     attrs.set_stack_size(THREAD_STACK_SIZE);
 
     absMethodObj->SetInputMQ(chunkerMQ);
-
+    absMethodObj->SetOutputMQ(chunkReWriteMQ);
     for (auto i = 0; i < backupNum; i++)
     {
 
         chunkerObj->LoadChunkFile(readfileList[i]);
-        thTmp = new boost::thread(attrs, boost::bind(&Chunker::Chunking, chunkerObj));
+        thTmp[0] = new boost::thread(attrs, boost::bind(&Chunker::Chunking, chunkerObj));
+        thTmp[1] = new boost::thread(attrs, boost::bind(&AbsMethod::ProcessTrace, absMethodObj));
 
-        absMethodObj->ProcessTrace();
-
-        thTmp->join();
-        delete thTmp;
+        for (auto it : thTmp)
+        {
+            it->join();
+        }
+        for (auto it : thTmp)
+        {
+            delete it; // 打印当前元素
+        }
     }
 
     tool::Logging(myName.c_str(), "logical Chunk Num is %d\n", absMethodObj->logicalchunkNum);
