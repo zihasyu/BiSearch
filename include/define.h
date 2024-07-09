@@ -18,6 +18,8 @@
 #include <unordered_map>
 #include <dirent.h>
 #include "tarType.h"
+#include <openssl/evp.h>
+#include <openssl/crypto.h>
 
 #define FINESSE_SF_NUM 3
 #define CHUNK_HASH_SIZE 32

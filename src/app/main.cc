@@ -3,7 +3,7 @@
 #include <csignal>
 #include <sstream>
 
-#include "../../include/absMethod.h"
+#include "../../include/absmethod.h"
 
 using namespace std;
 
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
         }
     }
 
-    absMethod *absMethodObj;
+    AbsMethod *absMethodObj;
     Chunker *chunkerObj = new Chunker(chunkingType);
 
     MessageQueue<Chunk_t> *chunkerMQ = new MessageQueue<Chunk_t>(CHUNK_QUEUE_SIZE);
@@ -81,7 +81,7 @@ int main(int argc, char **argv)
     }
 
     tool::traverse_dir(dirName, readfileList, nofilter);
-    sort(readfileList.begin(), readfileList.end(), absMethod::compareNat);
+    sort(readfileList.begin(), readfileList.end(), AbsMethod::compareNat);
 
     boost::thread *thTmp;
     boost::thread::attributes attrs;

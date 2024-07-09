@@ -1,14 +1,14 @@
-#include "../../include/absMethod.h"
+#include "../../include/absmethod.h"
 
-absMethod::absMethod()
+AbsMethod::AbsMethod()
 {
 }
 
-absMethod::~absMethod()
+AbsMethod::~AbsMethod()
 {
 }
 
-bool absMethod::compareNat(const std::string &a, const std::string &b)
+bool AbsMethod::compareNat(const std::string &a, const std::string &b)
 {
     if (a.empty())
         return true;
