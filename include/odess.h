@@ -26,7 +26,7 @@ private:
 public:
     Odess();
     ~Odess();
-    bool ProcessTrace(string inputFileName);
+    void ProcessTrace();
     uint64_t DedupReductSize = 0;
     uint64_t DeltaReductSize = 0;
     uint64_t LocalReductSize = 0;

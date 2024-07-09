@@ -43,9 +43,9 @@ public:
     std::chrono::time_point<std::chrono::high_resolution_clock>
         startTime,
         endTime;
-    BiSearch(double ratio, double offset);
+    BiSearch(double ratio);
     ~BiSearch();
-    bool ProcessTrace(string inputFileName);
+    void ProcessTrace();
     long deflateCompress(uint8_t *in, size_t in_size, uint8_t *out, size_t out_size);
 };
 #endif

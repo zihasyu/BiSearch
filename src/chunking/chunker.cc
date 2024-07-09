@@ -136,9 +136,10 @@ void Chunker::Chunking()
                 // 一次需要两个块
             }
             }
+            chunk.chunkPtr = (uint8_t *)malloc(cp);
             memcpy(chunk.chunkPtr, readFileBuffer + localOffset, cp);
             chunk.chunkSize = FixedChunkSize;
-            chunk.chunkID = chunkID++;
+            // chunk.chunkID = chunkID++;太早了
             if (cp == 0)
             {
                 cout << "cp is 0" << endl; // debug

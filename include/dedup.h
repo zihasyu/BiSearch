@@ -5,14 +5,14 @@
 
 using namespace std;
 
-class Dedup: public AbsMethod {
-    private:
-        string myName_ = "Dedup";
+class Dedup : public AbsMethod
+{
+private:
+    string myName_ = "Dedup";
 
-    public:
-        Dedup();
-        ~Dedup();
-        bool ProcessTrace(string inputFileName);
-
+public:
+    Dedup();
+    ~Dedup();
+    void ProcessTrace();
 };
 #endif

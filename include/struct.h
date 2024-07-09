@@ -17,8 +17,8 @@
 typedef struct
 {
     uint64_t chunkID;
-    uint32_t chunkSize;
-    uint32_t saveSize;
+    uint64_t chunkSize;
+    uint64_t saveSize;
     uint8_t *chunkPtr;
     int basechunkid;
     uint8_t deltaFlag;

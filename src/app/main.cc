@@ -95,14 +95,14 @@ int main(int argc, char **argv)
         chunkerObj->LoadChunkFile(readfileList[i]);
         thTmp = new boost::thread(attrs, boost::bind(&Chunker::Chunking, chunkerObj));
 
-        absMethodObj->ProcessOneTrace();
+        absMethodObj->ProcessTrace();
 
         thTmp->join();
         delete thTmp;
     }
 
-    tool::Logging(myName.c_str(), "Chunk Num is %d\n", absMethodObj->ChunkNum);
-    tool::Logging(myName.c_str(), "Cluster Num is %d\n", absMethodObj->clusterNum);
+    tool::Logging(myName.c_str(), "logical Chunk Num is %d\n", absMethodObj->logicalchunkNum);
+    tool::Logging(myName.c_str(), "unique Chunk Num is %d\n", absMethodObj->uniquechunkNum);
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->totalLogicalSize);
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->totalCompressedSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->totalLogicalSize / (double)absMethodObj->totalCompressedSize);
