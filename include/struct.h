@@ -10,13 +10,19 @@
 #define MY_STRUCT_H
 
 #include "define.h"
+#include <cstdint>
+#include <vector>
+#include <unordered_map>
 
 typedef struct
 {
     uint64_t chunkID;
     uint32_t chunkSize;
     uint32_t saveSize;
-    uint8_t chunkContent[MAX_CHUNK_SIZE];
+    uint8_t *chunkPtr;
+    int basechunkid;
+    uint8_t deltaFlag;
+    bool loadFromDisk;
 } Chunk_t;
 
 typedef struct
@@ -33,4 +39,12 @@ typedef struct
     size_t chunkType;
     uint64_t offset;
 } Recipe_t;
+
+typedef struct
+{
+    uint64_t headerSegmentId;
+    uint64_t dataSegmentId;
+    uint64_t blockTypeMask;
+} RecipeSeg_t;
+
 #endif

@@ -9,8 +9,11 @@ using namespace std;
 
 enum ChunkTypeNum
 {
-    FIXED_SIZE_CHUNKING = 0,
-    FASTCDC_CHUNKING = 1,
+    FIXED_SIZE = 0,
+    FASTCDC,
+    GEARCDC,
+    TAR,
+    TAR_SEGMENT
 };
 
 class Chunker
@@ -18,23 +21,29 @@ class Chunker
 private:
     /* data */
     string myName_ = "Chunker";
-
     int chunkType;
-
     // chunk size settings for FastCDC
-    uint64_t avgChunkSize_;
-    uint64_t minChunkSize_;
-    uint64_t maxChunkSize_;
-
+    // uint64_t avgChunkSize_;
+    // uint64_t minChunkSize_;
+    // uint64_t maxChunkSize_;
+    uint32_t minChunkSize = 4096;
+    uint32_t avgChunkSize = 8192;
+    uint32_t maxChunkSize = 16384;
+    uint32_t normalSize;
+    uint32_t bits;
+    uint32_t maskS;
+    uint32_t maskL;
     // fixed Size Chunking
     uint64_t FixedChunkSize;
 
     // IO stream
-    ifstream chunkingFile_;
+    ifstream inputFile;
 
     // buffer
-    uint8_t *readFileBuffer;
+    uint8_t *readFileBuffer; //*waitingForChunkingBuffer;
     uint8_t *chunkBuffer;
+    uint8_t *headerBuffer;
+    uint8_t *dataBuffer;
 
     // Chunker ID
     uint64_t chunkID = 0;
@@ -55,9 +64,28 @@ public:
         outputMQ_ = outputMQ;
         return;
     }
-    // Chunking Methods
-    void FixSizedChunking();
 
-    void FastCDCChunking();
+    uint32_t GenerateFastCDCMask(uint32_t bits);
+    inline uint32_t CompareLimit(uint32_t input, uint32_t lower, uint32_t upper);
+    uint32_t CalNormalSize(const uint32_t min, const uint32_t av, const uint32_t max);
+    inline uint32_t DivCeil(uint32_t a, uint32_t b);
+    // Chunking Methods
+    uint32_t CutPointFixSized(const uint8_t *src, const uint32_t len);
+    uint32_t CutPointFastCDC(const uint8_t *src, const uint32_t len);
+    uint32_t CutPointGear(const uint8_t *src, const uint32_t len);
+    uint32_t CutPointTarFast(const uint8_t *src, const uint32_t len);
+
+    uint32_t CutPointTarSegment();
+    // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it
+
+    int Next_Chunk_Type = FILE_HEADER;
+    int localType = FILE_HEADER;
+    uint64_t Next_Chunk_Size = 0;
+    uint64_t Big_Chunk_Allowance = 0; // CutPointTar
+    uint64_t Big_Chunk_Last_Size = 0; // CutPointTar
+    uint64_t Big_Chunk_Size = 0;      // CutPointTarFast
+    uint64_t Big_Chunk_Offset = 0;    // CutPointTarFast
+    long sameCount = 0;
+    uint64_t recipeSegCount = 0;
 };
 #endif
