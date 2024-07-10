@@ -1,8 +1,8 @@
 find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread system)
 find_package(ZLIB REQUIRED)
-include_directories(${LocalDedupSim_SOURCE_DIR}/include)
-link_directories(${LocalDedupSim_SOURCE_DIR}/lib)
+include_directories(${BiSearch_SOURCE_DIR}/include)
+link_directories(${BiSearch_SOURCE_DIR}/lib)
 
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})

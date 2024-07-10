@@ -8,8 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 set(CMAKE_MODULE_PATH /usr/share/cmake-3.10/Modules/)
 
-set(EXECUTABLE_OUTPUT_PATH ${LZ4Cluster_SOURCE_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${LZ4Cluster_SOURCE_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${BiSearch_SOURCE_DIR}/bin)
+set(LIBRARY_OUTPUT_PATH ${BiSearch_SOURCE_DIR}/lib)
 
 set(CMAKE_C_FLAGS_DEBUG "-O0 -Wall -g -ggdb3")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -fsanitize=address -fno-omit-frame-pointer -g -ggdb3") 
