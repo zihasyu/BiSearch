@@ -127,7 +127,7 @@ void Odess::ProcessTrace()
                 DedupGap = 0;
                 DedupReductSize += tmpChunk.chunkSize;
             }
-            chunkSet_->Recipe_Insert(tmpChunk);
+            dataWrite_->Recipe_Insert(tmpChunk);
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;
         }

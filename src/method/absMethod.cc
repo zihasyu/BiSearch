@@ -251,9 +251,3 @@ uint8_t *AbsMethod::xd3_encode(const uint8_t *targetChunkbuffer, size_t targetCh
     memcpy(deltaChunkBuffer, tmpbuffer, deltachunkSize);
     return deltaChunkBuffer;
 }
-
-void AbsMethod::SetInputMQ(MessageQueue<Chunk_t> *mq)
-{
-    recieveQueue = mq;
-    return;
-}

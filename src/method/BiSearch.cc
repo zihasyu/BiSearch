@@ -457,7 +457,7 @@ void BiSearch::ProcessTrace()
                 DedupReductSize += tmpChunk.chunkSize; // 单独计算去重的贡献
             }
 
-            chunkSet_->Recipe_Insert(tmpChunk);
+            dataWrite_->Recipe_Insert(tmpChunk);
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;
             Recipe_t recipe;

@@ -292,10 +292,6 @@ void dataWrite::Save_to_File_Chunking(string methodname)
                 << "ChunkSize,"
                 << "SaveSize,"
                 << "DeltaFlag,"
-                << "ChunkFlag,"
-                << "bugFlag,"
-                << "dedupFlag,"
-                << "cp"
                 //<< "tmpFinesseSize"
                 //<< "tmpLocalSize"
                 << endl;

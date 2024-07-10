@@ -134,7 +134,7 @@ void Finesse::ProcessTrace()
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes;
             }
-            chunkSet_->Recipe_Insert(tmpChunk);
+            dataWrite_->Recipe_Insert(tmpChunk);
 
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;

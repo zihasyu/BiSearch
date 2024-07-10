@@ -58,6 +58,7 @@ void Dedup::ProcessTrace()
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes; // 好像没用
             }
+            dataWrite_->Recipe_Insert(tmpChunk);
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;
         }
