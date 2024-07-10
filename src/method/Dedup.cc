@@ -23,6 +23,9 @@ void Dedup::ProcessTrace()
 
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
+            outputMQ_->done_ = true;
+            recieveQueue->done_ = false;
+            cout << "dedup done" << endl;
             break;
         }
         Chunk_t tmpChunk;
@@ -43,6 +46,7 @@ void Dedup::ProcessTrace()
                 FP_Insert(hashStr, tmpChunk.chunkID);
                 // /cout << tmpChunkContent << endl;
                 // Dedup get superfeature
+                cout << "unique chunk found" << endl;
                 if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
                 {
                     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
@@ -55,7 +59,7 @@ void Dedup::ProcessTrace()
             }
             else
             {
-                tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
+                // tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes; // 好像没用
             }
             dataWrite_->Recipe_Insert(tmpChunk);

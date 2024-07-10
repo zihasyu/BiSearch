@@ -25,7 +25,7 @@ class dataWrite
 private:
     int chunkNum = 0;
     int containerSize = 0;
-    MessageQueue<Chunk_t> *recieveQueue;
+
     uint64_t loadContainerTimes = 0;
     uint64_t cacheHitTimes = 0;
 
@@ -46,7 +46,17 @@ private:
 public:
     vector<Chunk_t> chunklist;
     void writing();
-    void SetInputMQ(MessageQueue<Chunk_t> *mq) { recieveQueue = mq; }
+    MessageQueue<Chunk_t> *recieveQueue;
+    void SetInputMQ(MessageQueue<Chunk_t> *mq)
+    {
+        if (mq == nullptr)
+        {
+            // 处理错误或返回
+            std::cerr << "Error: mq is nullptr in SetInputMQ\n";
+            return;
+        }
+        recieveQueue = mq;
+    }
     MessageQueue<Container_t> *MQ;
     bool Chunk_Insert(Chunk_t chunk);
     int Get_Chunk_Num();

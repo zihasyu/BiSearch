@@ -33,6 +33,8 @@ void BiSearch::ProcessTrace()
 
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
+            outputMQ_->done_ = true;
+            recieveQueue->done_ = false;
             break;
         }
         Chunk_t tmpChunk;

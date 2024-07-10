@@ -106,6 +106,7 @@ void Chunker::Chunking()
         size_t localOffset = 0;
         while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
         {
+            cout << " len is " << len << " localOffset is " << localOffset << endl;
             Chunk_t chunk;
             // compute cutPoint
             uint32_t cp = 0;
@@ -155,6 +156,7 @@ void Chunker::Chunking()
         totalOffset += localOffset;
         inputFile.seekg(totalOffset, ios_base::beg);
     }
+    cout << "chunking done." << endl;
     outputMQ_->done_ = true;
     tool::Logging(myName_.c_str(), "chunking done.\n");
     return;

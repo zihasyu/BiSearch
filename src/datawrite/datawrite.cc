@@ -2,7 +2,7 @@
 
 dataWrite::dataWrite()
 {
-    MQ = new MessageQueue<Container_t>(32);
+    // MQ = new MessageQueue<Container_t>(32);
     curContainer.size = 0;
     curContainer.containerID = 0;
     curContainer.chunkNum = 0;
@@ -24,11 +24,14 @@ void dataWrite::writing()
     {
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
+            cout << "writing end" << endl;
+            recieveQueue->done_ = false;
             break;
         }
         Chunk_t chunk;
         if (recieveQueue->Pop(chunk))
         {
+            cout << "writing if start" << endl;
             int tmpSize = 0;
             if (chunk.deltaFlag == NO_DELTA)
                 tmpSize = chunk.chunkSize;
@@ -89,7 +92,7 @@ void dataWrite::writing()
             chunk.chunkPtr = nullptr;
             chunklist.push_back(chunk);
             // cout << "dataWrite entry id is  " << chunklist[chunk.chunkID].chunkID << endl;
-            return;
+            cout << "writing start if end" << endl;
         }
     }
 }
@@ -101,7 +104,6 @@ dataWrite::~dataWrite()
     }
 
     delete containerCache;
-    delete MQ;
 }
 
 bool dataWrite::Chunk_Insert(Chunk_t chunk)

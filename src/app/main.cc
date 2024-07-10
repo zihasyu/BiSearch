@@ -96,17 +96,21 @@ int main(int argc, char **argv)
     tool::traverse_dir(dirName, readfileList, nofilter);
     sort(readfileList.begin(), readfileList.end(), AbsMethod::compareNat);
 
-    vector<boost::thread *> thTmp;
+    boost::thread *thTmp[3] = {nullptr};
     boost::thread::attributes attrs;
     attrs.set_stack_size(THREAD_STACK_SIZE);
 
     absMethodObj->SetInputMQ(chunkerMQ);
     absMethodObj->SetOutputMQ(chunkReWriteMQ);
+
+    absMethodObj->dataWrite_ = new dataWrite();
     absMethodObj->dataWrite_->SetInputMQ(chunkReWriteMQ);
     for (auto i = 0; i < backupNum; i++)
     {
 
         chunkerObj->LoadChunkFile(readfileList[i]);
+        // thTmp.push_back(new boost::thread(attrs, boost::bind(&AbsMethod::ProcessTrace, absMethodObj)));
+        // thTmp.push_back(new boost::thread(attrs, boost::bind(&dataWrite::writing, absMethodObj->dataWrite_)));
         thTmp[0] = new boost::thread(attrs, boost::bind(&Chunker::Chunking, chunkerObj));
         thTmp[1] = new boost::thread(attrs, boost::bind(&AbsMethod::ProcessTrace, absMethodObj));
         thTmp[2] = new boost::thread(attrs, boost::bind(&dataWrite::writing, absMethodObj->dataWrite_));
@@ -125,7 +129,7 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->totalLogicalSize);
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->totalCompressedSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->totalLogicalSize / (double)absMethodObj->totalCompressedSize);
-
+    delete absMethodObj->dataWrite_;
     delete chunkerObj;
     delete absMethodObj;
     return 0;
