@@ -102,13 +102,14 @@ int main(int argc, char **argv)
 
     absMethodObj->SetInputMQ(chunkerMQ);
     absMethodObj->SetOutputMQ(chunkReWriteMQ);
+    absMethodObj->dataWrite_->SetInputMQ(chunkReWriteMQ);
     for (auto i = 0; i < backupNum; i++)
     {
 
         chunkerObj->LoadChunkFile(readfileList[i]);
         thTmp[0] = new boost::thread(attrs, boost::bind(&Chunker::Chunking, chunkerObj));
         thTmp[1] = new boost::thread(attrs, boost::bind(&AbsMethod::ProcessTrace, absMethodObj));
-
+        thTmp[1] = new boost::thread(attrs, boost::bind(&AbsMethod::ProcessTrace, absMethodObj));
         for (auto it : thTmp)
         {
             it->join();

@@ -6,7 +6,8 @@
 #include "define.h"
 #include "chunker.h"
 #include "lz4.h"
-#include "dataWrite.h"
+#include "datawrite.h"
+
 extern "C"
 {
 #include "./config.h"

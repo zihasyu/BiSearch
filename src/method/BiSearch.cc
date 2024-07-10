@@ -76,13 +76,13 @@ void BiSearch::ProcessTrace()
                     int recursiveRestoreFlag = 0;
                     if (tmpLocalChunkInfo.deltaFlag == FINESSE_DELTA || tmpLocalChunkInfo.deltaFlag == LOCAL_DELTA)
                     {
-                        tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(tmpLocalChunkInfo.basechunkid);
-                        tmpChunk.basechunkid = tmpLocalChunkInfo.basechunkid;
+                        tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(tmpLocalChunkInfo.basechunkID);
+                        tmpChunk.basechunkID = tmpLocalChunkInfo.basechunkID;
                     }
                     else
                     {
                         tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(plchunk.chunkId + DedupGap);
-                        tmpChunk.basechunkid = plchunk.chunkId + DedupGap;
+                        tmpChunk.basechunkID = plchunk.chunkId + DedupGap;
                     }
                     endTime = std::chrono::high_resolution_clock::now();
                     fetchBaseChunkTime += (endTime - startTime);
@@ -175,7 +175,7 @@ void BiSearch::ProcessTrace()
                         // auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
                         // auto ret = table.GetSimilarRecordKey(superfeature);
 
-                        // int basechunkid = chunkSet_->SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
+                        // int basechunkID = chunkSet_->SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
                         // computeSFtimes++;
                         // endTime = std::chrono::high_resolution_clock::now();
                         // getSFTime += (endTime - startTime);
@@ -195,7 +195,7 @@ void BiSearch::ProcessTrace()
                             }
 
                             localError++;
-                            tmpChunk.basechunkid = -1;
+                            tmpChunk.basechunkID = -1;
                             tmpChunk.deltaFlag = NO_DELTA;
                             tmpChunk.saveSize = tmpChunkLz4CompressSize;
                             tmpChunkid = tmpChunk.chunkID;
@@ -218,12 +218,12 @@ void BiSearch::ProcessTrace()
                         else
                         {
                             // cout << "finesse 1 start" << endl;
-                            int basechunkid = FP_Find(ret);
+                            int basechunkID = FP_Find(ret);
                             Chunk_t basechunkinfo;
                             uint8_t *deltachunk;
                             tmpChunk.saveSize = 0;
                             startTime = std::chrono::high_resolution_clock::now();
-                            basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkid);
+                            basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkID);
                             endTime = std::chrono::high_resolution_clock::now();
                             fetchBaseChunkTime += (endTime - startTime);
                             if (basechunkinfo.chunkID == LocalityFoundId)
@@ -251,7 +251,7 @@ void BiSearch::ProcessTrace()
                                         ;
                                     }
                                     localError++;
-                                    tmpChunk.basechunkid = -1;
+                                    tmpChunk.basechunkID = -1;
                                     tmpChunk.deltaFlag = NO_DELTA;
                                     tmpChunk.saveSize = tmpChunkLz4CompressSize;
                                     tmpChunkid = tmpChunk.chunkID;
@@ -273,7 +273,7 @@ void BiSearch::ProcessTrace()
                                     memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize); // new
                                     // 这个地方不用维护tmpChunkInfo.chunkptr的savesize，因为这里的xd3直接更新了它
 
-                                    plchunk.chunkId = basechunkid;
+                                    plchunk.chunkId = basechunkID;
                                     // localError = 0;
                                     // finessehit++;
                                     // deltachunkNum++;
@@ -285,7 +285,7 @@ void BiSearch::ProcessTrace()
                                     plchunk.compressionRatio = (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
                                     DedupGap = 0;
                                     tmpChunk.deltaFlag = FINESSE_DELTA;
-                                    tmpChunk.basechunkid = basechunkid;
+                                    tmpChunk.basechunkID = basechunkID;
                                     localError = 0;
                                     finessehit++;
                                     deltachunkNum++;
@@ -297,13 +297,13 @@ void BiSearch::ProcessTrace()
                                     // 这个地方为什么要把统计操作做两次？
                                 }
 
-                                // int size = chunkSet_->chunklist[basechunkid].dedupChunks.size();
+                                // int size = chunkSet_->chunklist[basechunkID].dedupChunks.size();
                                 // if(size != 0)
                                 // {
-                                //     plchunk.chunkId = chunkSet_->chunklist[basechunkid].dedupChunks[size - 1];
+                                //     plchunk.chunkId = chunkSet_->chunklist[basechunkID].dedupChunks[size - 1];
                                 // }else
                                 // {
-                                //     plchunk.chunkId = basechunkid;
+                                //     plchunk.chunkId = basechunkID;
                                 // }
                                 free(deltachunk);
                                 if (basechunkinfo.loadFromDisk)
@@ -327,7 +327,7 @@ void BiSearch::ProcessTrace()
                     // uint8_t *tmpChunkSF;
                     // tmpChunkSF = (uint8_t *)malloc(FINESSE_SF_NUM * CHUNK_HASH_SIZE);
                     // GetSF(tmpChunk.chunkPtr, mdCtx, tmpChunkSF, tmpChunk.chunkSize);
-                    // int basechunkid = chunkSet_->SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
+                    // int basechunkID = chunkSet_->SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
                     string ret = "not found";
                     if (tmpChunk.chunkSize >= 60)
                     {
@@ -354,7 +354,7 @@ void BiSearch::ProcessTrace()
                             ;
                         }
 
-                        tmpChunk.basechunkid = -1;
+                        tmpChunk.basechunkID = -1;
                         tmpChunk.deltaFlag = NO_DELTA;
                         tmpChunk.saveSize = tmpChunkLz4CompressSize;
                         tmpChunkid = tmpChunk.chunkID;
@@ -373,8 +373,8 @@ void BiSearch::ProcessTrace()
                         Chunk_t basechunkinfo;
                         tmpChunk.saveSize = 0;
                         uint8_t *deltachunk;
-                        int basechunkid = FP_Find(ret);
-                        basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkid);
+                        int basechunkID = FP_Find(ret);
+                        basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkID);
 
                         if (basechunkinfo.chunkID == LocalityFoundId)
                             sameCount++;
@@ -398,7 +398,7 @@ void BiSearch::ProcessTrace()
                                     tmpChunkLz4CompressSize = tmpChunk.chunkSize;
                                     ;
                                 }
-                                tmpChunk.basechunkid = -1;
+                                tmpChunk.basechunkID = -1;
                                 tmpChunk.deltaFlag = NO_DELTA;
                                 tmpChunk.saveSize = tmpChunkLz4CompressSize;
                                 tmpChunkid = tmpChunk.chunkID;
@@ -412,7 +412,7 @@ void BiSearch::ProcessTrace()
                             }
                             else
                             {
-                                plchunk.chunkId = basechunkid;
+                                plchunk.chunkId = basechunkID;
                                 plchunk.chunkType = FI;
                                 plchunk.compressionRatio = (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
                                 // printf("mem3 ");
@@ -420,7 +420,7 @@ void BiSearch::ProcessTrace()
 
                                 DedupGap = 0;
                                 tmpChunk.deltaFlag = FINESSE_DELTA;
-                                tmpChunk.basechunkid = basechunkid;
+                                tmpChunk.basechunkID = basechunkID;
                                 finessehit++;
                                 deltachunkNum++;
                                 deltachunkSize += tmpChunk.saveSize;
@@ -435,8 +435,11 @@ void BiSearch::ProcessTrace()
                     }
                     // free(tmpChunkSF);
                 }
-
-                chunkSet_->Chunk_Insert(tmpChunk);
+                if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
+                {
+                    tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+                    exit(EXIT_FAILURE);
+                }
                 tmpChunkid = tmpChunk.chunkID;
                 uniquechunkSize += tmpChunk.saveSize;
                 uniquechunkNum++;

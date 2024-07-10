@@ -25,7 +25,7 @@ class dataWrite
 private:
     int chunkNum = 0;
     int containerSize = 0;
-
+    MessageQueue<Chunk_t> *recieveQueue;
     uint64_t loadContainerTimes = 0;
     uint64_t cacheHitTimes = 0;
 
@@ -45,25 +45,26 @@ private:
 
 public:
     vector<Chunk_t> chunklist;
-
+    void writing();
+    void SetInputMQ(MessageQueue<Chunk_t> *mq) { recieveQueue = mq; }
     MessageQueue<Container_t> *MQ;
     bool Chunk_Insert(Chunk_t chunk);
     int Get_Chunk_Num();
     int Get_Container_Num(Chunk_t chunk);
     Chunk_t Get_Chunk_Info(int id);
-    bool FP_Insert(string fp, int chunkid);
-    int FP_Find(string fp);
-    // int Obj_Find(uint32_t objid);
-    // bool Obj_Insert(uint32_t objid, int chunkid);
-    int Obj_Find(string objid);
-    bool Obj_Insert(string objid, int chunkid);
+    // bool FP_Insert(string fp, int chunkid);
+    // int FP_Find(string fp);
+    //  int Obj_Find(uint32_t objid);
+    //  bool Obj_Insert(uint32_t objid, int chunkid);
+    // int Obj_Find(string objid);
+    // bool Obj_Insert(string objid, int chunkid);
     bool Recipe_Insert(Chunk_t &info);
-    bool SF_Insert(const char *key, size_t keySize, int chunkid);
-    bool SF_Insert_Adjacency(const char *key, size_t keySize, int chunkid);
-    int SF_Find(const char *key, size_t keySize);
-    int SF_Find_random(const char *key, size_t keySize);
-    int SF_Find_Debug(const char *key, size_t keySize);
-    int SF_Find_Adjacency(const char *key, size_t keySize);
+    // bool SF_Insert(const char *key, size_t keySize, int chunkid);
+    // bool SF_Insert_Adjacency(const char *key, size_t keySize, int chunkid);
+    // int SF_Find(const char *key, size_t keySize);
+    // int SF_Find_random(const char *key, size_t keySize);
+    // int SF_Find_Debug(const char *key, size_t keySize);
+    // int SF_Find_Adjacency(const char *key, size_t keySize);
     //_Adjacency
     void Save_to_File(string methodname);
     void Save_to_File_unique(string methodname);

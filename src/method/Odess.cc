@@ -54,10 +54,10 @@ void Odess::ProcessTrace()
                 // auto ret = table.GetSimilarRecordsKeys(tmpChunkHash);
                 if (ret != "not found")
                 {
-                    int basechunkId = FP_Find(ret);
-                    if (basechunkId != -1)
+                    int basechunkID = FP_Find(ret);
+                    if (basechunkID != -1)
                     {
-                        auto basechunkInfo = dataWrite_->Get_Chunk_Info(basechunkId);
+                        auto basechunkInfo = dataWrite_->Get_Chunk_Info(basechunkID);
                         uint8_t *deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkInfo.chunkPtr, basechunkInfo.chunkSize, &tmpChunk.saveSize, deltaMaxChunkBuffer);
                         if (tmpChunk.saveSize == 0)
                         {
@@ -67,8 +67,12 @@ void Odess::ProcessTrace()
                         else
                         {
                             tmpChunk.deltaFlag = DELTA;
-                            tmpChunk.basechunkid = basechunkId;
-                            chunkSet_->Chunk_Insert(tmpChunk);
+                            tmpChunk.basechunkID = basechunkID;
+                            if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
+                            {
+                                tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+                                exit(EXIT_FAILURE);
+                            }
                             deltachunkNum++;
                             deltachunkSize += tmpChunk.saveSize;
                             DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
@@ -98,10 +102,14 @@ void Odess::ProcessTrace()
                     }
                     // cout << "lz4 chunk size is " << tmpChunk.chunkSize << "save size is " << tmpChunk.saveSize << endl;
                     tmpChunk.deltaFlag = NO_DELTA;
-                    tmpChunk.basechunkid = -1;
+                    tmpChunk.basechunkID = -1;
                     tmpChunkid = tmpChunk.chunkID;
                     table.Put(tmpChunkHash, tmpChunkContent);
-                    chunkSet_->Chunk_Insert(tmpChunk);
+                    if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
+                    {
+                        tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+                        exit(EXIT_FAILURE);
+                    }
 
                     basechunkNum++;
                     basechunkSize += tmpChunk.saveSize;

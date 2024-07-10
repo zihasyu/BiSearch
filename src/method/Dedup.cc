@@ -43,7 +43,11 @@ void Dedup::ProcessTrace()
                 FP_Insert(hashStr, tmpChunk.chunkID);
                 // /cout << tmpChunkContent << endl;
                 // Dedup get superfeature
-                chunkSet_->Chunk_Insert(tmpChunk);
+                if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
+                {
+                    tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+                    exit(EXIT_FAILURE);
+                }
                 basechunkNum++;
                 basechunkSize += tmpChunk.saveSize;
                 uniquechunkNum++;

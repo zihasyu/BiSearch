@@ -18,7 +18,81 @@ void dataWrite::PrintBinaryArray(const uint8_t *buffer, size_t buffer_size)
     fprintf(stdout, "\n");
     return;
 }
+void dataWrite::writing()
+{
+    while (true)
+    {
+        if (recieveQueue->done_ && recieveQueue->IsEmpty())
+        {
+            break;
+        }
+        Chunk_t chunk;
+        if (recieveQueue->Pop(chunk))
+        {
+            int tmpSize = 0;
+            if (chunk.deltaFlag == NO_DELTA)
+                tmpSize = chunk.chunkSize;
+            else
+                tmpSize = chunk.saveSize;
+            // cout << "flag is " << static_cast<int>(chunk.deltaFlag) << endl;
+            chunkNum++;
+            containerSize += chunk.saveSize;
+            curContainer.chunkNum++;
 
+            if (curContainer.size + tmpSize > CONTAINER_MAX_SIZE)
+            {
+                // TODO put into MQ
+                cout << " curContainer.chunkNum is" << curContainer.chunkNum << " curContainer.containerID is " << curContainer.containerID << endl;
+                startTime = std::chrono::high_resolution_clock::now();
+                // cout << "push container " << containerNum << " into MQ" << endl;
+                // cout << "cur container size is " << curContainer.size << endl;
+                // MQ->Push(curContainer);
+                string fileName = "./Containers/" + to_string(curContainer.containerID);
+                ofstream outfile(fileName);
+                if (outfile.is_open())
+                {
+                    // cout << "write id is " << tmpContainer.containerID << " size is " << tmpContainer.size << endl;
+                    outfile.write(reinterpret_cast<const char *>(&curContainer.size), sizeof(curContainer.size));
+
+                    outfile.write(reinterpret_cast<const char *>(curContainer.data), curContainer.size);
+                    // outfile.write(reinterpret_cast<const char *>(&tmpContainer.size), sizeof(tmpContainer.size));
+                    // outfile << tmpContainer.data;
+                    outfile.close();
+                    // cout << "write done" << endl;
+                }
+                else
+                {
+                    cout << "open file failed" << endl;
+                }
+
+                // sleep(1);
+                containerNum++;
+                containerSize = 0;
+                curOffset = 0;
+                curContainer.size = 0;
+                curContainer.containerID = containerNum;
+                curContainer.chunkNum = 0;
+                endTime = std::chrono::high_resolution_clock::now();
+                writeIOTime += (endTime - startTime);
+            }
+            // TODO: put chunk into container
+            chunk.containerID = containerNum;
+            chunk.offset = curOffset;
+            // cout << " curContainer.size is " << curContainer.size << " tmpSize is " << tmpSize << " offset is " << curOffset << endl;
+            curContainer.size += tmpSize;
+            // cout<< "tmp size is " << tmpSize << " curoffset is " << curOffset<<endl;
+            memcpy(curContainer.data + curOffset, chunk.chunkPtr, tmpSize);
+            curOffset += tmpSize;
+            // cout << "free chunk " << endl;
+            free(chunk.chunkPtr);
+            // cout << "free chunk done" << endl;
+            chunk.chunkPtr = nullptr;
+            chunklist.push_back(chunk);
+            // cout << "dataWrite entry id is  " << chunklist[chunk.chunkID].chunkID << endl;
+            return;
+        }
+    }
+}
 dataWrite::~dataWrite()
 {
     for (int i = 0; i < chunkNum; i++)
@@ -91,7 +165,7 @@ bool dataWrite::Chunk_Insert(Chunk_t chunk)
     // cout << "free chunk done" << endl;
     chunk.chunkPtr = nullptr;
     chunklist.push_back(chunk);
-    // cout << "dataWrite entry id is  " << chunklist[chunk.chunkid].chunkid << endl;
+    // cout << "dataWrite entry id is  " << chunklist[chunk.chunkID].chunkID << endl;
     return true;
 }
 
@@ -213,12 +287,11 @@ void dataWrite::Save_to_File_Chunking(string methodname)
     {
         outfile.open(filename, ios::out);
         outfile << "Traceid,"
-                << "Chunkid,"
-                << "Basechunkid,"
+                << "ChunkID,"
+                << "BasechunkID,"
                 << "ChunkSize,"
                 << "SaveSize,"
                 << "DeltaFlag,"
-                << "Layer,"
                 << "ChunkFlag,"
                 << "bugFlag,"
                 << "dedupFlag,"
@@ -241,22 +314,19 @@ void dataWrite::Save_to_File_Chunking(string methodname)
     {
         uint64_t traceid = i;
         auto tmpChunkrecipe = recipelist[i];
-        // Chunk_t tmpChunkrecipe = this->Get_Chunk_Info(chunkid);
-        int basechunkid = tmpChunkrecipe.basechunkid;
+        // Chunk_t tmpChunkrecipe = this->Get_Chunk_Info(chunkID);
+        int basechunkID = tmpChunkrecipe.basechunkID;
         uint64_t chunkSize = tmpChunkrecipe.chunkSize;
         uint64_t saveSize = tmpChunkrecipe.saveSize;
-        uint64_t tmpLayer = tmpChunkrecipe.layer;
-        uint64_t chunkid = tmpChunkrecipe.chunkid;
+        uint64_t chunkID = tmpChunkrecipe.chunkID;
 
         int DeltaFlag = tmpChunkrecipe.deltaFlag;
         string ChunkFlag;
         // BUG flag
-        string bugFlag = (tmpChunkrecipe.bugFlag == 1) ? "bug" : "normal";
-        string deDupFlag = (tmpChunkrecipe.dedupflag == 1) ? "duplicate" : "unique";
 
         // cutpoint
         stringstream ss;
-        ss << hex << tmpChunkrecipe.cp;
+        ss << hex << tmpChunkrecipe.chunkSize;
         string cutPoint = ss.str();
 
         if (DeltaFlag == NO_DELTA)
@@ -277,8 +347,8 @@ void dataWrite::Save_to_File_Chunking(string methodname)
             ChunkFlag = "Local";
         }
 
-        outfile << traceid << "," << chunkid << "," << basechunkid << "," << chunkSize << "," << saveSize
-                << "," << tmpLayer << "," << ChunkFlag << "," << bugFlag << "," << deDupFlag << "," << cutPoint << endl;
+        outfile << traceid << "," << chunkID << "," << basechunkID << "," << chunkSize << "," << saveSize
+                << "," << ChunkFlag << "," << cutPoint << endl;
     }
     outfile.close();
     return;
@@ -292,12 +362,11 @@ void dataWrite::Save_to_File(string methodname)
     {
         outfile.open(filename, ios::out);
         outfile << "Traceid,"
-                << "Chunkid,"
-                << "Basechunkid,"
+                << "ChunkID,"
+                << "BasechunkID,"
                 << "ChunkSize,"
                 << "SaveSize,"
                 << "DeltaFlag,"
-                << "Layer,"
                 << "ChunkFlag"
                 //<< "tmpFinesseSize"
                 //<< "tmpLocalSize"
@@ -317,22 +386,20 @@ void dataWrite::Save_to_File(string methodname)
     {
         uint64_t traceid = i;
         auto tmpChunkrecipe = recipelist[i];
-        // Chunk_t tmpChunkrecipe = this->Get_Chunk_Info(chunkid);
-        int basechunkid = tmpChunkrecipe.basechunkid;
+        // Chunk_t tmpChunkrecipe = this->Get_Chunk_Info(chunkID);
+        int basechunkID = tmpChunkrecipe.basechunkID;
         uint64_t chunkSize = tmpChunkrecipe.chunkSize;
         uint64_t saveSize = tmpChunkrecipe.saveSize;
-        uint64_t tmpLayer = tmpChunkrecipe.layer;
-        uint64_t chunkid = tmpChunkrecipe.chunkid;
+
+        uint64_t chunkID = tmpChunkrecipe.chunkID;
 
         int DeltaFlag = tmpChunkrecipe.deltaFlag;
         string ChunkFlag;
         // BUG flag
-        string bugFlag = (tmpChunkrecipe.bugFlag == 1) ? "bug" : "normal";
-        string deDupFlag = (tmpChunkrecipe.dedupflag == 1) ? "duplicate" : "unique";
 
         // cutpoint
         stringstream ss;
-        ss << hex << tmpChunkrecipe.cp;
+        ss << hex << tmpChunkrecipe.chunkSize;
         string cutPoint = ss.str();
 
         if (DeltaFlag == NO_DELTA)
@@ -353,8 +420,8 @@ void dataWrite::Save_to_File(string methodname)
             ChunkFlag = "Local";
         }
 
-        outfile << traceid << "," << chunkid << "," << basechunkid << "," << chunkSize << "," << saveSize
-                << "," << tmpLayer << "," << ChunkFlag << endl;
+        outfile << traceid << "," << chunkID << "," << basechunkID << "," << chunkSize << "," << saveSize
+                << "," << ChunkFlag << endl;
     }
     outfile.close();
     return;
@@ -368,12 +435,11 @@ void dataWrite::Save_to_File_unique(string methodname)
     if (!tool::FileExist(filename))
     {
         outfile.open(filename, ios::out);
-        outfile << "Chunkid,"
-                << "Basechunkid,"
+        outfile << "ChunkID,"
+                << "BasechunkID,"
                 << "ChunkSize,"
                 << "SaveSize,"
                 << "DeltaFlag,"
-                // << "Layer,"
                 << "ChunkFlag"
                 //<< "tmpFinesseSize"
                 //<< "tmpLocalSize"
@@ -392,10 +458,9 @@ void dataWrite::Save_to_File_unique(string methodname)
     for (int i = 0; i < chunklist.size(); i++)
     {
         Chunk_t tmpChunkrecipe = this->Get_Chunk_Info(i);
-        int basechunkid = tmpChunkrecipe.basechunkid;
+        int basechunkID = tmpChunkrecipe.basechunkID;
         uint64_t chunkSize = tmpChunkrecipe.chunkSize;
         uint64_t saveSize = tmpChunkrecipe.saveSize;
-        uint64_t tmpLayer = tmpChunkrecipe.layer;
         int DeltaFlag = tmpChunkrecipe.deltaFlag;
         string ChunkFlag;
         if (DeltaFlag == NO_DELTA)
@@ -416,8 +481,8 @@ void dataWrite::Save_to_File_unique(string methodname)
             ChunkFlag = "Local";
         }
 
-        outfile << i << "," << basechunkid << "," << chunkSize << "," << saveSize
-                << "," << DeltaFlag << "," << ChunkFlag << endl; //<< "," << tmpLayer
+        outfile << i << "," << basechunkID << "," << chunkSize << "," << saveSize
+                << "," << DeltaFlag << "," << ChunkFlag << endl;
     }
     outfile.close();
     return;

@@ -20,7 +20,7 @@ typedef struct
     uint64_t chunkSize;
     uint64_t saveSize;
     uint8_t *chunkPtr;
-    int basechunkid;
+    int basechunkID;
     uint8_t deltaFlag;
     bool loadFromDisk;
     // offset and containerId

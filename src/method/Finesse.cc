@@ -49,11 +49,11 @@ void Finesse::ProcessTrace()
                 // find basechunk
                 startTime = std::chrono::high_resolution_clock::now();
                 GetSF(tmpChunk.chunkPtr, mdCtx, tmpChunkSF, tmpChunk.chunkSize);
-                int basechunkid = SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
+                int basechunkID = SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
                 endTime = std::chrono::high_resolution_clock::now();
                 getSFTime += (endTime - startTime);
                 computeSFtimes++;
-                if (basechunkid == -1)
+                if (basechunkID == -1)
                 {
                     int tmpChunkLz4CompressSize = 0;
                     startTime = std::chrono::high_resolution_clock::now();
@@ -71,10 +71,14 @@ void Finesse::ProcessTrace()
                     }
                     // cout << "lz4 chunk size is " << tmpChunk.chunksize << "save size is " << tmpChunk.savesize << endl;
                     tmpChunk.deltaFlag = NO_DELTA;
-                    tmpChunk.basechunkid = -1;
+                    tmpChunk.basechunkID = -1;
                     tmpChunkid = tmpChunk.chunkID;
                     SF_Insert((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE, tmpChunkid);
-                    chunkSet_->Chunk_Insert(tmpChunk); // 交给持久化的类去做
+                    if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
+                    {
+                        tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+                        exit(EXIT_FAILURE);
+                    }
 
                     basechunkNum++;
                     basechunkSize += tmpChunk.saveSize;
@@ -85,7 +89,7 @@ void Finesse::ProcessTrace()
                     uint8_t *deltachunk;
                     int lz4size = 0;
                     tmpChunk.saveSize = 0;
-                    basechunkinfo = chunkSet_->Get_Chunk_Info(basechunkid);
+                    basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkID);
                     startTime = std::chrono::high_resolution_clock::now();
                     deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkinfo.chunkPtr, basechunkinfo.chunkSize, &tmpChunk.saveSize, deltaMaxChunkBuffer);
                     endTime = std::chrono::high_resolution_clock::now();
@@ -105,8 +109,12 @@ void Finesse::ProcessTrace()
                     else
                     {
                         tmpChunk.deltaFlag = FINESSE_DELTA;
-                        tmpChunk.basechunkid = basechunkid;
-                        chunkSet_->Chunk_Insert(tmpChunk);
+                        tmpChunk.basechunkID = basechunkID;
+                        if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
+                        {
+                            tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+                            exit(EXIT_FAILURE);
+                        }
                         deltachunkNum++;
                         deltachunkSize += tmpChunk.saveSize;
                         free(deltachunk);
@@ -123,7 +131,7 @@ void Finesse::ProcessTrace()
             }
             else
             {
-                tmpChunk = chunkSet_->Get_Chunk_MetaInfo(findRes);
+                tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes;
             }
             chunkSet_->Recipe_Insert(tmpChunk);
