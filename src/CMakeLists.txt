@@ -27,7 +27,7 @@ set(BOOST_LIBRARY_OBJ boost_thread boost_system boost_serialization)
 
 set(OPENSSL_LIBRARY_OBJ ssl crypto)
 
-set(INSIDE_OBJ methodcore utilcore chunkcore datawritecore)
+set(INSIDE_OBJ chunkcore methodcore datawritecore  utilcore)
 
 set(ZLIB_LIBRARY_OBJ ${ZLIB_LIBRARIES})
 
