@@ -106,7 +106,7 @@ void Chunker::Chunking()
         size_t localOffset = 0;
         while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
         {
-            cout << " len is " << len << " localOffset is " << localOffset << endl;
+            // cout << " len is " << len << " localOffset is " << localOffset << endl;
             Chunk_t chunk;
             // compute cutPoint
             uint32_t cp = 0;

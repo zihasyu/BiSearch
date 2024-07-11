@@ -109,8 +109,6 @@ int main(int argc, char **argv)
     {
 
         chunkerObj->LoadChunkFile(readfileList[i]);
-        // thTmp.push_back(new boost::thread(attrs, boost::bind(&AbsMethod::ProcessTrace, absMethodObj)));
-        // thTmp.push_back(new boost::thread(attrs, boost::bind(&dataWrite::writing, absMethodObj->dataWrite_)));
         thTmp[0] = new boost::thread(attrs, boost::bind(&Chunker::Chunking, chunkerObj));
         thTmp[1] = new boost::thread(attrs, boost::bind(&AbsMethod::ProcessTrace, absMethodObj));
         thTmp[2] = new boost::thread(attrs, boost::bind(&dataWrite::writing, absMethodObj->dataWrite_));

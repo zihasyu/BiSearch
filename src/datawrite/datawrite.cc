@@ -31,7 +31,7 @@ void dataWrite::writing()
         Chunk_t chunk;
         if (recieveQueue->Pop(chunk))
         {
-            cout << "writing if start" << endl;
+            // cout << "writing if start" << endl;
             int tmpSize = 0;
             if (chunk.deltaFlag == NO_DELTA)
                 tmpSize = chunk.chunkSize;
@@ -45,7 +45,7 @@ void dataWrite::writing()
             if (curContainer.size + tmpSize > CONTAINER_MAX_SIZE)
             {
                 // TODO put into MQ
-                cout << " curContainer.chunkNum is" << curContainer.chunkNum << " curContainer.containerID is " << curContainer.containerID << endl;
+                // cout << " curContainer.chunkNum is" << curContainer.chunkNum << " curContainer.containerID is " << curContainer.containerID << endl;
                 startTime = std::chrono::high_resolution_clock::now();
                 // cout << "push container " << containerNum << " into MQ" << endl;
                 // cout << "cur container size is " << curContainer.size << endl;
@@ -90,9 +90,10 @@ void dataWrite::writing()
             free(chunk.chunkPtr);
             // cout << "free chunk done" << endl;
             chunk.chunkPtr = nullptr;
+            chunkprint(chunk);
             chunklist.push_back(chunk);
             // cout << "dataWrite entry id is  " << chunklist[chunk.chunkID].chunkID << endl;
-            cout << "writing start if end" << endl;
+            // cout << "writing start if end" << endl;
         }
     }
 }
@@ -572,6 +573,7 @@ bool dataWrite::isLz4(int id)
 
 Chunk_t dataWrite::Get_Chunk_MetaInfo(int id)
 {
+    cout << "get chunk id is" << id << " and the vector has " << chunklist.size() << endl;
     return chunklist[id];
 }
 
@@ -605,3 +607,16 @@ void dataWrite::PrintMetrics()
 //         return false;
 //     }
 // }
+
+void dataWrite::chunkprint(const Chunk_t chunk)
+{
+    cout << " chunkID: " << chunk.chunkID << endl;
+    cout << " chunkSize: " << chunk.chunkSize << endl;
+    cout << " saveSize: " << chunk.saveSize << endl;
+    cout << " deltaFlag: " << chunk.deltaFlag << endl;
+    // cout << " chunkPtr: " << chunk.chunkPtr << endl;
+    cout << " loadFromDisk: " << chunk.loadFromDisk << endl;
+    cout << " Offset: " << chunk.offset << endl;
+    cout << " containerID: " << chunk.containerID << endl;
+    cout << endl;
+}

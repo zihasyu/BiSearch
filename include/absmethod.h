@@ -71,6 +71,7 @@ public:
 
     AbsMethod();
     ~AbsMethod();
+
     virtual void ProcessTrace() = 0;
     void SetInputMQ(MessageQueue<Chunk_t> *mq) { recieveQueue = mq; }
     void SetOutputMQ(MessageQueue<Chunk_t> *outputMQ)
