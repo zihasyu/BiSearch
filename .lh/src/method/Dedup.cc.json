@@ -1,0 +1,34 @@
+{
+    "sourceFile": "src/method/Dedup.cc",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 4,
+            "patches": [
+                {
+                    "date": 1720695331458,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1720696919383,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,8 +10,9 @@\n Dedup::~Dedup()\n {\n     free(lz4ChunkBuffer);\n     EVP_MD_CTX_free(mdCtx);\n+    free(hashBuf);\n }\n \n void Dedup::ProcessTrace()\n {\n"
+                },
+                {
+                    "date": 1720697539265,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -40,10 +40,10 @@\n             {\n                 // Unique chunk found\n                 tmpChunk.chunkID = uniquechunkNum;\n                 tmpChunk.deltaFlag = NO_DELTA;\n-                uint64_t lz4Size = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);\n-                if (lz4Size == 0)\n+                int lz4Size = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);\n+                if (lz4Size <=> = 0)\n                 {\n                     cout << \"lz4 compress error\" << endl;\n                     lz4Size = tmpChunk.chunkSize;\n                 }\n"
+                },
+                {
+                    "date": 1720697544739,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -41,9 +41,9 @@\n                 // Unique chunk found\n                 tmpChunk.chunkID = uniquechunkNum;\n                 tmpChunk.deltaFlag = NO_DELTA;\n                 int lz4Size = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);\n-                if (lz4Size <=> = 0)\n+                if (lz4Size <= 0)\n                 {\n                     cout << \"lz4 compress error\" << endl;\n                     lz4Size = tmpChunk.chunkSize;\n                 }\n"
+                },
+                {
+                    "date": 1720697564478,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,8 +44,9 @@\n                 int lz4Size = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);\n                 if (lz4Size <= 0)\n                 {\n                     cout << \"lz4 compress error\" << endl;\n+                    cout << \" lz4Size is \" << lz4Size << endl;\n                     lz4Size = tmpChunk.chunkSize;\n                 }\n                 tmpChunk.saveSize = lz4Size;\n                 FP_Insert(hashStr, tmpChunk.chunkID);\n"
+                }
+            ],
+            "date": 1720695331458,
+            "name": "Commit-0",
+            "content": "#include \"../../include/dedup.h\"\n\nDedup::Dedup()\n{\n    lz4ChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));\n    mdCtx = EVP_MD_CTX_new();\n    hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));\n}\n\nDedup::~Dedup()\n{\n    free(lz4ChunkBuffer);\n    EVP_MD_CTX_free(mdCtx);\n}\n\nvoid Dedup::ProcessTrace()\n{\n    while (true)\n    {\n        string hashStr;\n        hashStr.assign(CHUNK_HASH_SIZE, 0);\n        std::chrono::time_point<std::chrono::high_resolution_clock> startTime, endTime;\n\n        if (recieveQueue->done_ && recieveQueue->IsEmpty())\n        {\n            outputMQ_->done_ = true;\n            recieveQueue->done_ = false;\n            cout << \"dedup done\" << endl;\n            break;\n        }\n        Chunk_t tmpChunk;\n        if (recieveQueue->Pop(tmpChunk))\n        {\n            GenerateHash(mdCtx, tmpChunk.chunkPtr, tmpChunk.chunkSize, hashBuf);\n            hashStr.assign((char *)hashBuf, CHUNK_HASH_SIZE);\n            int tmpChunkid;\n            int findRes = FP_Find(hashStr);\n            if (findRes == -1)\n            {\n                // Unique chunk found\n                tmpChunk.chunkID = uniquechunkNum;\n                tmpChunk.deltaFlag = NO_DELTA;\n                uint64_t lz4Size = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);\n                if (lz4Size == 0)\n                {\n                    cout << \"lz4 compress error\" << endl;\n                    lz4Size = tmpChunk.chunkSize;\n                }\n                tmpChunk.saveSize = lz4Size;\n                FP_Insert(hashStr, tmpChunk.chunkID);\n                // /cout << tmpChunkContent << endl;\n                // Dedup get superfeature\n                // cout << \"unique chunk found\" << endl;\n                if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);\n                {\n                    tool::Logging(myName_.c_str(), \"insert chunk to output MQ error.\\n\");\n                    exit(EXIT_FAILURE);\n                }\n                basechunkNum++;\n                basechunkSize += tmpChunk.saveSize;\n                uniquechunkNum++;\n                uniquechunkSize += tmpChunk.saveSize;\n            }\n            else\n            {\n                // cout << \"dedup chunk found findRes is\" << findRes << endl; //debug\n                tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);\n                tmpChunkid = findRes; // 好像没用\n            }\n            dataWrite_->Recipe_Insert(tmpChunk);\n            logicalchunkNum++;\n            logicalchunkSize += tmpChunk.chunkSize;\n        }\n    }\n}\n"
+        }
+    ]
+}

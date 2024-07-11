@@ -14,6 +14,7 @@
 #include "readCache.h"
 #include <vector>
 #include <sstream>
+#include <mutex>
 using namespace std;
 
 // static int curContainerIdGlobal = 0;
@@ -28,6 +29,8 @@ private:
 
     uint64_t loadContainerTimes = 0;
     uint64_t cacheHitTimes = 0;
+
+    std::mutex mtx; // 互斥锁
 
     // unordered_map<string, int> FPindex; //(fp,chunkid)
     //  unordered_map<uint32_t, vector<int>> ObjectIndex;

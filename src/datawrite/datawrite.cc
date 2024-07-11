@@ -8,7 +8,14 @@ dataWrite::dataWrite()
     curContainer.chunkNum = 0;
     containerCache = new ReadCache();
 }
-
+dataWrite::~dataWrite()
+{
+    for (int i = 0; i < chunkNum; i++)
+    {
+        free(chunklist[i].chunkPtr);
+    }
+    delete containerCache;
+}
 void dataWrite::PrintBinaryArray(const uint8_t *buffer, size_t buffer_size)
 {
     for (size_t i = 0; i < buffer_size; i++)
@@ -90,21 +97,13 @@ void dataWrite::writing()
             free(chunk.chunkPtr);
             // cout << "free chunk done" << endl;
             chunk.chunkPtr = nullptr;
-            chunkprint(chunk);
+            // chunkprint(chunk); //debug
+            std::lock_guard<std::mutex> lock(mtx);
             chunklist.push_back(chunk);
             // cout << "dataWrite entry id is  " << chunklist[chunk.chunkID].chunkID << endl;
             // cout << "writing start if end" << endl;
         }
     }
-}
-dataWrite::~dataWrite()
-{
-    for (int i = 0; i < chunkNum; i++)
-    {
-        free(chunklist[i].chunkPtr);
-    }
-
-    delete containerCache;
 }
 
 bool dataWrite::Chunk_Insert(Chunk_t chunk)
@@ -573,7 +572,8 @@ bool dataWrite::isLz4(int id)
 
 Chunk_t dataWrite::Get_Chunk_MetaInfo(int id)
 {
-    cout << "get chunk id is" << id << " and the vector has " << chunklist.size() << endl;
+    std::lock_guard<std::mutex> lock(mtx);
+    // cout << "get chunk id is" << id << " and the vector has " << chunklist.size() << " chunklist[id].chunkID is " << chunklist[id].chunkID << " input id is " << id << endl; //debug
     return chunklist[id];
 }
 

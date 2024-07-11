@@ -11,6 +11,7 @@ Dedup::~Dedup()
 {
     free(lz4ChunkBuffer);
     EVP_MD_CTX_free(mdCtx);
+    free(hashBuf);
 }
 
 void Dedup::ProcessTrace()
@@ -40,6 +41,14 @@ void Dedup::ProcessTrace()
                 // Unique chunk found
                 tmpChunk.chunkID = uniquechunkNum;
                 tmpChunk.deltaFlag = NO_DELTA;
+                int lz4Size = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
+                if (lz4Size <= 0)
+                {
+                    cout << "lz4 compress error" << endl;
+                    cout << " lz4Size is " << lz4Size << endl;
+                    lz4Size = tmpChunk.chunkSize;
+                }
+                tmpChunk.saveSize = lz4Size;
                 FP_Insert(hashStr, tmpChunk.chunkID);
                 // /cout << tmpChunkContent << endl;
                 // Dedup get superfeature
@@ -56,7 +65,7 @@ void Dedup::ProcessTrace()
             }
             else
             {
-                cout << "dedup chunk found findRes is" << findRes << endl;
+                // cout << "dedup chunk found findRes is" << findRes << endl; //debug
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes; // 好像没用
             }

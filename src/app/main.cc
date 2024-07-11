@@ -2,6 +2,7 @@
 #include <string>
 #include <csignal>
 #include <sstream>
+#include <chrono>
 
 #include "../../include/allmethod.h"
 
@@ -105,6 +106,7 @@ int main(int argc, char **argv)
 
     absMethodObj->dataWrite_ = new dataWrite();
     absMethodObj->dataWrite_->SetInputMQ(chunkReWriteMQ);
+    auto start = std::chrono::high_resolution_clock::now();
     for (auto i = 0; i < backupNum; i++)
     {
 
@@ -121,12 +123,14 @@ int main(int argc, char **argv)
             delete it; // 打印当前元素
         }
     }
-
+    auto end = std::chrono::high_resolution_clock::now();
+    auto sumTime = (end - start);
+    std::cout << "Time taken by for loop: " << sumTime.count() << " s " << std::endl;
     tool::Logging(myName.c_str(), "logical Chunk Num is %d\n", absMethodObj->logicalchunkNum);
     tool::Logging(myName.c_str(), "unique Chunk Num is %d\n", absMethodObj->uniquechunkNum);
-    tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->totalLogicalSize);
-    tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->totalCompressedSize);
-    tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->totalLogicalSize / (double)absMethodObj->totalCompressedSize);
+    tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);
+    tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
+    tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
     delete absMethodObj->dataWrite_;
     delete chunkerObj;
     delete absMethodObj;
