@@ -57,6 +57,9 @@ public:
     uint64_t localchunkSize = 0;
     uint64_t localPrechunkSize = 0;
 
+    uint64_t ContainerNum = 0;
+    uint64_t ContainerSize = 0;
+
     // time total
     std::chrono::duration<double> sumTime1;
     std::chrono::duration<double> sumTime2;

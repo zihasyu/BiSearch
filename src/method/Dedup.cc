@@ -45,7 +45,6 @@ void Dedup::ProcessTrace()
                 if (lz4Size <= 0)
                 {
                     cout << "lz4 compress error" << endl;
-                    cout << " lz4Size is " << lz4Size << endl;
                     lz4Size = tmpChunk.chunkSize;
                 }
                 tmpChunk.saveSize = lz4Size;
@@ -53,11 +52,25 @@ void Dedup::ProcessTrace()
                 // /cout << tmpChunkContent << endl;
                 // Dedup get superfeature
                 // cout << "unique chunk found" << endl;
+                if (ContainerSize + tmpChunk.chunkSize > CONTAINER_MAX_SIZE)
+                {
+                    tmpChunk.containerID = ++containerNum;
+                    ContainerSize = 0;
+                }
+                else
+                {
+                    tmpChunk.containerID = containerNum;
+                }
+                tmpChunk.offset = ContainerSize;
+                ContainerSize += tmpChunk.chunkSize;
+                dataWrite_->chunklist.push_back(tmpChunk);
+
                 if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
                 {
                     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
                     exit(EXIT_FAILURE);
                 }
+
                 basechunkNum++;
                 basechunkSize += tmpChunk.saveSize;
                 uniquechunkNum++;

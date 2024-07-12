@@ -7,13 +7,14 @@ dataWrite::dataWrite()
     curContainer.containerID = 0;
     curContainer.chunkNum = 0;
     containerCache = new ReadCache();
+    chunklist.reserve(1000000);
 }
 dataWrite::~dataWrite()
 {
-    for (int i = 0; i < chunkNum; i++)
-    {
-        free(chunklist[i].chunkPtr);
-    }
+    // for (int i = 0; i < chunkNum; i++)
+    // {
+    //     free(chunklist[i].chunkPtr);
+    // }
     delete containerCache;
 }
 void dataWrite::PrintBinaryArray(const uint8_t *buffer, size_t buffer_size)
@@ -98,78 +99,14 @@ void dataWrite::writing()
             // cout << "free chunk done" << endl;
             chunk.chunkPtr = nullptr;
             // chunkprint(chunk); //debug
-            std::lock_guard<std::mutex> lock(mtx);
-            chunklist.push_back(chunk);
+            // std::lock_guard<std::mutex> lock(mtx);
+            // chunklist.push_back(chunk);
             // cout << "dataWrite entry id is  " << chunklist[chunk.chunkID].chunkID << endl;
             // cout << "writing start if end" << endl;
         }
     }
 }
 
-bool dataWrite::Chunk_Insert(Chunk_t chunk) // main TODO
-{
-    int tmpSize = 0;
-    if (chunk.deltaFlag == NO_DELTA)
-        tmpSize = chunk.chunkSize;
-    else
-        tmpSize = chunk.saveSize;
-    // cout << "flag is " << static_cast<int>(chunk.deltaFlag) << endl;
-    chunkNum++;
-    containerSize += chunk.saveSize;
-    curContainer.chunkNum++;
-
-    if (curContainer.size + tmpSize > CONTAINER_MAX_SIZE)
-    {
-        // TODO put into MQ
-        cout << " curContainer.chunkNum is" << curContainer.chunkNum << " curContainer.containerID is " << curContainer.containerID << endl;
-        startTime = std::chrono::high_resolution_clock::now();
-        // cout << "push container " << containerNum << " into MQ" << endl;
-        // cout << "cur container size is " << curContainer.size << endl;
-        // MQ->Push(curContainer);
-        string fileName = "./Containers/" + to_string(curContainer.containerID);
-        ofstream outfile(fileName);
-        if (outfile.is_open())
-        {
-            // cout << "write id is " << tmpContainer.containerID << " size is " << tmpContainer.size << endl;
-            outfile.write(reinterpret_cast<const char *>(&curContainer.size), sizeof(curContainer.size));
-
-            outfile.write(reinterpret_cast<const char *>(curContainer.data), curContainer.size);
-            // outfile.write(reinterpret_cast<const char *>(&tmpContainer.size), sizeof(tmpContainer.size));
-            // outfile << tmpContainer.data;
-            outfile.close();
-            // cout << "write done" << endl;
-        }
-        else
-        {
-            cout << "open file failed" << endl;
-        }
-
-        // sleep(1);
-        containerNum++;
-        containerSize = 0;
-        curOffset = 0;
-        curContainer.size = 0;
-        curContainer.containerID = containerNum;
-        curContainer.chunkNum = 0;
-        endTime = std::chrono::high_resolution_clock::now();
-        writeIOTime += (endTime - startTime);
-    }
-    // TODO: put chunk into container
-    chunk.containerID = containerNum;
-    chunk.offset = curOffset;
-    // cout << " curContainer.size is " << curContainer.size << " tmpSize is " << tmpSize << " offset is " << curOffset << endl;
-    curContainer.size += tmpSize;
-    // cout<< "tmp size is " << tmpSize << " curoffset is " << curOffset<<endl;
-    memcpy(curContainer.data + curOffset, chunk.chunkPtr, tmpSize);
-    curOffset += tmpSize;
-    // cout << "free chunk " << endl;
-    free(chunk.chunkPtr);
-    // cout << "free chunk done" << endl;
-    chunk.chunkPtr = nullptr;
-    chunklist.push_back(chunk);
-    // cout << "dataWrite entry id is  " << chunklist[chunk.chunkID].chunkID << endl;
-    return true;
-}
 void dataWrite::restoreFile(string fileName)
 {
     string name;
@@ -622,9 +559,14 @@ bool dataWrite::isLz4(int id)
 
 Chunk_t dataWrite::Get_Chunk_MetaInfo(int id)
 {
-    std::lock_guard<std::mutex> lock(mtx);
-    // cout << "get chunk id is" << id << " and the vector has " << chunklist.size() << " chunklist[id].chunkID is " << chunklist[id].chunkID << " input id is " << id << endl; //debug
-    return chunklist[id];
+    // std::lock_guard<std::mutex> lock(mtx);
+    if (chunklist.size() < id)
+    {
+        cout << "errorrrr!" << endl;
+        cout << "size is " << chunklist.size() << " id is " << id << endl;
+    }
+    auto ret = chunklist[id];
+    return ret;
 }
 
 void dataWrite::PrintMetrics()
