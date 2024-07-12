@@ -109,8 +109,11 @@ int main(int argc, char **argv)
     auto start = std::chrono::high_resolution_clock::now();
     for (auto i = 0; i < backupNum; i++)
     {
-
+        // set backup name
         chunkerObj->LoadChunkFile(readfileList[i]);
+        absMethodObj->SetFilename(readfileList[i]);
+        absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+        // thread running
         thTmp[0] = new boost::thread(attrs, boost::bind(&Chunker::Chunking, chunkerObj));
         thTmp[1] = new boost::thread(attrs, boost::bind(&AbsMethod::ProcessTrace, absMethodObj));
         thTmp[2] = new boost::thread(attrs, boost::bind(&dataWrite::writing, absMethodObj->dataWrite_));
@@ -120,7 +123,7 @@ int main(int argc, char **argv)
         }
         for (auto it : thTmp)
         {
-            delete it; // 打印当前元素
+            delete it;
         }
     }
     auto end = std::chrono::high_resolution_clock::now();
@@ -131,6 +134,12 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
+    // restore backup if you need, but it's not necessary
+    for (auto i = 0; i < backupNum; i++)
+    {
+        absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+        absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+    }
     delete absMethodObj->dataWrite_;
     delete chunkerObj;
     delete absMethodObj;

@@ -11,6 +11,12 @@ AbsMethod::~AbsMethod()
     free(hashBuf);
 }
 
+void AbsMethod::SetFilename(string name)
+{
+    filename.assign(name);
+    return;
+}
+
 bool AbsMethod::compareNat(const std::string &a, const std::string &b)
 {
     if (a.empty())

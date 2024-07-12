@@ -21,6 +21,7 @@ class AbsMethod
 protected:
 public:
     // util
+    string filename;
     dataWrite *dataWrite_;
     uint8_t *lz4ChunkBuffer;
     uint8_t *hashBuf;
@@ -71,7 +72,7 @@ public:
 
     AbsMethod();
     ~AbsMethod();
-
+    void SetFilename(string name);
     virtual void ProcessTrace() = 0;
     void SetInputMQ(MessageQueue<Chunk_t> *mq) { recieveQueue = mq; }
     void SetOutputMQ(MessageQueue<Chunk_t> *outputMQ)

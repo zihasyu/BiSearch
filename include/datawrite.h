@@ -15,6 +15,10 @@
 #include <vector>
 #include <sstream>
 #include <mutex>
+extern "C"
+{
+#include "./xdelta3.h"
+}
 using namespace std;
 
 // static int curContainerIdGlobal = 0;
@@ -26,7 +30,7 @@ class dataWrite
 private:
     int chunkNum = 0;
     int containerSize = 0;
-
+    string filename;
     uint64_t loadContainerTimes = 0;
     uint64_t cacheHitTimes = 0;
 
@@ -36,6 +40,7 @@ private:
     //  unordered_map<uint32_t, vector<int>> ObjectIndex;
     // unordered_map<string, vector<int>> ObjectIndex;
     vector<Chunk_t> recipelist;
+    unordered_map<string, vector<Chunk_t>> RecipeMap;
     // unordered_map<string, vector<int>> *SFindex;
     //  static Container_t curContainer;
     ReadCache *containerCache;
@@ -47,6 +52,7 @@ private:
     std::chrono::time_point<std::chrono::high_resolution_clock> startTime2, endTime2;
 
 public:
+    void SetFilename(string name);
     vector<Chunk_t> chunklist;
     void writing();
     MessageQueue<Chunk_t> *recieveQueue;
@@ -72,6 +78,7 @@ public:
     // int Obj_Find(string objid);
     // bool Obj_Insert(string objid, int chunkid);
     bool Recipe_Insert(Chunk_t &info);
+    void restoreFile(string fileName);
     // bool SF_Insert(const char *key, size_t keySize, int chunkid);
     // bool SF_Insert_Adjacency(const char *key, size_t keySize, int chunkid);
     // int SF_Find(const char *key, size_t keySize);
@@ -87,6 +94,8 @@ public:
     void PrintBinaryArray(const uint8_t *buffer, size_t buffer_size);
     bool isLz4(int id);
     bool isDuplicate(int id);
+    uint8_t *xd3_decode(const uint8_t *in, size_t in_size, const uint8_t *ref, size_t ref_size, size_t *res_size);
+
     Chunk_t Get_Chunk_MetaInfo(int id);
     void PrintMetrics();
     static void chunkprint(const Chunk_t chunk);

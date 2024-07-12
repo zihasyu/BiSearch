@@ -21,7 +21,7 @@ typedef struct
     uint64_t saveSize;
     uint8_t *chunkPtr;
     int basechunkID;
-    uint8_t deltaFlag;
+    uint8_t deltaFlag = NO_DELTA;
     bool loadFromDisk;
     // offset and containerId
     uint64_t offset;

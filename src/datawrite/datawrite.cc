@@ -106,7 +106,7 @@ void dataWrite::writing()
     }
 }
 
-bool dataWrite::Chunk_Insert(Chunk_t chunk)
+bool dataWrite::Chunk_Insert(Chunk_t chunk) // main TODO
 {
     int tmpSize = 0;
     if (chunk.deltaFlag == NO_DELTA)
@@ -169,6 +169,51 @@ bool dataWrite::Chunk_Insert(Chunk_t chunk)
     chunklist.push_back(chunk);
     // cout << "dataWrite entry id is  " << chunklist[chunk.chunkID].chunkID << endl;
     return true;
+}
+void dataWrite::restoreFile(string fileName)
+{
+    string name;
+    size_t pos = fileName.find_last_of('/');
+    if (pos != std::string::npos)
+    {
+        name = fileName.substr(pos + 1);
+    }
+    else
+    {
+        name = fileName;
+    }
+    string writePath = "./restoreFile/" + name;
+    // cout << chunkSet_.size() << endl;
+    cout << "write path is " << writePath << endl;
+    ofstream outFile(writePath);
+
+    auto tmpRecipe = RecipeMap[fileName];
+    for (auto recipe : tmpRecipe)
+    {
+        Chunk_t tmpChunkInfo = Get_Chunk_Info(recipe.chunkID);
+        if (tmpChunkInfo.deltaFlag == NO_DELTA)
+        {
+            outFile.write((char *)tmpChunkInfo.chunkPtr, tmpChunkInfo.chunkSize);
+        }
+        else
+        {
+            // auto tmpLocalChunkInfo = xd3_recursive_restore(tmpChunkInfo);
+            auto baseChunkInfo = Get_Chunk_Info(tmpChunkInfo.basechunkID);
+            uint64_t recSize = 0;
+            auto chunk_ptr = xd3_decode(tmpChunkInfo.chunkPtr, tmpChunkInfo.saveSize, baseChunkInfo.chunkPtr, baseChunkInfo.chunkSize, &recSize);
+            cout << "rec size is " << recSize << endl;
+            // memcpy(tmpChunkInfo.chunkptr, chunk_ptr, recSize);
+            outFile.write((char *)chunk_ptr, tmpChunkInfo.chunkSize);
+
+            if (baseChunkInfo.loadFromDisk)
+                free(baseChunkInfo.chunkPtr);
+        }
+        if (tmpChunkInfo.loadFromDisk)
+            free(tmpChunkInfo.chunkPtr);
+    }
+
+    outFile.close();
+    return;
 }
 
 int dataWrite::Get_Chunk_Num()
@@ -274,9 +319,14 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
     return chunklist[id];
 }
 
+// bool dataWrite::Recipe_Insert(Chunk_t &info)
+// {
+//     recipelist.push_back(info);
+//     return true;
+// }
 bool dataWrite::Recipe_Insert(Chunk_t &info)
 {
-    recipelist.push_back(info);
+    RecipeMap[filename].push_back(info);
     return true;
 }
 
@@ -607,7 +657,49 @@ void dataWrite::PrintMetrics()
 //         return false;
 //     }
 // }
+uint8_t *dataWrite::xd3_decode(const uint8_t *in, size_t in_size, const uint8_t *ref, size_t ref_size, size_t *res_size) // 更改函数
+{
+    const auto max_buffer_size = CONTAINER_MAX_SIZE * 2;
+    uint8_t *buffer;
+    buffer = (uint8_t *)malloc(max_buffer_size);
+    size_t sz;
+    // cout << sz << endl;
+    // cout << "max_buffer_size:" << max_buffer_size << endl;
+    // auto ret = xd3_decode_memory(in, in_size, ref, ref_size, buffer, &sz, max_buffer_size, 0);
+    auto ret = xd3_decode_memory(in, in_size, ref, ref_size, buffer, &sz, max_buffer_size, 0);
+    if (ret != 0)
+    {
+        cout << "decode error" << endl;
+        cout << "ret code is " << ret << endl;
+        const char *errMsg = xd3_strerror(ret);
+        if (errMsg != nullptr)
+        {
+            printf("%s\n", errMsg);
+        }
+        else
+        {
+            printf("Unknown error\n");
+        }
+    }
+    uint8_t *res;
+    res = (uint8_t *)malloc(sz);
+    *res_size = sz;
 
+    // printf("xdxd3的mem前\n");
+
+    // cout << sz << endl;
+
+    memcpy(res, buffer, sz);
+    // printf("xdxd3的mem后\n");
+    free(buffer);
+    // printf("buffer后\n");
+    return res;
+}
+void dataWrite::SetFilename(string name)
+{
+    filename.assign(name);
+    return;
+}
 void dataWrite::chunkprint(const Chunk_t chunk)
 {
     cout << " chunkID: " << chunk.chunkID << endl;
