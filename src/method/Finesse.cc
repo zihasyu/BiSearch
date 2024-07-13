@@ -26,7 +26,7 @@ void Finesse::ProcessTrace()
 
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
-            outputMQ_->done_ = true;
+            //outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             break;
         }
@@ -38,7 +38,6 @@ void Finesse::ProcessTrace()
             // generate chunk
             GenerateHash(mdCtx, tmpChunk.chunkPtr, tmpChunk.chunkSize, hashBuf);
             hashStr.assign((char *)hashBuf, 32);
-            int tmpChunkid;
             int findRes = FP_Find(hashStr);
             if (findRes == -1)
             {
@@ -74,14 +73,7 @@ void Finesse::ProcessTrace()
                     // cout << "lz4 chunk size is " << tmpChunk.chunksize << "save size is " << tmpChunk.savesize << endl;
                     tmpChunk.deltaFlag = NO_DELTA;
                     tmpChunk.basechunkID = -1;
-                    tmpChunkid = tmpChunk.chunkID;
-                    SF_Insert((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE, tmpChunkid);
-                    if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
-                    {
-                        tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-                        exit(EXIT_FAILURE);
-                    }
-
+                    SF_Insert((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE, tmpChunk.chunkID);
                     basechunkNum++;
                     basechunkSize += tmpChunk.saveSize;
                 }
@@ -105,28 +97,23 @@ void Finesse::ProcessTrace()
                     // cout << "delta size: " << tmpChunk.savesize << " chunk size is " << tmpChunk.chunksize << "base id " << basechunkinfo.chunkid << endl;
                     if (tmpChunk.saveSize == 0)
                     {
-                        cout << "delta error" << endl;
+                        cout << "delta error and can't to restore" << endl;
                         return;
                     }
                     else
                     {
+                        memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize); 
                         tmpChunk.deltaFlag = FINESSE_DELTA;
                         tmpChunk.basechunkID = basechunkID;
-                        if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
-                        {
-                            tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-                            exit(EXIT_FAILURE);
-                        }
                         deltachunkNum++;
                         deltachunkSize += tmpChunk.saveSize;
                         free(deltachunk);
                     }
+                    dataWrite_->Chunk_Insert(tmpChunk);
                     // free outside of Get_Chunk_Info
                     if (basechunkinfo.loadFromDisk)
                         free(basechunkinfo.chunkPtr);
-                    // free(basechunkinfo.chunkptr);
                 }
-                tmpChunkid = tmpChunk.chunkID;
                 uniquechunkNum++;
                 uniquechunkSize += tmpChunk.saveSize;
                 free(tmpChunkSF);
@@ -134,24 +121,12 @@ void Finesse::ProcessTrace()
             else
             {
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
-                tmpChunkid = findRes;
             }
             dataWrite_->Recipe_Insert(tmpChunk);
-
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
-
-    // auto start = std::chrono::high_resolution_clock::now();
-    // for (auto it : table.original_feature_key_table)
-    // {
-    //     for (auto id : it.second)
-    //     {
-    //     }
-    // }
-    // auto end = std::chrono::high_resolution_clock::now();
-    // clustringTime += end - start;
     recieveQueue->done_ = false;
     return;
 }

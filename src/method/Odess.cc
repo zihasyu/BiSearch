@@ -27,7 +27,7 @@ void Odess::ProcessTrace()
 
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
-            outputMQ_->done_ = true;
+            //outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             break;
         }
@@ -49,12 +49,13 @@ void Odess::ProcessTrace()
                 FP_Insert(hashStr, tmpChunk.chunkID);
                 tmpChunkContent.assign((char *)tmpChunk.chunkPtr, tmpChunk.chunkSize);
                 tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
-                // /cout << tmpChunkContent << endl;
                 // Odess get superfeature
                 auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
                 auto ret = table.GetSimilarRecordKey(superfeature);
                 // auto ret = table.GetSimilarRecordsKeys(tmpChunkHash);
+                
                 if (ret != "not found")
+                //unique chunk & similar chunk
                 {
                     int basechunkID = FP_Find(ret);
                     if (basechunkID != -1)
@@ -70,11 +71,7 @@ void Odess::ProcessTrace()
                         {
                             tmpChunk.deltaFlag = DELTA;
                             tmpChunk.basechunkID = basechunkID;
-                            if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
-                            {
-                                tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-                                exit(EXIT_FAILURE);
-                            }
+                            memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize); 
                             deltachunkNum++;
                             deltachunkSize += tmpChunk.saveSize;
                             DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
@@ -89,6 +86,7 @@ void Odess::ProcessTrace()
                     }
                 }
                 else
+                //unique chunk & no similar chunk
                 {
                     int tmpChunkLz4CompressSize = 0;
                     tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
@@ -100,29 +98,23 @@ void Odess::ProcessTrace()
                     else
                     {
                         tmpChunk.saveSize = tmpChunk.chunkSize;
-                        ;
                     }
                     // cout << "lz4 chunk size is " << tmpChunk.chunkSize << "save size is " << tmpChunk.saveSize << endl;
                     tmpChunk.deltaFlag = NO_DELTA;
                     tmpChunk.basechunkID = -1;
                     tmpChunkid = tmpChunk.chunkID;
                     table.Put(tmpChunkHash, tmpChunkContent);
-                    if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
-                    {
-                        tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-                        exit(EXIT_FAILURE);
-                    }
-
                     basechunkNum++;
                     basechunkSize += tmpChunk.saveSize;
                     LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
                 }
+                dataWrite_->Chunk_Insert(tmpChunk);
                 uniquechunkNum++;
                 uniquechunkSize += tmpChunk.saveSize;
             }
             else
             {
-                // Dedup chunk found
+            // Dedup chunk found
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes;
                 PrevDedupChunkid = findRes;
@@ -134,16 +126,6 @@ void Odess::ProcessTrace()
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
-
-    // auto start = std::chrono::high_resolution_clock::now();
-    // for (auto it : table.original_feature_key_table)
-    // {
-    //     for (auto id : it.second)
-    //     {
-    //     }
-    // }
-    // auto end = std::chrono::high_resolution_clock::now();
-    // clustringTime += end - start;
     recieveQueue->done_ = false;
     return;
 }

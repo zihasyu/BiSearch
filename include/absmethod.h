@@ -40,7 +40,7 @@ public:
     unordered_map<string, int> FPindex; //(fp,chunkid)
     // 消息队列
     MessageQueue<Chunk_t> *recieveQueue;
-    MessageQueue<Chunk_t> *outputMQ_; // to datawrite
+    //MessageQueue<Chunk_t> *outputMQ_; // to datawrite but not used
     unordered_map<string, vector<int>> *SFindex;
     std::chrono::duration<double> getSFTime;
     uint64_t computeSFtimes = 0;
@@ -78,11 +78,11 @@ public:
     void SetFilename(string name);
     virtual void ProcessTrace() = 0;
     void SetInputMQ(MessageQueue<Chunk_t> *mq) { recieveQueue = mq; }
-    void SetOutputMQ(MessageQueue<Chunk_t> *outputMQ)
-    {
-        outputMQ_ = outputMQ;
-        return;
-    }
+    // void SetOutputMQ(MessageQueue<Chunk_t> *outputMQ)
+    // {
+    //     outputMQ_ = outputMQ;
+    //     return;
+    // }
     static bool compareNat(const std::string &a, const std::string &b);
     void GenerateHash(EVP_MD_CTX *mdCtx, uint8_t *dataBuffer, const int dataSize, uint8_t *hash);
     int FP_Find(string fp);

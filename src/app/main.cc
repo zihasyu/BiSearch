@@ -63,9 +63,7 @@ int main(int argc, char **argv)
     Chunker *chunkerObj = new Chunker(chunkingType);
 
     MessageQueue<Chunk_t> *chunkerMQ = new MessageQueue<Chunk_t>(CHUNK_QUEUE_SIZE);
-    MessageQueue<Chunk_t> *chunkReWriteMQ = new MessageQueue<Chunk_t>(CHUNK_QUEUE_SIZE);
-
-    chunkerObj->SetOutputMQ(chunkerMQ);
+    
 
     switch (compressionMethod)
     {
@@ -82,7 +80,6 @@ int main(int argc, char **argv)
     case ODESS:
     {
         absMethodObj = new Odess();
-        // absMethodObj = new lz4ClusterBaseline(fileName);
         break;
     }
     case BiSEARCH:
@@ -97,15 +94,13 @@ int main(int argc, char **argv)
     tool::traverse_dir(dirName, readfileList, nofilter);
     sort(readfileList.begin(), readfileList.end(), AbsMethod::compareNat);
 
-    boost::thread *thTmp[3] = {nullptr};
+    boost::thread *thTmp[2] = {nullptr};
     boost::thread::attributes attrs;
     attrs.set_stack_size(THREAD_STACK_SIZE);
-
+    chunkerObj->SetOutputMQ(chunkerMQ);
     absMethodObj->SetInputMQ(chunkerMQ);
-    absMethodObj->SetOutputMQ(chunkReWriteMQ);
-
     absMethodObj->dataWrite_ = new dataWrite();
-    absMethodObj->dataWrite_->SetInputMQ(chunkReWriteMQ);
+
     auto start = std::chrono::high_resolution_clock::now();
     for (auto i = 0; i < backupNum; i++)
     {
@@ -116,7 +111,6 @@ int main(int argc, char **argv)
         // thread running
         thTmp[0] = new boost::thread(attrs, boost::bind(&Chunker::Chunking, chunkerObj));
         thTmp[1] = new boost::thread(attrs, boost::bind(&AbsMethod::ProcessTrace, absMethodObj));
-        thTmp[2] = new boost::thread(attrs, boost::bind(&dataWrite::writing, absMethodObj->dataWrite_));
         for (auto it : thTmp)
         {
             it->join();
@@ -126,6 +120,7 @@ int main(int argc, char **argv)
             delete it;
         }
     }
+
     auto end = std::chrono::high_resolution_clock::now();
     auto sumTime = (end - start);
     auto sumTimeInSeconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
@@ -135,12 +130,13 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
-    // restore backup if you need, but it's not necessary
-    // for (auto i = 0; i < backupNum; i++)
-    // {
-    //     absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-    //     absMethodObj->dataWrite_->restoreFile(readfileList[i]);
-    // }
+    
+    //restore backup if you need, but it's not necessary
+    for (auto i = 0; i < backupNum; i++)
+    {
+        absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+        absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+    }
     delete absMethodObj->dataWrite_;
     delete chunkerObj;
     delete absMethodObj;

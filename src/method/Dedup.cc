@@ -24,7 +24,7 @@ void Dedup::ProcessTrace()
 
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
-            outputMQ_->done_ = true;
+            //outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             cout << "dedup done" << endl;
             break;
@@ -63,13 +63,7 @@ void Dedup::ProcessTrace()
                 }
                 tmpChunk.offset = ContainerSize;
                 ContainerSize += tmpChunk.chunkSize;
-                dataWrite_->chunklist.push_back(tmpChunk);
-
-                if (!outputMQ_->Push(tmpChunk)) // chunkSet_->Chunk_Insert(tmpChunk);
-                {
-                    tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-                    exit(EXIT_FAILURE);
-                }
+                dataWrite_->Chunk_Insert(tmpChunk);
 
                 basechunkNum++;
                 basechunkSize += tmpChunk.saveSize;
