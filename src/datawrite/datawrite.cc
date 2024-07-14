@@ -105,9 +105,9 @@ void dataWrite::writing()
         }
     }
 }
- bool dataWrite::Chunk_Insert(Chunk_t chunk)
+bool dataWrite::Chunk_Insert(Chunk_t chunk)
 {
- int tmpSize = 0;
+    int tmpSize = 0;
     if (chunk.deltaFlag == NO_DELTA)
         tmpSize = chunk.chunkSize;
     else
@@ -120,7 +120,7 @@ void dataWrite::writing()
     if (curContainer.size + tmpSize > CONTAINER_MAX_SIZE)
     {
         // TODO put into MQ
-        //cout << " curContainer.chunkNum is" << curContainer.chunkNum << " curContainer.containerId is " << curContainer.containerID << endl;
+        // cout << " curContainer.chunkNum is" << curContainer.chunkNum << " curContainer.containerId is " << curContainer.containerID << endl;
         startTime = std::chrono::high_resolution_clock::now();
         // cout << "push container " << containerNum << " into MQ" << endl;
         // cout << "cur container size is " << curContainer.size << endl;
@@ -207,6 +207,11 @@ void dataWrite::restoreFile(string fileName)
 
             if (baseChunkInfo.loadFromDisk)
                 free(baseChunkInfo.chunkPtr);
+            if (chunk_ptr != nullptr)
+            {
+                free(chunk_ptr);
+                chunk_ptr = nullptr;
+            }
         }
         if (tmpChunkInfo.loadFromDisk)
             free(tmpChunkInfo.chunkPtr);
@@ -324,7 +329,6 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
 //     recipelist.push_back(info);
 //     return true;
 // }
-
 
 bool dataWrite::Recipe_Insert(Chunk_t &info)
 {

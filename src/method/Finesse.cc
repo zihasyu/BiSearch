@@ -26,7 +26,7 @@ void Finesse::ProcessTrace()
 
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
-            //outputMQ_->done_ = true;
+            // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             break;
         }
@@ -102,7 +102,7 @@ void Finesse::ProcessTrace()
                     }
                     else
                     {
-                        memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize); 
+                        memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
                         tmpChunk.deltaFlag = FINESSE_DELTA;
                         tmpChunk.basechunkID = basechunkID;
                         deltachunkNum++;
@@ -120,6 +120,7 @@ void Finesse::ProcessTrace()
             }
             else
             {
+                free(tmpChunk.chunkPtr);
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
             }
             dataWrite_->Recipe_Insert(tmpChunk);

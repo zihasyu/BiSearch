@@ -24,7 +24,7 @@ void Dedup::ProcessTrace()
 
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
-            //outputMQ_->done_ = true;
+            // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             cout << "dedup done" << endl;
             break;
@@ -73,6 +73,7 @@ void Dedup::ProcessTrace()
             else
             {
                 // cout << "dedup chunk found findRes is" << findRes << endl; //debug
+                free(tmpChunk.chunkPtr);
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes; // 好像没用
             }

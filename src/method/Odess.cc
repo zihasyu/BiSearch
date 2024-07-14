@@ -27,7 +27,7 @@ void Odess::ProcessTrace()
 
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
-            //outputMQ_->done_ = true;
+            // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             break;
         }
@@ -53,9 +53,9 @@ void Odess::ProcessTrace()
                 auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
                 auto ret = table.GetSimilarRecordKey(superfeature);
                 // auto ret = table.GetSimilarRecordsKeys(tmpChunkHash);
-                
+
                 if (ret != "not found")
-                //unique chunk & similar chunk
+                // unique chunk & similar chunk
                 {
                     int basechunkID = FP_Find(ret);
                     if (basechunkID != -1)
@@ -71,7 +71,7 @@ void Odess::ProcessTrace()
                         {
                             tmpChunk.deltaFlag = DELTA;
                             tmpChunk.basechunkID = basechunkID;
-                            memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize); 
+                            memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
                             deltachunkNum++;
                             deltachunkSize += tmpChunk.saveSize;
                             DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
@@ -86,7 +86,7 @@ void Odess::ProcessTrace()
                     }
                 }
                 else
-                //unique chunk & no similar chunk
+                // unique chunk & no similar chunk
                 {
                     int tmpChunkLz4CompressSize = 0;
                     tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
@@ -114,7 +114,8 @@ void Odess::ProcessTrace()
             }
             else
             {
-            // Dedup chunk found
+                // Dedup chunk found
+                free(tmpChunk.chunkPtr);
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes;
                 PrevDedupChunkid = findRes;

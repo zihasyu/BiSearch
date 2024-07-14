@@ -63,7 +63,6 @@ int main(int argc, char **argv)
     Chunker *chunkerObj = new Chunker(chunkingType);
 
     MessageQueue<Chunk_t> *chunkerMQ = new MessageQueue<Chunk_t>(CHUNK_QUEUE_SIZE);
-    
 
     switch (compressionMethod)
     {
@@ -130,8 +129,8 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
-    
-    //restore backup if you need, but it's not necessary
+
+    // restore backup if you need, but it's not necessary
     for (auto i = 0; i < backupNum; i++)
     {
         absMethodObj->dataWrite_->SetFilename(readfileList[i]);
