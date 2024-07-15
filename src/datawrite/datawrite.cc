@@ -190,7 +190,7 @@ void dataWrite::restoreFile(string fileName)
     auto tmpRecipe = RecipeMap[fileName];
     for (auto recipe : tmpRecipe)
     {
-        Chunk_t tmpChunkInfo = Get_Chunk_Info(recipe.chunkID);
+        Chunk_t tmpChunkInfo = Get_Chunk_Info(recipe);
         if (tmpChunkInfo.deltaFlag == NO_DELTA)
         {
             outFile.write((char *)tmpChunkInfo.chunkPtr, tmpChunkInfo.chunkSize);
@@ -332,7 +332,25 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
 
 bool dataWrite::Recipe_Insert(Chunk_t &info)
 {
-    RecipeMap[filename].push_back(info);
+    // if (info.HeaderFlag == 0)
+    //     RecipeMap[filename].push_back(info.chunkID);
+    // else
+    // {
+    //     Recipe_Header_t tmpHeader;
+    //     tmpHeader.chunkId = info.chunkID;
+    //     tmpHeader.mask = info.saveSize;
+    //     RecipeMap_header[filename].push_back(tmpHeader);
+    // }
+    RecipeMap[filename].push_back(info.chunkID);
+    return true;
+}
+
+bool dataWrite::Recipe_Header_Insert(uint64_t chunkID, uint64_t mask)
+{
+    Recipe_Header_t tmpHeader;
+    tmpHeader.chunkId = chunkID;
+    tmpHeader.mask = mask;
+    RecipeMap_header[filename].push_back(tmpHeader);
     return true;
 }
 

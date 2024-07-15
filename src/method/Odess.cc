@@ -2,6 +2,7 @@
 
 Odess::Odess()
 {
+    cout << " FP size is " << sizeof(int) << " Chunk_t is " << sizeof(Chunk_t) << " <super_feature_t, unordered_set<string>> is " << sizeof(super_feature_t);
     lz4ChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
     mdCtx = EVP_MD_CTX_new();
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
@@ -10,6 +11,7 @@ Odess::Odess()
 
 Odess::~Odess()
 {
+    cout << " FP size is " << sizeof(FPindex) << " Chunk_t is " << sizeof(Chunk_t) << " <super_feature_t, unordered_set<string>> is " << sizeof(unordered_map<super_feature_t, unordered_set<string>>);
     free(lz4ChunkBuffer);
     free(deltaMaxChunkBuffer);
     EVP_MD_CTX_free(mdCtx);

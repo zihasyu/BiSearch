@@ -27,8 +27,7 @@ private:
     FeatureIndexTable table;
     uint64_t sameContainerTimes = 0;
     uint64_t lastContainerId = 0;
-    unordered_map<uint64_t, uint64_t> logical2Phyical;
-    unordered_map<uint64_t, uint64_t> Phyical2Logical;
+
     vector<char> chunkingbuffer;
     uint64_t bugCount = 0;
     z_stream defstream;
@@ -37,7 +36,6 @@ private:
     uint64_t DedupReductSize = 0;
     uint64_t DeltaReductSize = 0;
     uint64_t LocalReductSize = 0;
-   
 
 public:
     std::chrono::time_point<std::chrono::high_resolution_clock>

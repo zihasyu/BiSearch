@@ -14,6 +14,8 @@ Chunker::~Chunker()
 {
     free(readFileBuffer);
     free(chunkBuffer);
+    if (chunkType == TAR_MultiHeader)
+        free(headerBuffer);
 }
 
 void Chunker::LoadChunkFile(string path)
@@ -70,10 +72,11 @@ void Chunker::ChunkerInit()
         maskL = GenerateFastCDCMask(bits - 1);
         break;
     }
-    case TAR_SEGMENT:
+    case TAR_MultiHeader:
     {
+        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
         headerBuffer = (uint8_t *)malloc(512 * 32);
-        dataBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * 16); // 64MB
+        // dataBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * 16); // 64MB
         normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
         bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
         maskS = GenerateFastCDCMask(bits + 1);
@@ -103,8 +106,8 @@ void Chunker::Chunking()
         {
             break;
         }
-        size_t localOffset = 0;
-        while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
+        localOffset = 0;
+        while (((len - localOffset) >= CONTAINER_MAX_SIZE * 16) || (end && (localOffset < len)))
         {
             // cout << " len is " << len << " localOffset is " << localOffset << endl;
             Chunk_t chunk;
@@ -132,10 +135,15 @@ void Chunker::Chunking()
                 cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
                 break;
             }
-            case TAR_SEGMENT:
+            case TAR_MultiHeader:
             {
-                // 一次需要两个块
+                size_t cpOffset = CutPointTarHeader(readFileBuffer + localOffset, len - localOffset);
+                localOffset += cpOffset;
+                continue;
             }
+            default:
+                cout << "chunkType error" << endl;
+                break;
             }
             chunk.chunkPtr = (uint8_t *)malloc(cp);
             memcpy(chunk.chunkPtr, readFileBuffer + localOffset, cp);
@@ -143,7 +151,7 @@ void Chunker::Chunking()
             // chunk.chunkID = chunkID++;太早了
             if (cp == 0)
             {
-                cout << "cp is 0" << endl; // debug
+                // cout << "cp is 0" << endl; // debug
                 continue;
             }
             localOffset += cp;
@@ -295,6 +303,7 @@ uint32_t Chunker::CutPointTarFast(const uint8_t *src, const uint32_t len)
         if (Big_Chunk_Size - Big_Chunk_Offset > maxChunkSize)
         {
             // Big_Chunk_Allowance--;
+            // cout << " BigChunkSize is " << Big_Chunk_Size << " BigChunkOffset is" << Big_Chunk_Offset << endl;
             uint32_t cp = CutPointFastCDC(src,
                                           Big_Chunk_Size - Big_Chunk_Offset);
             Big_Chunk_Offset += cp;
@@ -357,4 +366,128 @@ inline uint32_t Chunker::DivCeil(uint32_t a, uint32_t b)
     {
         return (tmp + 1);
     }
+}
+
+uint32_t Chunker::CutPointTarHeader(const uint8_t *src, const uint32_t len)
+// 调用CutPointTarFast，因为有NextChunkType的全局变量，所以断在哪里都没关系。但是为了减少recipe压力（一对segment可恢复），满足结尾时下一个type还是header即可。
+{
+    uint64_t blockTypeMask;
+    size_t cpSum = 0;
+    uint64_t loopTime = 1;
+    if (Next_Chunk_Type == FILE_HEADER)
+    {
+        while ((HeaderCp < MultiHeaderSize || (localType == FILE_HEADER && Next_Chunk_Type == FILE_CHUNK)) && Next_Chunk_Type != BIG_CHUNK)
+        // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
+        // 当前是D下一个块也是D时，应该是大块，也是可以断的。
+        // 当前是D下一个块是H时，是正常的HD组合，也可以断。
+        // 总结一下就是，当前为H，下一块为D时不可以断
+        // 附加一条，下一个块是大块内容的时候也不在当前seg里切了
+        {
+            localType = Next_Chunk_Type;
+            uint32_t cp = CutPointTarFast(src + cpSum, len - cpSum);
+
+            if (localType == FILE_HEADER)
+            {
+                memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
+                HeaderCp += cp;
+                // blockTypeMask = blockTypeMask;
+            }
+            else
+            {
+                if (cp == 0)
+                {
+                    // cout << "data cp is 0" << endl; // debug
+                    continue;
+                }
+                // data chunking
+                Chunk_t chunk;
+                chunk.chunkPtr = (uint8_t *)malloc(cp);
+                memcpy(chunk.chunkPtr, src + cpSum, cp);
+                chunk.chunkSize = cp;
+                // input MQ
+                if (!outputMQ_->Push(chunk))
+                {
+                    tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+                    exit(EXIT_FAILURE);
+                }
+                // mask
+                blockTypeMask = blockTypeMask + loopTime;
+                if (loopTime > UINT32_MAX)
+                {
+                    cout << "loopTime overflow is" << loopTime << endl;
+                }
+            }
+            // local offset
+            cpSum += cp;
+            if (cpSum == len)
+            {
+                Next_Chunk_Type = FILE_HEADER;
+                break; // 同时，这个backup结束了，可能要设计个flag
+            }
+            loopTime *= 2;
+        }
+        // input recipe MQ
+        if (!MaskoutputMQ_->Push(blockTypeMask))
+        {
+            tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+            exit(EXIT_FAILURE);
+        }
+        // multi header
+        Chunk_t chunk;
+        chunk.chunkPtr = (uint8_t *)malloc(HeaderCp);
+        memcpy(chunk.chunkPtr, headerBuffer, HeaderCp);
+        chunk.chunkSize = HeaderCp;
+        chunk.HeaderFlag = true;
+        // reset
+        HeaderCp = 0;
+        // input chunk MQ
+        if (!outputMQ_->Push(chunk))
+        {
+            tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else
+    {
+        // cout << " Next_Chunk_Type is " << Next_Chunk_Type << endl;
+        //  不以header为开头只可能是bigchunk，这里想要的处理的bigchunk开头时
+        while (Next_Chunk_Type != FILE_HEADER && cpSum < CONTAINER_MAX_SIZE - MAX_CHUNK_SIZE)
+        // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
+        // 当前是D下一个块也是D时，应该是大块，也是可以断的。
+        // 当前是D下一个块是H时，是正常的HD组合，也可以断。
+        // 总结一下就是，当前为H，下一块为D时不可以断
+        {
+            localType = Next_Chunk_Type;
+            uint32_t cp = CutPointTarFast(src + cpSum, len - cpSum);
+            // cout << "big cdc size is " << cp << endl;
+            if (localType == FILE_HEADER)
+            {
+                std::cout << "cut_bug";
+                // memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
+                // HeaderCp += cp;
+                // blockTypeMask = blockTypeMask;
+            }
+            else
+            {
+                Chunk_t chunk;
+                chunk.chunkPtr = (uint8_t *)malloc(cp);
+                memcpy(chunk.chunkPtr, src + cpSum, cp);
+                chunk.chunkSize = cp;
+                if (!outputMQ_->Push(chunk))
+                {
+                    tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+                    exit(EXIT_FAILURE);
+                }
+            }
+            cpSum += cp;
+            if (cpSum == len)
+            {
+                break; // 同时，这个backup结束了，可能要设计个flag
+            }
+        }
+    }
+
+    // cout << "HeaderCp is " << HeaderCp << endl;
+    // cout << "DataCp is " << DataCp << endl;
+    return cpSum;
 }

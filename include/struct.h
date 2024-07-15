@@ -23,6 +23,7 @@ typedef struct
     int basechunkID;
     uint8_t deltaFlag = NO_DELTA;
     bool loadFromDisk;
+    bool HeaderFlag = 0;
     // offset and containerId
     uint64_t offset;
     uint64_t containerID;
@@ -38,16 +39,17 @@ typedef struct
 
 typedef struct
 {
-    uint64_t chunkId;
-    size_t chunkType;
-    uint64_t offset;
-} Recipe_t;
-
-typedef struct
-{
     uint64_t headerSegmentId;
     uint64_t dataSegmentId;
     uint64_t blockTypeMask;
 } RecipeSeg_t;
+
+typedef uint64_t Recipe_t;
+
+typedef struct
+{
+    uint64_t chunkId;
+    uint64_t mask;
+} Recipe_Header_t;
 
 #endif

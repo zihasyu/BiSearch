@@ -17,6 +17,7 @@ BiSearch::~BiSearch()
 {
     free(lz4ChunkBuffer);
     free(deltaMaxChunkBuffer);
+    free(hashBuf);
     EVP_MD_CTX_free(mdCtx);
 }
 
@@ -83,7 +84,8 @@ void BiSearch::ProcessTrace()
 
                     if (tmpdeltachunksize > tmpChunk.chunkSize)
                     {
-                        cout << "bug" << endl;
+                        cout << "bug in unique chunk & locality try & in locality windows" << endl;
+                        cout << "tmpdeltachunksize:" << tmpdeltachunksize << " tmpchunk size is " << tmpChunk.chunkSize << " tmpchunk id is " << tmpChunk.chunkID << endl;
                         bugCount++;
                         tmpChunk.saveSize = tmpChunk.chunkSize;
                         tmpChunk.deltaFlag = NO_DELTA;
@@ -190,7 +192,7 @@ void BiSearch::ProcessTrace()
                                 // odess hit but odess bug
                                 if (tmpChunk.saveSize > tmpChunk.chunkSize)
                                 {
-                                    cout << "bug" << endl;
+                                    cout << "bug in odess hit but odess bug" << endl;
                                     bugCount++;
                                     int tmpChunkLz4CompressSize = 0;
 
@@ -298,7 +300,7 @@ void BiSearch::ProcessTrace()
                         {
                             if (tmpChunk.saveSize > tmpChunk.chunkSize)
                             {
-                                cout << "bug" << endl;
+                                cout << "bug in odess try & not in locality windows &odess hits" << endl;
                                 bugCount++;
                                 int tmpChunkLz4CompressSize = 0;
                                 tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
@@ -357,7 +359,15 @@ void BiSearch::ProcessTrace()
                 lz4LogicalSize += tmpChunk.chunkSize;
                 DedupReductSize += tmpChunk.chunkSize;
             }
-            dataWrite_->Recipe_Insert(tmpChunk);
+            if (tmpChunk.HeaderFlag == 0)
+                dataWrite_->Recipe_Insert(tmpChunk);
+            else
+            {
+                uint64_t mask;
+                MaskRecieveQueue->Pop(mask);
+                dataWrite_->Recipe_Header_Insert(tmpChunk.chunkID, mask);
+            }
+
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;
         }

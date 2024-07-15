@@ -13,7 +13,7 @@ enum ChunkTypeNum
     FASTCDC,
     GEARCDC,
     TAR,
-    TAR_SEGMENT
+    TAR_MultiHeader
 };
 
 class Chunker
@@ -33,6 +33,7 @@ private:
     uint32_t bits;
     uint32_t maskS;
     uint32_t maskL;
+    uint64_t HeaderCp = 0;
     // fixed Size Chunking
     uint64_t FixedChunkSize;
 
@@ -50,6 +51,7 @@ private:
 
     // messageQueue
     MessageQueue<Chunk_t> *outputMQ_;
+    MessageQueue<uint64_t> *MaskoutputMQ_;
 
 public:
     Chunker(int chunkType_);
@@ -64,6 +66,11 @@ public:
         outputMQ_ = outputMQ;
         return;
     }
+    void SetOutputMaskMQ(MessageQueue<uint64_t> *outputMQ)
+    {
+        MaskoutputMQ_ = outputMQ;
+        return;
+    }
 
     uint32_t GenerateFastCDCMask(uint32_t bits);
     inline uint32_t CompareLimit(uint32_t input, uint32_t lower, uint32_t upper);
@@ -74,12 +81,13 @@ public:
     uint32_t CutPointFastCDC(const uint8_t *src, const uint32_t len);
     uint32_t CutPointGear(const uint8_t *src, const uint32_t len);
     uint32_t CutPointTarFast(const uint8_t *src, const uint32_t len);
+    uint32_t CutPointTarHeader(const uint8_t *src, const uint32_t len);
 
-    uint32_t CutPointTarSegment();
     // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it
 
     int Next_Chunk_Type = FILE_HEADER;
     int localType = FILE_HEADER;
+    size_t localOffset = 0;
     uint64_t Next_Chunk_Size = 0;
     uint64_t Big_Chunk_Allowance = 0; // CutPointTar
     uint64_t Big_Chunk_Last_Size = 0; // CutPointTar

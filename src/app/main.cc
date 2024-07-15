@@ -100,6 +100,14 @@ int main(int argc, char **argv)
     absMethodObj->SetInputMQ(chunkerMQ);
     absMethodObj->dataWrite_ = new dataWrite();
 
+    // new design
+    if (chunkingType == TAR_MultiHeader)
+    {
+        MessageQueue<uint64_t> *MaskMQ = new MessageQueue<uint64_t>(CHUNK_QUEUE_SIZE);
+        chunkerObj->SetOutputMaskMQ(MaskMQ);
+        absMethodObj->SetInputMaskMQ(MaskMQ);
+    }
+
     auto start = std::chrono::high_resolution_clock::now();
     for (auto i = 0; i < backupNum; i++)
     {
@@ -131,11 +139,13 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
 
     // restore backup if you need, but it's not necessary
-    for (auto i = 0; i < backupNum; i++)
-    {
-        absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-        absMethodObj->dataWrite_->restoreFile(readfileList[i]);
-    }
+    if (chunkingType != TAR_MultiHeader)
+        for (auto i = 0; i < backupNum; i++)
+        {
+            absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+            absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+        }
+
     delete absMethodObj->dataWrite_;
     delete chunkerObj;
     delete absMethodObj;

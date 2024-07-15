@@ -40,7 +40,8 @@ private:
     //  unordered_map<uint32_t, vector<int>> ObjectIndex;
     // unordered_map<string, vector<int>> ObjectIndex;
     vector<Chunk_t> recipelist;
-    unordered_map<string, vector<Chunk_t>> RecipeMap;
+    unordered_map<string, vector<Recipe_t>> RecipeMap;
+    unordered_map<string, vector<Recipe_Header_t>> RecipeMap_header;
     // unordered_map<string, vector<int>> *SFindex;
     //  static Container_t curContainer;
     ReadCache *containerCache;
@@ -78,6 +79,7 @@ public:
     // int Obj_Find(string objid);
     // bool Obj_Insert(string objid, int chunkid);
     bool Recipe_Insert(Chunk_t &info);
+    bool Recipe_Header_Insert(uint64_t chunkID, uint64_t mask);
     void restoreFile(string fileName);
     // bool SF_Insert(const char *key, size_t keySize, int chunkid);
     // bool SF_Insert_Adjacency(const char *key, size_t keySize, int chunkid);
