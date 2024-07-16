@@ -14,6 +14,7 @@ Chunker::~Chunker()
 {
     free(readFileBuffer);
     free(chunkBuffer);
+
     if (chunkType == TAR_MultiHeader)
         free(headerBuffer);
 }
@@ -46,6 +47,8 @@ void Chunker::ChunkerInit()
         chunkBuffer = (uint8_t *)malloc(FixedChunkSize);
         break;
     }
+    case MTAR:
+
     case FASTCDC: // FastCDC chunking
     {
         readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
@@ -490,4 +493,115 @@ uint32_t Chunker::CutPointTarHeader(const uint8_t *src, const uint32_t len)
     // cout << "HeaderCp is " << HeaderCp << endl;
     // cout << "DataCp is " << DataCp << endl;
     return cpSum;
+}
+
+void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
+{
+
+    for (int i = 0; i < backupNum; i++)
+    {
+        string name;
+        size_t pos = readfileList[i].find_last_of('/');
+        if (pos != std::string::npos)
+        {
+            name = readfileList[i].substr(pos + 1);
+        }
+        else
+        {
+            name = readfileList[i];
+        }
+        string writePath = "./mTarFile/" + name + ".m";
+        cout << "write path is " << writePath << endl;
+        // stream set
+        ifstream inFile(readfileList[i]);
+        ofstream outFile(writePath);
+
+        // data chunk rewrite
+        bool end = false;
+        uint32_t totalOffset = 0;
+        while (!end)
+        {
+            memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
+            inFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE);
+            end = inFile.eof();
+            size_t len = inFile.gcount();
+            if (len == 0)
+            {
+                break;
+            }
+            localOffset = 0;
+            while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
+            {
+                // cout << " len is " << len << " localOffset is " << localOffset << endl;
+                // compute cutPoint
+                localType = Next_Chunk_Type;
+                uint32_t cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
+                if (cp == 0)
+                {
+                    continue;
+                }
+                if (localType != FILE_HEADER)
+                {
+                    outFile.write((char *)readFileBuffer + localOffset, cp);
+                }
+
+                localOffset += cp;
+            }
+            totalOffset += localOffset;
+            inFile.seekg(totalOffset, ios_base::beg);
+        }
+        // reset
+        localType = FILE_HEADER;
+        Next_Chunk_Type = FILE_HEADER;
+        ifstream inHeaderFile(readfileList[i]);
+        // header chunk rewrite
+        inHeaderFile.seekg(0, ios_base::beg);
+        end = false;
+        totalOffset = 0;
+        while (!end)
+        {
+            memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
+            inHeaderFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE);
+            end = inHeaderFile.eof();
+            size_t len = inHeaderFile.gcount();
+            if (len == 0)
+            {
+                break;
+            }
+            localOffset = 0;
+            while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
+            {
+                // cout << " len is " << len << " localOffset is " << localOffset << endl;
+                // compute cutPoint
+                localType = Next_Chunk_Type;
+                uint32_t cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
+                if (cp == 0)
+                {
+                    continue;
+                }
+                if (localType == FILE_HEADER)
+                {
+                    outFile.write((char *)readFileBuffer + localOffset, cp);
+                }
+
+                localOffset += cp;
+            }
+            totalOffset += localOffset;
+            inHeaderFile.seekg(totalOffset, ios_base::beg);
+        }
+
+        // reset
+        localType = FILE_HEADER;
+        Next_Chunk_Type = FILE_HEADER;
+        inFile.close();
+        inHeaderFile.close();
+        outFile.close();
+        // mtar overwrite the readfileList
+        readfileList[i] = writePath;
+    }
+    // reset
+    chunkType = FASTCDC;
+    localType = FILE_HEADER;
+    Next_Chunk_Type = FILE_HEADER;
+    return;
 }

@@ -13,7 +13,8 @@ enum ChunkTypeNum
     FASTCDC,
     GEARCDC,
     TAR,
-    TAR_MultiHeader
+    TAR_MultiHeader,
+    MTAR
 };
 
 class Chunker
@@ -82,6 +83,7 @@ public:
     uint32_t CutPointGear(const uint8_t *src, const uint32_t len);
     uint32_t CutPointTarFast(const uint8_t *src, const uint32_t len);
     uint32_t CutPointTarHeader(const uint8_t *src, const uint32_t len);
+    void MTar(vector<string> &readfileList, uint32_t backupNum);
 
     // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it
 

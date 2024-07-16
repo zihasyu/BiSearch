@@ -47,10 +47,21 @@ cd ./bin
 rm *.txt
 mkdir -p Containers
 mkdir -p restoreFile
-
+mkdir -p mTarFile
 # Check if "./bin/Containers" directory exists and clear its content
 if [ -d "Containers" ]; then
     echo "clean the Containers directory"
     rm -rf Containers/*
     echo "Done!"
 fi
+
+if [ -d "restoreFile" ]; then
+    echo "clean the Containers directory"
+    rm -rf restoreFile/*
+    echo "Done!"
+fi
+# if [ -d "mTarFile" ]; then
+#     echo "clean the Containers directory"
+#     rm -rf mTarFile/*
+#     echo "Done!"
+# fi

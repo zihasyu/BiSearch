@@ -108,6 +108,12 @@ int main(int argc, char **argv)
         absMethodObj->SetInputMaskMQ(MaskMQ);
     }
 
+    if (chunkingType == MTAR)
+    {
+
+        chunkerObj->MTar(readfileList, backupNum);
+    }
+
     auto start = std::chrono::high_resolution_clock::now();
     for (auto i = 0; i < backupNum; i++)
     {

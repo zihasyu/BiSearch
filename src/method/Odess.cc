@@ -129,6 +129,9 @@ void Odess::ProcessTrace()
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
+    cout << "logicalchunkSize is " << logicalchunkSize << endl;
+    cout << "uniquechunkSize is " << uniquechunkSize << endl;
+    cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
     recieveQueue->done_ = false;
     return;
 }
