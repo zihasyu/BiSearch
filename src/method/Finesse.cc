@@ -6,13 +6,18 @@ Finesse::Finesse()
     mdCtx = EVP_MD_CTX_new();
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
     deltaMaxChunkBuffer = (uint8_t *)malloc(2 * CONTAINER_MAX_SIZE * sizeof(uint8_t));
+    tmpChunkSF = (uint8_t *)malloc(FINESSE_SF_NUM * CHUNK_HASH_SIZE);
+    SFindex = new unordered_map<string, vector<int>>[FINESSE_SF_NUM];
 }
 
 Finesse::~Finesse()
 {
     free(lz4ChunkBuffer);
-    free(deltaMaxChunkBuffer);
     EVP_MD_CTX_free(mdCtx);
+    free(hashBuf);
+    free(deltaMaxChunkBuffer);
+    free(tmpChunkSF);
+    delete[] SFindex;
 }
 
 void Finesse::ProcessTrace()
@@ -45,8 +50,7 @@ void Finesse::ProcessTrace()
                 tmpChunk.chunkID = uniquechunkNum;
                 tmpChunk.deltaFlag = NO_DELTA;
                 FP_Insert(hashStr, tmpChunk.chunkID);
-                uint8_t *tmpChunkSF;
-                tmpChunkSF = (uint8_t *)malloc(FINESSE_SF_NUM * CHUNK_HASH_SIZE);
+
                 // find basechunk
                 startTime = std::chrono::high_resolution_clock::now();
                 GetSF(tmpChunk.chunkPtr, mdCtx, tmpChunkSF, tmpChunk.chunkSize);
@@ -109,14 +113,14 @@ void Finesse::ProcessTrace()
                         deltachunkSize += tmpChunk.saveSize;
                         free(deltachunk);
                     }
-                    dataWrite_->Chunk_Insert(tmpChunk);
+
                     // free outside of Get_Chunk_Info
                     if (basechunkinfo.loadFromDisk)
                         free(basechunkinfo.chunkPtr);
                 }
+                dataWrite_->Chunk_Insert(tmpChunk);
                 uniquechunkNum++;
                 uniquechunkSize += tmpChunk.saveSize;
-                free(tmpChunkSF);
             }
             else
             {

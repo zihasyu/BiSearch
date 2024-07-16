@@ -11,10 +11,10 @@ Odess::Odess()
 
 Odess::~Odess()
 {
-    cout << " FP size is " << sizeof(FPindex) << " Chunk_t is " << sizeof(Chunk_t) << " <super_feature_t, unordered_set<string>> is " << sizeof(unordered_map<super_feature_t, unordered_set<string>>);
     free(lz4ChunkBuffer);
     free(deltaMaxChunkBuffer);
     EVP_MD_CTX_free(mdCtx);
+    free(hashBuf);
 }
 
 void Odess::ProcessTrace()

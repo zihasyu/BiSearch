@@ -11,6 +11,7 @@ private:
     string myName_ = "Finesse";
 
 public:
+    uint8_t *tmpChunkSF;
     Finesse();
     ~Finesse();
     void ProcessTrace();
