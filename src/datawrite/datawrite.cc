@@ -201,8 +201,8 @@ void dataWrite::restoreFile(string fileName)
             auto baseChunkInfo = Get_Chunk_Info(tmpChunkInfo.basechunkID);
             uint64_t recSize = 0;
             auto chunk_ptr = xd3_decode(tmpChunkInfo.chunkPtr, tmpChunkInfo.saveSize, baseChunkInfo.chunkPtr, baseChunkInfo.chunkSize, &recSize);
-            cout << "rec size is " << recSize << endl;
-            // memcpy(tmpChunkInfo.chunkptr, chunk_ptr, recSize);
+            // cout << "rec size is " << recSize << endl;
+            //  memcpy(tmpChunkInfo.chunkptr, chunk_ptr, recSize);
             outFile.write((char *)chunk_ptr, tmpChunkInfo.chunkSize);
 
             if (baseChunkInfo.loadFromDisk)
