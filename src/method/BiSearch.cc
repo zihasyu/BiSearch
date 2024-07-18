@@ -360,13 +360,9 @@ void BiSearch::ProcessTrace()
                 DedupReductSize += tmpChunk.chunkSize;
             }
             if (tmpChunk.HeaderFlag == 0)
-                dataWrite_->Recipe_Insert(tmpChunk);
+                dataWrite_->Recipe_Insert(tmpChunk.chunkID);
             else
-            {
-                uint64_t mask;
-                MaskRecieveQueue->Pop(mask);
-                dataWrite_->Recipe_Header_Insert(tmpChunk.chunkID, mask);
-            }
+                dataWrite_->Recipe_Header_Insert(tmpChunk.chunkID);
 
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;

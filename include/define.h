@@ -29,6 +29,7 @@
 #define MASK_GEAR 0x1fff
 #define MASK_GEAR_BIG 0x1fff
 #define MultiHeaderSize 8192
+#define HeaderSize 512
 static const uint32_t MAX_CHUNK_SIZE = 16384;
 static const uint32_t CHUNK_QUEUE_SIZE = 8192;
 static const uint32_t THREAD_STACK_SIZE = 8 * 1024 * 1024;

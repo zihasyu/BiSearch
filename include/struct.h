@@ -46,10 +46,6 @@ typedef struct
 
 typedef uint64_t Recipe_t;
 
-typedef struct
-{
-    uint64_t chunkId;
-    uint64_t mask;
-} Recipe_Header_t;
+typedef uint64_t Recipe_Header_t;
 
 #endif

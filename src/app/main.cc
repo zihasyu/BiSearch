@@ -101,12 +101,12 @@ int main(int argc, char **argv)
     absMethodObj->dataWrite_ = new dataWrite();
 
     // new design
-    if (chunkingType == TAR_MultiHeader)
-    {
-        MessageQueue<uint64_t> *MaskMQ = new MessageQueue<uint64_t>(CHUNK_QUEUE_SIZE);
-        chunkerObj->SetOutputMaskMQ(MaskMQ);
-        absMethodObj->SetInputMaskMQ(MaskMQ);
-    }
+    // if (chunkingType == TAR_MultiHeader)
+    // {
+    //     MessageQueue<uint64_t> *MaskMQ = new MessageQueue<uint64_t>(CHUNK_QUEUE_SIZE);
+    //     chunkerObj->SetOutputMaskMQ(MaskMQ);
+    //     absMethodObj->SetInputMaskMQ(MaskMQ);
+    // }
 
     if (chunkingType == MTAR)
     {
@@ -150,6 +150,12 @@ int main(int argc, char **argv)
         {
             absMethodObj->dataWrite_->SetFilename(readfileList[i]);
             absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+        }
+    else
+        for (auto i = 0; i < backupNum; i++)
+        {
+            absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+            absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
         }
 
     delete absMethodObj->dataWrite_;

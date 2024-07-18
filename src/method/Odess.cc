@@ -124,7 +124,10 @@ void Odess::ProcessTrace()
                 DedupGap = 0;
                 DedupReductSize += tmpChunk.chunkSize;
             }
-            dataWrite_->Recipe_Insert(tmpChunk);
+            if (tmpChunk.HeaderFlag == 0)
+                dataWrite_->Recipe_Insert(tmpChunk.chunkID);
+            else
+                dataWrite_->Recipe_Header_Insert(tmpChunk.chunkID);
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;
         }

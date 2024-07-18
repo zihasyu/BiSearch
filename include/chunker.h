@@ -52,7 +52,7 @@ private:
 
     // messageQueue
     MessageQueue<Chunk_t> *outputMQ_;
-    MessageQueue<uint64_t> *MaskoutputMQ_;
+    // MessageQueue<uint64_t> *MaskoutputMQ_;
 
 public:
     Chunker(int chunkType_);
@@ -67,11 +67,11 @@ public:
         outputMQ_ = outputMQ;
         return;
     }
-    void SetOutputMaskMQ(MessageQueue<uint64_t> *outputMQ)
-    {
-        MaskoutputMQ_ = outputMQ;
-        return;
-    }
+    // void SetOutputMaskMQ(MessageQueue<uint64_t> *outputMQ)
+    // {
+    //     MaskoutputMQ_ = outputMQ;
+    //     return;
+    // }
 
     uint32_t GenerateFastCDCMask(uint32_t bits);
     inline uint32_t CompareLimit(uint32_t input, uint32_t lower, uint32_t upper);

@@ -3,17 +3,20 @@
 dataWrite::dataWrite()
 {
     // MQ = new MessageQueue<Container_t>(32);
+    MultiHeaderBuffer = (uint8_t *)malloc(16 * 512);
     curContainer.size = 0;
     curContainer.containerID = 0;
     curContainer.chunkNum = 0;
     containerCache = new ReadCache();
+    // restore
+    normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
+    bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
+    maskS = GenerateFastCDCMask(bits + 1);
+    maskL = GenerateFastCDCMask(bits - 1);
 }
 dataWrite::~dataWrite()
 {
-    // for (int i = 0; i < chunkNum; i++)
-    // {
-    //     free(chunklist[i].chunkPtr);
-    // }
+    free(MultiHeaderBuffer);
     delete containerCache;
 }
 void dataWrite::PrintBinaryArray(const uint8_t *buffer, size_t buffer_size)
@@ -168,6 +171,138 @@ bool dataWrite::Chunk_Insert(Chunk_t chunk)
     chunklist.push_back(chunk);
     // cout << "chunkset entry id is  " << chunklist[chunk.chunkid].chunkid << endl;
     return true;
+}
+void dataWrite::restoreHeaderFile(string fileName)
+{
+    string name;
+    size_t pos = fileName.find_last_of('/');
+    if (pos != std::string::npos)
+    {
+        name = fileName.substr(pos + 1);
+    }
+    else
+    {
+        name = fileName;
+    }
+    string writePath = "./restoreFile/" + name;
+    // cout << chunkSet_.size() << endl;
+    cout << "write path is " << writePath << endl;
+    ofstream outFile(writePath);
+
+    // but why i haven't to use C++
+    auto tmpHeaderRecipe = RecipeMap_header[fileName];
+    Recipe_Header_t *HeaderP = tmpHeaderRecipe.data();
+    Recipe_Header_t *HeaderEnd = tmpHeaderRecipe.data() + tmpHeaderRecipe.size();
+
+    auto tmpRecipe = RecipeMap[fileName];
+    Recipe_t *DataP = tmpRecipe.data();
+    Recipe_t *DataEnd = tmpRecipe.data() + tmpRecipe.size();
+
+    // HeaderP arrive the end &DataP arrive the end& HeaderBuffer is empty;
+    while (HeaderP != HeaderEnd || DataP != DataEnd || MultiHeaderChunkSize != MultiHeaderOffset)
+    {
+        // Supplement MultiHeaderBuffer
+        if (MultiHeaderChunkSize == MultiHeaderOffset && HeaderP != HeaderEnd)
+        {
+            Chunk_t tmpChunkInfo = Get_Chunk_Info(*HeaderP++);
+            // reset MultiHeaderSize and offset
+            MultiHeaderChunkSize = tmpChunkInfo.chunkSize;
+            MultiHeaderOffset = 0;
+            if (tmpChunkInfo.deltaFlag == NO_DELTA)
+            {
+                memcpy(MultiHeaderBuffer, tmpChunkInfo.chunkPtr, tmpChunkInfo.chunkSize);
+            }
+            else
+            {
+                auto baseChunkInfo = Get_Chunk_Info(tmpChunkInfo.basechunkID);
+                uint64_t recSize = 0;
+                auto chunk_ptr = xd3_decode(tmpChunkInfo.chunkPtr, tmpChunkInfo.saveSize, baseChunkInfo.chunkPtr, baseChunkInfo.chunkSize, &recSize);
+                memcpy(MultiHeaderBuffer, chunk_ptr, tmpChunkInfo.chunkSize);
+
+                if (baseChunkInfo.loadFromDisk)
+                    free(baseChunkInfo.chunkPtr);
+                if (chunk_ptr != nullptr)
+                {
+                    free(chunk_ptr);
+                    chunk_ptr = nullptr;
+                }
+            }
+            if (tmpChunkInfo.loadFromDisk)
+                free(tmpChunkInfo.chunkPtr);
+        }
+
+        Next_Chunk_Type = FILE_HEADER;
+        uint64_t cp = CutPointTarFast(MultiHeaderBuffer + MultiHeaderOffset, MultiHeaderChunkSize - MultiHeaderOffset);
+        // change Next_Chunk_Type and Next_Chunk_Size
+
+        outFile.write((char *)MultiHeaderBuffer + MultiHeaderOffset, HeaderSize);
+        MultiHeaderOffset += HeaderSize;
+        if (Next_Chunk_Size == 0)
+            continue;
+        if (Next_Chunk_Type == FILE_CHUNK && DataP != DataEnd)
+        {
+            Chunk_t tmpChunkInfo = Get_Chunk_Info(*DataP++);
+            if (Next_Chunk_Size - tmpChunkInfo.chunkSize >= 512)
+            {
+                cout << " chunkSize is " << tmpChunkInfo.chunkSize << " Next_Chunk_Size is " << Next_Chunk_Size << endl;
+            }
+            if (tmpChunkInfo.deltaFlag == NO_DELTA)
+            {
+                outFile.write((char *)tmpChunkInfo.chunkPtr, tmpChunkInfo.chunkSize);
+            }
+            else
+            {
+                auto baseChunkInfo = Get_Chunk_Info(tmpChunkInfo.basechunkID);
+                uint64_t recSize = 0;
+                auto chunk_ptr = xd3_decode(tmpChunkInfo.chunkPtr, tmpChunkInfo.saveSize, baseChunkInfo.chunkPtr, baseChunkInfo.chunkSize, &recSize);
+                outFile.write((char *)chunk_ptr, tmpChunkInfo.chunkSize);
+
+                if (baseChunkInfo.loadFromDisk)
+                    free(baseChunkInfo.chunkPtr);
+                if (chunk_ptr != nullptr)
+                {
+                    free(chunk_ptr);
+                    chunk_ptr = nullptr;
+                }
+            }
+            if (tmpChunkInfo.loadFromDisk)
+                free(tmpChunkInfo.chunkPtr);
+        }
+
+        if (Next_Chunk_Type == BIG_CHUNK && DataP != DataEnd)
+        {
+            uint64_t BigChunkSize = Big_Chunk_Size;
+            while (BigChunkSize)
+            {
+                Chunk_t tmpChunkInfo = Get_Chunk_Info(*DataP++);
+                if (tmpChunkInfo.deltaFlag == NO_DELTA)
+                {
+                    outFile.write((char *)tmpChunkInfo.chunkPtr, tmpChunkInfo.chunkSize);
+                }
+                else
+                {
+                    auto baseChunkInfo = Get_Chunk_Info(tmpChunkInfo.basechunkID);
+                    uint64_t recSize = 0;
+                    auto chunk_ptr = xd3_decode(tmpChunkInfo.chunkPtr, tmpChunkInfo.saveSize, baseChunkInfo.chunkPtr, baseChunkInfo.chunkSize, &recSize);
+                    outFile.write((char *)chunk_ptr, tmpChunkInfo.chunkSize);
+
+                    if (baseChunkInfo.loadFromDisk)
+                        free(baseChunkInfo.chunkPtr);
+                    if (chunk_ptr != nullptr)
+                    {
+                        free(chunk_ptr);
+                        chunk_ptr = nullptr;
+                    }
+                }
+                BigChunkSize -= tmpChunkInfo.chunkSize;
+                if (tmpChunkInfo.loadFromDisk)
+                    free(tmpChunkInfo.chunkPtr);
+            }
+        }
+    }
+    Next_Chunk_Type = FILE_HEADER;
+    outFile.close();
+    return;
 }
 
 void dataWrite::restoreFile(string fileName)
@@ -330,27 +465,15 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
 //     return true;
 // }
 
-bool dataWrite::Recipe_Insert(Chunk_t &info)
+bool dataWrite::Recipe_Insert(uint64_t chunkID)
 {
-    // if (info.HeaderFlag == 0)
-    //     RecipeMap[filename].push_back(info.chunkID);
-    // else
-    // {
-    //     Recipe_Header_t tmpHeader;
-    //     tmpHeader.chunkId = info.chunkID;
-    //     tmpHeader.mask = info.saveSize;
-    //     RecipeMap_header[filename].push_back(tmpHeader);
-    // }
-    RecipeMap[filename].push_back(info.chunkID);
+    RecipeMap[filename].push_back(chunkID);
     return true;
 }
 
-bool dataWrite::Recipe_Header_Insert(uint64_t chunkID, uint64_t mask)
+bool dataWrite::Recipe_Header_Insert(uint64_t chunkID)
 {
-    Recipe_Header_t tmpHeader;
-    tmpHeader.chunkId = chunkID;
-    tmpHeader.mask = mask;
-    RecipeMap_header[filename].push_back(tmpHeader);
+    RecipeMap_header[filename].push_back(chunkID);
     return true;
 }
 
@@ -724,6 +847,191 @@ uint8_t *dataWrite::xd3_decode(const uint8_t *in, size_t in_size, const uint8_t 
     // printf("buffer后\n");
     return res;
 }
+uint32_t dataWrite::CutPointTarFast(const uint8_t *src, const uint32_t len)
+{
+    switch (Next_Chunk_Type)
+    {
+    case FILE_HEADER:
+    {
+        uint8_t data[12];
+        std::memcpy(data, src + 124, 12);
+
+        Next_Chunk_Size = 0;
+        for (int i = 0; i < 11; i++)
+        {
+            Next_Chunk_Size = Next_Chunk_Size * 8 + data[i] - 48;
+        }
+        if (*(src + 156) == REGTYPE)
+        {
+            if (Next_Chunk_Size <= CONTAINER_MAX_SIZE)
+                Next_Chunk_Type = FILE_CHUNK;
+            else
+            {
+                Next_Chunk_Type = BIG_CHUNK;
+                Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
+                Big_Chunk_Offset = 0;
+                // Big_Chunk_Allowance = Next_Chunk_Size / CONTAINER_MAX_SIZE;
+                // Big_Chunk_Last_Size = Next_Chunk_Size % CONTAINER_MAX_SIZE;
+                // if (Big_Chunk_Last_Size == 0)
+                // {
+                //     Big_Chunk_Allowance--;
+                //     Big_Chunk_Last_Size = CONTAINER_MAX_SIZE;
+                // }
+            }
+        }
+        if (*(src + 156) == AREGTYPE)
+        {
+            Next_Chunk_Size = 0;
+            for (int i = 0; i < 11; i++)
+            {
+                Next_Chunk_Size = Next_Chunk_Size * 8 + data[i];
+            }
+            if (Next_Chunk_Size <= CONTAINER_MAX_SIZE)
+                Next_Chunk_Type = FILE_CHUNK;
+            else
+            {
+                Next_Chunk_Type = BIG_CHUNK;
+                Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
+                Big_Chunk_Offset = 0;
+                // Big_Chunk_Allowance = Next_Chunk_Size / CONTAINER_MAX_SIZE;
+                // Big_Chunk_Last_Size = Next_Chunk_Size % CONTAINER_MAX_SIZE;
+                // if (Big_Chunk_Last_Size == 0)
+                // {
+                //     Big_Chunk_Allowance--;
+                //     Big_Chunk_Last_Size = CONTAINER_MAX_SIZE;
+                // }
+            }
+        }
+        if (*(src + 156) == 'x' || *(src + 156) == GNUTYPE_LONGNAME)
+            Next_Chunk_Type = FILE_CHUNK;
+        /*use to debug*/
+        // cout<<"Next_Chunk_Flag: " <<int(*(src + 156));
+        // cout<<"Next_Chunk_Type: " <<Next_Chunk_Type;
+        // cout<<"Next_Chunk_Size: "<<Next_Chunk_Size<<endl;
+        // if(int(*(src + 156)) == 32||int(*(src + 156)) == 0){
+        //     for(int i=0;i<512;i++)
+        //     cout<<src[i]<<" ";
+        //     cout<<endl;
+        // }
+
+        if (len >= 512)
+            return 512;
+        else
+        {
+            // printf("emmmm");
+            return len;
+        }
+        break;
+    }
+    case FILE_CHUNK:
+    {
+        uint32_t roundedUp = (Next_Chunk_Size + 511) / 512 * 512;
+        Next_Chunk_Type = FILE_HEADER;
+        Next_Chunk_Size = 512;
+        if (roundedUp < len)
+            return roundedUp;
+        else
+            return len;
+        break;
+    }
+    case BIG_CHUNK:
+    {
+        if (Big_Chunk_Size - Big_Chunk_Offset > maxChunkSize)
+        {
+            // Big_Chunk_Allowance--;
+            // cout << " BigChunkSize is " << Big_Chunk_Size << " BigChunkOffset is" << Big_Chunk_Offset << endl;
+            uint32_t cp = CutPointFastCDC(src,
+                                          Big_Chunk_Size - Big_Chunk_Offset);
+            Big_Chunk_Offset += cp;
+            // cout << "offset is " << Big_Chunk_Offset << " cp is " << cp << endl;
+            return cp;
+            // return CONTAINER_MAX_SIZE;
+        }
+        else
+        {
+            Next_Chunk_Type = FILE_HEADER;
+            return Big_Chunk_Size - Big_Chunk_Offset;
+        }
+        break;
+    }
+    }
+}
+
+uint32_t dataWrite::CutPointFastCDC(const uint8_t *src, const uint32_t len)
+{
+    uint32_t n;
+    uint32_t fp = 0;
+    uint32_t i;
+    i = min(len, static_cast<uint32_t>(minChunkSize));
+    n = min(normalSize, len);
+    for (; i < n; i++)
+    {
+        fp = (fp >> 1) + GEAR[src[i]];
+        if (!(fp & maskS))
+        {
+            return (i + 1);
+        }
+    }
+
+    n = min(static_cast<uint32_t>(maxChunkSize), len);
+    for (; i < n; i++)
+    {
+        fp = (fp >> 1) + GEAR[src[i]];
+        if (!(fp & maskL))
+        {
+            return (i + 1);
+        }
+    }
+    return i;
+};
+uint32_t dataWrite::CalNormalSize(const uint32_t min, const uint32_t av, const uint32_t max)
+{
+    uint32_t off = min + DivCeil(min, 2);
+    if (off > av)
+    {
+        off = av;
+    }
+    uint32_t diff = av - off;
+    if (diff > max)
+    {
+        return max;
+    }
+    return diff;
+}
+inline uint32_t dataWrite::DivCeil(uint32_t a, uint32_t b)
+{
+    uint32_t tmp = a / b;
+    if (a % b == 0)
+    {
+        return tmp;
+    }
+    else
+    {
+        return (tmp + 1);
+    }
+}
+uint32_t dataWrite::GenerateFastCDCMask(uint32_t bits)
+{
+    uint32_t tmp;
+    tmp = (1 << CompareLimit(bits, 1, 31)) - 1;
+    return tmp;
+}
+inline uint32_t dataWrite::CompareLimit(uint32_t input, uint32_t lower, uint32_t upper)
+{
+    if (input <= lower)
+    {
+        return lower;
+    }
+    else if (input >= upper)
+    {
+        return upper;
+    }
+    else
+    {
+        return input;
+    }
+}
+
 void dataWrite::SetFilename(string name)
 {
     filename.assign(name);

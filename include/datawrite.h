@@ -52,6 +52,25 @@ private:
     std::chrono::time_point<std::chrono::high_resolution_clock> startTime, endTime;
     std::chrono::time_point<std::chrono::high_resolution_clock> startTime2, endTime2;
 
+    int Next_Chunk_Type = FILE_HEADER;
+    int localType = FILE_HEADER;
+    uint8_t *MultiHeaderBuffer;
+    uint64_t MultiHeaderChunkSize = 0;
+    uint64_t MultiHeaderOffset = 0;
+    size_t localOffset = 0;
+    uint64_t Next_Chunk_Size = 0;
+    uint64_t Big_Chunk_Allowance = 0; // CutPointTar
+    uint64_t Big_Chunk_Last_Size = 0; // CutPointTar
+    uint64_t Big_Chunk_Size = 0;      // CutPointTarFast
+    uint64_t Big_Chunk_Offset = 0;    // CutPointTarFast
+    uint32_t minChunkSize = 4096;
+    uint32_t avgChunkSize = 8192;
+    uint32_t maxChunkSize = 16384;
+    uint32_t normalSize;
+    uint32_t bits;
+    uint32_t maskS;
+    uint32_t maskL;
+
 public:
     void SetFilename(string name);
     vector<Chunk_t> chunklist;
@@ -78,9 +97,10 @@ public:
     //  bool Obj_Insert(uint32_t objid, int chunkid);
     // int Obj_Find(string objid);
     // bool Obj_Insert(string objid, int chunkid);
-    bool Recipe_Insert(Chunk_t &info);
-    bool Recipe_Header_Insert(uint64_t chunkID, uint64_t mask);
+    bool Recipe_Insert(uint64_t chunkID);
+    bool Recipe_Header_Insert(uint64_t chunkID);
     void restoreFile(string fileName);
+    void restoreHeaderFile(string fileName);
     // bool SF_Insert(const char *key, size_t keySize, int chunkid);
     // bool SF_Insert_Adjacency(const char *key, size_t keySize, int chunkid);
     // int SF_Find(const char *key, size_t keySize);
@@ -97,6 +117,12 @@ public:
     bool isLz4(int id);
     bool isDuplicate(int id);
     uint8_t *xd3_decode(const uint8_t *in, size_t in_size, const uint8_t *ref, size_t ref_size, size_t *res_size);
+    uint32_t CutPointTarFast(const uint8_t *src, const uint32_t len);
+    uint32_t CutPointFastCDC(const uint8_t *src, const uint32_t len);
+    uint32_t CalNormalSize(const uint32_t min, const uint32_t av, const uint32_t max);
+    inline uint32_t DivCeil(uint32_t a, uint32_t b);
+    uint32_t GenerateFastCDCMask(uint32_t bits);
+    inline uint32_t CompareLimit(uint32_t input, uint32_t lower, uint32_t upper);
 
     Chunk_t Get_Chunk_MetaInfo(int id);
     void PrintMetrics();

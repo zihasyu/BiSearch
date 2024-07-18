@@ -79,6 +79,7 @@ void Chunker::ChunkerInit()
     {
         readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
         headerBuffer = (uint8_t *)malloc(512 * 32);
+        chunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE); // 4MB
         // dataBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * 16); // 64MB
         normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
         bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
@@ -430,11 +431,11 @@ uint32_t Chunker::CutPointTarHeader(const uint8_t *src, const uint32_t len)
             loopTime *= 2;
         }
         // input recipe MQ
-        if (!MaskoutputMQ_->Push(blockTypeMask))
-        {
-            tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-            exit(EXIT_FAILURE);
-        }
+        // if (!MaskoutputMQ_->Push(blockTypeMask))
+        // {
+        //     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+        //     exit(EXIT_FAILURE);
+        // }
         // multi header
         Chunk_t chunk;
         chunk.chunkPtr = (uint8_t *)malloc(HeaderCp);
