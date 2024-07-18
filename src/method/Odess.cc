@@ -7,6 +7,7 @@ Odess::Odess()
     mdCtx = EVP_MD_CTX_new();
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
     deltaMaxChunkBuffer = (uint8_t *)malloc(2 * CONTAINER_MAX_SIZE * sizeof(uint8_t));
+    SFindex = new unordered_map<string, vector<int>>[FINESSE_SF_NUM];
 }
 
 Odess::~Odess()
