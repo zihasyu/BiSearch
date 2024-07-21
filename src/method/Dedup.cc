@@ -45,8 +45,18 @@ void Dedup::ProcessTrace()
                 if (lz4Size <= 0)
                 {
                     cout << "lz4 compress error" << endl;
+                    tmpChunk.deltaFlag = NO_LZ4;
                     lz4Size = tmpChunk.chunkSize;
                 }
+                //***compare diff ***/
+                // uint8_t *lz4SafeChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
+                // int decompressedSize = LZ4_decompress_safe((char *)lz4ChunkBuffer, (char *)lz4SafeChunkBuffer, lz4Size, CONTAINER_MAX_SIZE);
+                // if (decompressedSize != tmpChunk.chunkSize)
+                //     cout << "decompress error" << endl;
+
+                // cout << "cmp is " << std::memcmp(tmpChunk.chunkPtr, lz4SafeChunkBuffer, tmpChunk.chunkSize) << endl;
+
+                // free(lz4SafeChunkBuffer);
                 tmpChunk.saveSize = lz4Size;
                 FP_Insert(hashStr, tmpChunk.chunkID);
                 // /cout << tmpChunkContent << endl;
@@ -63,8 +73,10 @@ void Dedup::ProcessTrace()
                 }
                 tmpChunk.offset = ContainerSize;
                 ContainerSize += tmpChunk.chunkSize;
-                dataWrite_->Chunk_Insert(tmpChunk);
-
+                if (tmpChunk.deltaFlag == NO_LZ4)
+                    dataWrite_->Chunk_Insert(tmpChunk);
+                else
+                    dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                 basechunkNum++;
                 basechunkSize += tmpChunk.saveSize;
                 uniquechunkNum++;

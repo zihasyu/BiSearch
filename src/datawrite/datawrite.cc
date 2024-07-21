@@ -13,11 +13,13 @@ dataWrite::dataWrite()
     bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
     maskS = GenerateFastCDCMask(bits + 1);
     maskL = GenerateFastCDCMask(bits - 1);
+    lz4SafeChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
 }
 dataWrite::~dataWrite()
 {
     free(MultiHeaderBuffer);
     delete containerCache;
+    free(lz4SafeChunkBuffer);
 }
 void dataWrite::PrintBinaryArray(const uint8_t *buffer, size_t buffer_size)
 {
@@ -119,7 +121,10 @@ bool dataWrite::Chunk_Insert(Chunk_t chunk)
     chunkNum++;
     containerSize += chunk.saveSize;
     curContainer.chunkNum++;
-
+    if (chunk.chunkID == 1149)
+    {
+        cout << "1149 is here and is delta" << endl;
+    }
     if (curContainer.size + tmpSize > CONTAINER_MAX_SIZE)
     {
         // TODO put into MQ
@@ -129,7 +134,7 @@ bool dataWrite::Chunk_Insert(Chunk_t chunk)
         // cout << "cur container size is " << curContainer.size << endl;
         // MQ->Push(curContainer);
         string fileName = "./Containers/" + to_string(curContainer.containerID);
-        ofstream outfile(fileName);
+        ofstream outfile(fileName, std::ios::binary);
         if (outfile.is_open())
         {
             // cout << "write id is " << tmpContainer.containerId << " size is " << tmpContainer.size << endl;
@@ -172,6 +177,84 @@ bool dataWrite::Chunk_Insert(Chunk_t chunk)
     // cout << "chunkset entry id is  " << chunklist[chunk.chunkid].chunkid << endl;
     return true;
 }
+// lz4 compress insert
+bool dataWrite::Chunk_Insert(Chunk_t chunk, uint8_t *lz4Buffer)
+{
+    int tmpSize = 0;
+    tmpSize = chunk.saveSize;
+    // cout << "flag is " << static_cast<int>(chunk.deltaFlag) << endl;
+    chunkNum++;
+    containerSize += chunk.saveSize;
+    curContainer.chunkNum++;
+
+    if (curContainer.size + tmpSize > CONTAINER_MAX_SIZE)
+    {
+        // TODO put into MQ
+        // cout << " curContainer.chunkNum is" << curContainer.chunkNum << " curContainer.containerId is " << curContainer.containerID << endl;
+        startTime = std::chrono::high_resolution_clock::now();
+        // cout << "push container " << containerNum << " into MQ" << endl;
+        // cout << "cur container size is " << curContainer.size << endl;
+        // MQ->Push(curContainer);
+        string fileName = "./Containers/" + to_string(curContainer.containerID);
+        ofstream outfile(fileName, std::ios::binary);
+        if (outfile.is_open())
+        {
+            // cout << "write id is " << tmpContainer.containerId << " size is " << tmpContainer.size << endl;
+            outfile.write(reinterpret_cast<const char *>(&curContainer.size), sizeof(curContainer.size));
+
+            outfile.write(reinterpret_cast<const char *>(curContainer.data), curContainer.size);
+            // outfile.write(reinterpret_cast<const char *>(&tmpContainer.size), sizeof(tmpContainer.size));
+            // outfile << tmpContainer.data;
+            outfile.close();
+            // cout << "write done" << endl;
+        }
+        else
+        {
+            cout << "open file failed" << endl;
+        }
+
+        // sleep(1);
+        containerNum++;
+        containerSize = 0;
+        curOffset = 0;
+        curContainer.size = 0;
+        curContainer.containerID = containerNum;
+        curContainer.chunkNum = 0;
+        endTime = std::chrono::high_resolution_clock::now();
+        writeIOTime += (endTime - startTime);
+    }
+    // TODO: put chunk into container
+    chunk.containerID = containerNum;
+    chunk.offset = curOffset;
+    // cout << " curContainer.size is " << curContainer.size << " tmpSize is " << tmpSize << " offset is " << curOffset << endl;
+    curContainer.size += tmpSize;
+    // cout<< "tmp size is " << tmpSize << " curoffset is " << curOffset<<endl;
+    // if (chunk.chunkID == 1149)
+    // {
+    //     cout << "1149 is here and is base" << endl;
+    //     tool::PrintBinaryArray(lz4Buffer, chunk.saveSize);
+    // }
+
+    memcpy(curContainer.data + curOffset, lz4Buffer, tmpSize);
+
+    // **compare diff**
+    // uint8_t *lz4SafeChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
+    // int decompressedSize = LZ4_decompress_safe((char *)curContainer.data + curOffset, (char *)lz4SafeChunkBuffer, tmpSize, CONTAINER_MAX_SIZE);
+    // if (decompressedSize != chunk.chunkSize)
+    //     cout << "decompress error" << endl;
+    // // cout << "cmp is " << std::memcmp(chunk.chunkPtr, lz4SafeChunkBuffer, chunk.chunkSize) << endl;
+    // free(lz4SafeChunkBuffer);
+
+    curOffset += tmpSize;
+    // cout << "free chunk " << endl;
+    free(chunk.chunkPtr);
+    // cout << "free chunk done" << endl;
+    chunk.chunkPtr = nullptr;
+    chunklist.push_back(chunk);
+    // cout << "chunkset entry id is  " << chunklist[chunk.chunkid].chunkid << endl;
+    return true;
+}
+
 void dataWrite::restoreHeaderFile(string fileName)
 {
     string name;
@@ -320,13 +403,13 @@ void dataWrite::restoreFile(string fileName)
     string writePath = "./restoreFile/" + name;
     // cout << chunkSet_.size() << endl;
     cout << "write path is " << writePath << endl;
-    ofstream outFile(writePath);
+    ofstream outFile(writePath, std::ios_base::binary);
 
     auto tmpRecipe = RecipeMap[fileName];
     for (auto recipe : tmpRecipe)
     {
         Chunk_t tmpChunkInfo = Get_Chunk_Info(recipe);
-        if (tmpChunkInfo.deltaFlag == NO_DELTA)
+        if (tmpChunkInfo.deltaFlag == NO_DELTA || tmpChunkInfo.deltaFlag == NO_LZ4)
         {
             outFile.write((char *)tmpChunkInfo.chunkPtr, tmpChunkInfo.chunkSize);
         }
@@ -390,24 +473,38 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
     if (cacheHitResult)
     {
 
+        chunklist[id].loadFromDisk = false;
         startTime = std::chrono::high_resolution_clock::now();
         string tmpContainer;
         tmpContainer.assign(CONTAINER_MAX_SIZE, 0);
         uint8_t *tmpContainerData = containerCache->ReadFromCache(tmpContainerIDcontainerID);
         // memcpy((uint8_t *)tmpContainer.c_str(), tmpContainerData, CONTAINER_MAX_SIZE);
         // memcpy(chunklist[id].chunkPtr, tmpContainer.c_str() + chunklist[id].offset, tmpSize);
-        chunklist[id].chunkPtr = tmpContainerData + chunklist[id].offset;
+        // chunklist[id].chunkPtr = tmpContainerData + chunklist[id].offset;
+
+        if (chunklist[id].deltaFlag != NO_DELTA)
+            chunklist[id].chunkPtr = tmpContainerData + chunklist[id].offset;
+        else
+        {
+            // base chunk & lz4 compress
+            int decompressedSize = LZ4_decompress_safe((char *)(tmpContainerData + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+            chunklist[id].chunkPtr = (uint8_t *)malloc(chunklist[id].chunkSize);
+            memcpy(chunklist[id].chunkPtr, lz4SafeChunkBuffer, tmpSize);
+            chunklist[id].loadFromDisk = true;
+        }
         // cout << "read from cache and size is " << chunklist[id].chunkSize << endl;
         //  memcpy(chunklist[id].chunkPtr, tmpContainerData + chunklist[id].offset, tmpSize);
         cacheHitTimes++;
         endTime = std::chrono::high_resolution_clock::now();
         readCacheTime += (endTime - startTime);
-        chunklist[id].loadFromDisk = false;
     }
     // TODO: if cache miss, read from file
     else if (chunklist[id].containerID != containerNum)
     {
-        chunklist[id].chunkPtr = (uint8_t *)malloc(tmpSize);
+        if (chunklist[id].deltaFlag != NO_DELTA)
+            chunklist[id].chunkPtr = (uint8_t *)malloc(tmpSize);
+        else
+            chunklist[id].chunkPtr = (uint8_t *)malloc(chunklist[id].chunkSize);
         startTime = std::chrono::high_resolution_clock::now();
         string fileName = "./Containers/" + tmpContainerIDcontainerID;
         // cout << fileName << endl;
@@ -416,7 +513,6 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
         {
             uint64_t size;
             infile.read((char *)&size, sizeof(uint64_t));
-
             //     Allocate memory for the container
             string container;
             container.assign(size, 0);
@@ -425,7 +521,14 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
             infile.read((char *)container.c_str(), size);
             // Copy the required data to chunkPtr
             // cout << "offset is " << chunklist[id].offset << "saveSize is " << chunklist[id].saveSize << endl;
-            memcpy(chunklist[id].chunkPtr, (uint8_t *)(container.c_str() + chunklist[id].offset), tmpSize);
+            if (chunklist[id].deltaFlag != NO_DELTA)
+                memcpy(chunklist[id].chunkPtr, (uint8_t *)(container.c_str() + chunklist[id].offset), tmpSize);
+            else
+            {
+                // base chunk & lz4 compress
+                int decompressedSize = LZ4_decompress_safe((char *)(container.c_str() + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+                memcpy(chunklist[id].chunkPtr, lz4SafeChunkBuffer, tmpSize);
+            }
 
             // Add the container to the cache
             startTime2 = std::chrono::high_resolution_clock::now();
@@ -443,12 +546,23 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
     }
     else
     {
+        chunklist[id].loadFromDisk = false;
         if (chunklist[id].containerID == containerNum)
         {
             // free(chunklist[id].chunkPtr);
             //  memcpy(chunklist[id].chunkPtr, curContainer.data + chunklist[id].offset, tmpSize);
-            chunklist[id].chunkPtr = curContainer.data + chunklist[id].offset;
-            chunklist[id].loadFromDisk = false;
+            // chunklist[id].chunkPtr = curContainer.data + chunklist[id].offset;
+
+            if (chunklist[id].deltaFlag != NO_DELTA)
+                chunklist[id].chunkPtr = curContainer.data + chunklist[id].offset;
+            else
+            {
+                // base chunk & lz4 compress
+                int decompressedSize = LZ4_decompress_safe((char *)(curContainer.data + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+                chunklist[id].chunkPtr = (uint8_t *)malloc(chunklist[id].chunkSize);
+                memcpy(chunklist[id].chunkPtr, lz4SafeChunkBuffer, tmpSize);
+                chunklist[id].loadFromDisk = true;
+            }
         }
         else
         {

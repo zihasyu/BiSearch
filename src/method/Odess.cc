@@ -58,7 +58,7 @@ void Odess::ProcessTrace()
                 // auto ret = table.GetSimilarRecordsKeys(tmpChunkHash);
 
                 if (ret != "not found")
-                // unique chunk & similar chunk
+                // unique chunk & delta chunk
                 {
                     int basechunkID = FP_Find(ret);
                     if (basechunkID != -1)
@@ -87,31 +87,38 @@ void Odess::ProcessTrace()
                     {
                         cout << "find base chunk error" << endl;
                     }
+                    dataWrite_->Chunk_Insert(tmpChunk);
                 }
+                // unique chunk & base chunk
                 else
-                // unique chunk & no similar chunk
                 {
                     int tmpChunkLz4CompressSize = 0;
                     tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
                     if (tmpChunkLz4CompressSize > 0)
                     {
+                        tmpChunk.deltaFlag = NO_DELTA;
                         tmpChunk.saveSize = tmpChunkLz4CompressSize;
-                        // memcpy(tmpChunk.chunkPtr, lz4ChunkBuffer, tmpChunk.saveSize);
                     }
                     else
                     {
+                        cout << "lz4 compress error" << endl;
+                        tmpChunk.deltaFlag = NO_LZ4;
                         tmpChunk.saveSize = tmpChunk.chunkSize;
                     }
-                    // cout << "lz4 chunk size is " << tmpChunk.chunkSize << "save size is " << tmpChunk.saveSize << endl;
-                    tmpChunk.deltaFlag = NO_DELTA;
+
                     tmpChunk.basechunkID = -1;
                     tmpChunkid = tmpChunk.chunkID;
                     table.Put(tmpChunkHash, tmpChunkContent);
                     basechunkNum++;
                     basechunkSize += tmpChunk.saveSize;
                     LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
+                    if (tmpChunk.deltaFlag == NO_LZ4)
+                        // base chunk & Lz4 error
+                        dataWrite_->Chunk_Insert(tmpChunk);
+                    else
+                        // base chunk &lz4 compress
+                        dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                 }
-                dataWrite_->Chunk_Insert(tmpChunk);
                 uniquechunkNum++;
                 uniquechunkSize += tmpChunk.saveSize;
             }

@@ -345,6 +345,7 @@ enum METHOD_TYPE
 enum DELTA_TYPE
 {
     NO_DELTA = 0,
+    NO_LZ4,
     DELTA,
     FINESSE_TO_BASE,
     FINESSE_DELTA,

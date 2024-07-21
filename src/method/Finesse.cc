@@ -67,19 +67,28 @@ void Finesse::ProcessTrace()
                     lz4CompressionTime += (endTime - startTime);
                     if (tmpChunkLz4CompressSize > 0)
                     {
+                        tmpChunk.deltaFlag = NO_DELTA;
                         tmpChunk.saveSize = tmpChunkLz4CompressSize;
-                        // memcpy(tmpChunk.chunkptr, lz4ChunkBuffer, tmpChunk.savesize);
                     }
                     else
                     {
+                        cout << "lz4 compress error" << endl;
+                        tmpChunk.deltaFlag = NO_LZ4;
                         tmpChunk.saveSize = tmpChunk.chunkSize;
                     }
                     // cout << "lz4 chunk size is " << tmpChunk.chunksize << "save size is " << tmpChunk.savesize << endl;
-                    tmpChunk.deltaFlag = NO_DELTA;
+
                     tmpChunk.basechunkID = -1;
                     SF_Insert((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE, tmpChunk.chunkID);
                     basechunkNum++;
                     basechunkSize += tmpChunk.saveSize;
+
+                    if (tmpChunk.deltaFlag == NO_LZ4)
+                        // base chunk & Lz4 error
+                        dataWrite_->Chunk_Insert(tmpChunk);
+                    else
+                        // base chunk &lz4 compress
+                        dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                 }
                 else
                 {
@@ -117,8 +126,9 @@ void Finesse::ProcessTrace()
                     // free outside of Get_Chunk_Info
                     if (basechunkinfo.loadFromDisk)
                         free(basechunkinfo.chunkPtr);
+                    dataWrite_->Chunk_Insert(tmpChunk);
                 }
-                dataWrite_->Chunk_Insert(tmpChunk);
+
                 uniquechunkNum++;
                 uniquechunkSize += tmpChunk.saveSize;
             }

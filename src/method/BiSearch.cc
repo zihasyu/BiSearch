@@ -121,6 +121,8 @@ void BiSearch::ProcessTrace()
                         localPrechunkSize += tmpChunk.chunkSize;
                         localError = 0;
                         DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize; // delta的贡献
+                        // save delta
+                        dataWrite_->Chunk_Insert(tmpChunk);
                     }
                     // unique chunk & locality can't be accept
                     else
@@ -143,15 +145,21 @@ void BiSearch::ProcessTrace()
                             int tmpChunkLz4CompressSize = 0;
                             startTime = std::chrono::high_resolution_clock::now();
                             tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
-                            if (tmpChunkLz4CompressSize <= 0)
+
+                            if (tmpChunkLz4CompressSize > 0)
                             {
-                                tmpChunkLz4CompressSize = tmpChunk.chunkSize;
+                                tmpChunk.deltaFlag = NO_DELTA;
+                                tmpChunk.saveSize = tmpChunkLz4CompressSize;
+                            }
+                            else
+                            {
+                                cout << "lz4 compress error" << endl;
+                                tmpChunk.deltaFlag = NO_LZ4;
+                                tmpChunk.saveSize = tmpChunk.chunkSize;
                             }
 
                             localError++;
                             tmpChunk.basechunkID = -1;
-                            tmpChunk.deltaFlag = NO_DELTA;
-                            tmpChunk.saveSize = tmpChunkLz4CompressSize;
 
                             if (tmpChunk.chunkSize >= 60)
                                 table.Put(tmpChunkHash, tmpChunkContent);
@@ -167,6 +175,11 @@ void BiSearch::ProcessTrace()
                             }
                             endTime = std::chrono::high_resolution_clock::now();
                             lz4CompressionTime += (endTime - startTime);
+                            // save base
+                            if (tmpChunk.deltaFlag == NO_LZ4)
+                                dataWrite_->Chunk_Insert(tmpChunk);
+                            else
+                                dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                         }
                         // unique chunk & in locality windows & odess hits
                         else
@@ -198,15 +211,19 @@ void BiSearch::ProcessTrace()
 
                                     tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
 
-                                    if (tmpChunkLz4CompressSize <= 0)
+                                    if (tmpChunkLz4CompressSize > 0)
                                     {
-                                        tmpChunkLz4CompressSize = tmpChunk.chunkSize;
-                                        ;
+                                        tmpChunk.deltaFlag = NO_DELTA;
+                                        tmpChunk.saveSize = tmpChunkLz4CompressSize;
+                                    }
+                                    else
+                                    {
+                                        cout << "lz4 compress error" << endl;
+                                        tmpChunk.deltaFlag = NO_LZ4;
+                                        tmpChunk.saveSize = tmpChunk.chunkSize;
                                     }
                                     localError++;
                                     tmpChunk.basechunkID = -1;
-                                    tmpChunk.deltaFlag = NO_DELTA;
-                                    tmpChunk.saveSize = tmpChunkLz4CompressSize;
 
                                     if (tmpChunk.chunkSize >= 60)
                                         table.Put(tmpChunkHash, tmpChunkContent);
@@ -219,6 +236,11 @@ void BiSearch::ProcessTrace()
                                     {
                                         localFlag = false;
                                     }
+                                    // save base
+                                    if (tmpChunk.deltaFlag == NO_LZ4)
+                                        dataWrite_->Chunk_Insert(tmpChunk);
+                                    else
+                                        dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                                 }
                                 else
                                 {
@@ -238,6 +260,8 @@ void BiSearch::ProcessTrace()
                                     finessePrechunkSize += tmpChunk.chunkSize;
                                     DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize; // delta的贡献
                                     localFlag = true;
+                                    // save delta
+                                    dataWrite_->Chunk_Insert(tmpChunk);
                                 }
                                 free(deltachunk);
                                 if (basechunkinfo.loadFromDisk)
@@ -267,13 +291,19 @@ void BiSearch::ProcessTrace()
                     {
                         int tmpChunkLz4CompressSize = 0;
                         tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
-                        if (tmpChunkLz4CompressSize <= 0)
+                        if (tmpChunkLz4CompressSize > 0)
                         {
-                            tmpChunkLz4CompressSize = tmpChunk.chunkSize;
+                            tmpChunk.deltaFlag = NO_DELTA;
+                            tmpChunk.saveSize = tmpChunkLz4CompressSize;
+                        }
+                        else
+                        {
+                            cout << "lz4 compress error" << endl;
+                            tmpChunk.deltaFlag = NO_LZ4;
+                            tmpChunk.saveSize = tmpChunk.chunkSize;
                         }
                         tmpChunk.basechunkID = -1;
-                        tmpChunk.deltaFlag = NO_DELTA;
-                        tmpChunk.saveSize = tmpChunkLz4CompressSize;
+
                         if (tmpChunk.chunkSize >= 60)
                             table.Put(tmpChunkHash, tmpChunkContent);
                         basechunkNum++;
@@ -281,6 +311,11 @@ void BiSearch::ProcessTrace()
                         lz4LogicalSize += tmpChunk.chunkSize;
                         lz4UniqueSize += tmpChunk.saveSize;
                         LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
+                        // save base
+                        if (tmpChunk.deltaFlag == NO_LZ4)
+                            dataWrite_->Chunk_Insert(tmpChunk);
+                        else
+                            dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                     }
                     else
                     // odess try & not in locality windows &odess hits
@@ -304,13 +339,18 @@ void BiSearch::ProcessTrace()
                                 bugCount++;
                                 int tmpChunkLz4CompressSize = 0;
                                 tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
-                                if (tmpChunkLz4CompressSize <= 0)
+                                if (tmpChunkLz4CompressSize > 0)
                                 {
-                                    tmpChunkLz4CompressSize = tmpChunk.chunkSize;
+                                    tmpChunk.deltaFlag = NO_DELTA;
+                                    tmpChunk.saveSize = tmpChunkLz4CompressSize;
+                                }
+                                else
+                                {
+                                    cout << "lz4 compress error" << endl;
+                                    tmpChunk.deltaFlag = NO_LZ4;
+                                    tmpChunk.saveSize = tmpChunk.chunkSize;
                                 }
                                 tmpChunk.basechunkID = -1;
-                                tmpChunk.deltaFlag = NO_DELTA;
-                                tmpChunk.saveSize = tmpChunkLz4CompressSize;
 
                                 if (tmpChunk.chunkSize >= 60)
                                     table.Put(tmpChunkHash, tmpChunkContent);
@@ -319,6 +359,11 @@ void BiSearch::ProcessTrace()
                                 lz4LogicalSize += tmpChunk.chunkSize;
                                 lz4UniqueSize += tmpChunk.saveSize;
                                 LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
+                                // save base
+                                if (tmpChunk.deltaFlag == NO_LZ4)
+                                    dataWrite_->Chunk_Insert(tmpChunk);
+                                else
+                                    dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                             }
                             else
                             {
@@ -336,6 +381,8 @@ void BiSearch::ProcessTrace()
                                 deltachunkSize += tmpChunk.saveSize;
                                 DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
                                 localFlag = true;
+                                // save delta
+                                dataWrite_->Chunk_Insert(tmpChunk);
                             }
                             free(deltachunk);
                             if (basechunkinfo.loadFromDisk)
@@ -343,7 +390,7 @@ void BiSearch::ProcessTrace()
                         }
                     }
                 }
-                dataWrite_->Chunk_Insert(tmpChunk);
+                // dataWrite_->Chunk_Insert(tmpChunk);
                 uniquechunkSize += tmpChunk.saveSize;
                 uniquechunkNum++;
             }

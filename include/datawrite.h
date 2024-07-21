@@ -15,6 +15,7 @@
 #include <vector>
 #include <sstream>
 #include <mutex>
+#include "lz4.h"
 extern "C"
 {
 #include "./xdelta3.h"
@@ -70,6 +71,7 @@ private:
     uint32_t bits;
     uint32_t maskS;
     uint32_t maskL;
+    uint8_t *lz4SafeChunkBuffer;
 
 public:
     void SetFilename(string name);
@@ -88,6 +90,7 @@ public:
     }
     MessageQueue<Container_t> *MQ;
     bool Chunk_Insert(Chunk_t chunk);
+    bool Chunk_Insert(Chunk_t chunk, uint8_t *lz4Buffer);
     int Get_Chunk_Num();
     int Get_Container_Num(Chunk_t chunk);
     Chunk_t Get_Chunk_Info(int id);
