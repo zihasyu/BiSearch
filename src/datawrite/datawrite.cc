@@ -325,11 +325,11 @@ void dataWrite::restoreHeaderFile(string fileName)
         if (Next_Chunk_Type == FILE_CHUNK && DataP != DataEnd)
         {
             Chunk_t tmpChunkInfo = Get_Chunk_Info(*DataP++);
-            if (Next_Chunk_Size - tmpChunkInfo.chunkSize >= 512)
+            if (tmpChunkInfo.chunkSize - Next_Chunk_Size >= 512)
             {
                 cout << " chunkSize is " << tmpChunkInfo.chunkSize << " Next_Chunk_Size is " << Next_Chunk_Size << endl;
             }
-            if (tmpChunkInfo.deltaFlag == NO_DELTA)
+            if (tmpChunkInfo.deltaFlag == NO_DELTA || tmpChunkInfo.deltaFlag == NO_LZ4)
             {
                 outFile.write((char *)tmpChunkInfo.chunkPtr, tmpChunkInfo.chunkSize);
             }
