@@ -202,3 +202,29 @@ SuperFeatures FeatureGenerator::GenerateSuperFeatures(const string &value)
   OdessResemblanceDetect(value);
   return MakeSuperFeatures();
 }
+
+uint64_t FeatureIndexTable::SF_Find(const SuperFeatures &superfeatures)
+{
+  for (const super_feature_t &sf : superfeatures)
+  {
+    if (auto it = SFindex.find(sf) != SFindex.end())
+    {
+      for (auto id : SFindex[sf])
+      {
+        return id;
+      }
+    }
+  }
+  // return -1 if not found, uint64_t's MAX value
+  return -1;
+}
+void FeatureIndexTable::SF_Insert(const SuperFeatures &superfeatures, const uint64_t chunkid)
+{
+
+  for (int i = 0; i < ODESS_SF_NUM; i++)
+  {
+    SFindex[superfeatures[i]].push_back(chunkid);
+  }
+  // return -1 if not found, uint64_t's MAX value
+  return;
+}

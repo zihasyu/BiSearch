@@ -1,3 +1,5 @@
+#ifndef ODESS_SIMILARITY_DETECTION_H
+#define ODESS_SIMILARITY_DETECTION_H
 #pragma once
 #include <cstdint>
 #include <map>
@@ -7,7 +9,7 @@
 #include <vector>
 #include <set>
 #include "xxhash.h"
-
+#include "define.h"
 using namespace std;
 
 typedef uint64_t feature_t;
@@ -119,6 +121,11 @@ public:
   unordered_map<super_feature_t, unordered_set<string>> feature_key_table_;
   map<string, SuperFeatures> key_feature_table_;
 
+  // new feature-id index table
+  unordered_map<super_feature_t, vector<uint64_t>> SFindex;
+  uint64_t SF_Find(const SuperFeatures &superfeatures);
+  void SF_Insert(const SuperFeatures &superfeatures, const uint64_t chunkid);
+
 private:
   // unordered_map<super_feature_t, unordered_set<string>> feature_key_table_;
   // // unordered_map<feature_t, unordered_set<string>> original_feature_key_table;
@@ -129,3 +136,4 @@ private:
 
   bool GetSuperFeatures(const string &key, SuperFeatures *super_features);
 };
+#endif // ODESS_SIMILARITY_DETECTION_H

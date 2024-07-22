@@ -22,6 +22,7 @@
 #include <openssl/crypto.h>
 
 #define FINESSE_SF_NUM 3
+#define ODESS_SF_NUM 3
 #define CHUNK_HASH_SIZE 32
 #define READ_FILE_SIZE 192 * 1024 * 1024
 #define CONTAINER_MAX_SIZE 4194304
