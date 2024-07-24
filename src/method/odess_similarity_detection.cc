@@ -228,3 +228,53 @@ void FeatureIndexTable::SF_Insert(const SuperFeatures &superfeatures, const uint
   // return -1 if not found, uint64_t's MAX value
   return;
 }
+
+SuperFeatures FeatureGenerator::PalantirGetSF(const string &value)
+{
+  CleanFeatures();
+  PalantirResemblanceDetect(value);
+  return PalantirMakeSF();
+}
+
+void FeatureGenerator::PalantirResemblanceDetect(const string &value)
+{
+  feature_t hash = 0;
+  for (size_t i = 0; i < value.size(); ++i)
+  {
+    hash = (hash << 1) + GEARmx[static_cast<uint8_t>(value[i])];
+    if (!(hash & kSampleRatioMask))
+    {
+      for (size_t j = 0; j < kFeatureNumber; ++j)
+      {
+        feature_t transform_res =
+            hash * random_transform_args_a_[j] + random_transform_args_b_[j];
+        if (transform_res > features_[j])
+          features_[j] = transform_res;
+      }
+    }
+  }
+}
+
+SuperFeatures FeatureGenerator::PalantirMakeSF()
+{
+  SuperFeatures super_features(13);
+  for (size_t i = 0; i < 3; ++i)
+  {
+    size_t group_len = kFeatureNumber / 3;
+    super_features[i] = XXH64(&features_[i * group_len],
+                              sizeof(feature_t) * group_len, 0x7fcaf1);
+  }
+  for (size_t i = 3; i < 7; ++i)
+  {
+    size_t group_len = kFeatureNumber / 4;
+    super_features[i] = XXH64(&features_[(i - 3) * group_len],
+                              sizeof(feature_t) * group_len, 0x7fcaf1);
+  }
+  for (size_t i = 7; i < 13; ++i)
+  {
+    size_t group_len = kFeatureNumber / 6;
+    super_features[i] = XXH64(&features_[(i - 7) * group_len],
+                              sizeof(feature_t) * group_len, 0x7fcaf1);
+  }
+  return super_features;
+}

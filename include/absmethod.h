@@ -52,6 +52,7 @@ public:
     uint64_t uniquechunkSize = 0;
     uint64_t dedupchunkSize = 0;
     uint64_t basechunkSize = 0;
+    uint64_t basechunkOriSize = 0;
     uint64_t deltachunkSize = 0;
     uint64_t finessechunkSize = 0;
     uint64_t finessePrechunkSize = 0;

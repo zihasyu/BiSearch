@@ -340,6 +340,7 @@ enum METHOD_TYPE
     DEDUP = 0,
     FINESSE,
     ODESS,
+    PALANTIR,
     BiSEARCH
 };
 

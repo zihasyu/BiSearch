@@ -52,6 +52,10 @@ public:
   SuperFeatures GenerateSuperFeatures(const string &value);
 
   feature_t GenerateFeature(const string &value);
+  // palantir
+  SuperFeatures PalantirGetSF(const string &value);
+  void PalantirResemblanceDetect(const string &value);
+  SuperFeatures PalantirMakeSF();
 
 private:
   /**
@@ -90,10 +94,10 @@ private:
 class FeatureIndexTable
 {
 public:
-  FeatureIndexTable(){};
+  FeatureIndexTable() {};
   FeatureIndexTable(feature_t sample_mask, size_t feature_number,
                     size_t super_feature_number)
-      : feature_generator_(sample_mask, feature_number, super_feature_number){};
+      : feature_generator_(sample_mask, feature_number, super_feature_number) {};
 
   // generate the super features of the value
   // index the key-feature

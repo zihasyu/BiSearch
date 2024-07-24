@@ -81,6 +81,11 @@ int main(int argc, char **argv)
         absMethodObj = new Odess();
         break;
     }
+    case PALANTIR:
+    {
+        absMethodObj = new Palantir();
+        break;
+    }
     case BiSEARCH:
     {
         absMethodObj = new BiSearch(8.0);

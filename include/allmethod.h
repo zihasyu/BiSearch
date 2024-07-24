@@ -5,6 +5,7 @@
 #include "dedup.h"
 #include "finesse.h"
 #include "odess.h"
+#include "palantir.h"
 #include "bisearch.h"
 
 #endif

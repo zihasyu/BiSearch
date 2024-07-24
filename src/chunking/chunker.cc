@@ -168,7 +168,7 @@ void Chunker::Chunking()
         totalOffset += localOffset;
         inputFile.seekg(totalOffset, ios_base::beg);
     }
-    cout << "chunking done." << endl;
+    // cout << "chunking done." << endl;
     outputMQ_->done_ = true;
     tool::Logging(myName_.c_str(), "chunking done.\n");
     return;
