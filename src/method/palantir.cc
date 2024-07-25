@@ -32,8 +32,8 @@ void Palantir::ProcessTrace()
         {
             // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
-            Version++;
             CleanIndex();
+            Version++;
             break;
         }
         Chunk_t tmpChunk;
@@ -47,6 +47,7 @@ void Palantir::ProcessTrace()
             int tmpChunkid;
             int findRes = FP_Find(hashStr);
             // Palantir get superfeature per logical chunk
+            tmpChunkContent.assign((char *)tmpChunk.chunkPtr, tmpChunk.chunkSize);
             auto superfeature = table.feature_generator_.PalantirGetSF(tmpChunkContent);
             if (findRes == -1)
             {
@@ -54,15 +55,15 @@ void Palantir::ProcessTrace()
                 tmpChunk.chunkID = uniquechunkNum;
                 tmpChunk.deltaFlag = NO_DELTA;
                 FP_Insert(hashStr, tmpChunk.chunkID);
-                tmpChunkContent.assign((char *)tmpChunk.chunkPtr, tmpChunk.chunkSize);
-                tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
 
+                tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
                 auto basechunkid = SF_Find(superfeature);
                 // auto ret = table.GetSimilarRecordsKeys(tmpChunkHash);
 
                 if (basechunkid != -1)
                 // unique chunk & delta chunk
                 {
+                    // cout << "basechunkid is " << basechunkid << endl;
                     auto basechunkInfo = dataWrite_->Get_Chunk_Info(basechunkid);
                     uint8_t *deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkInfo.chunkPtr, basechunkInfo.chunkSize, &tmpChunk.saveSize, deltaMaxChunkBuffer);
                     if (tmpChunk.saveSize == 0)
@@ -156,7 +157,8 @@ void Palantir::ProcessTrace()
                 // Dedup chunk found
                 free(tmpChunk.chunkPtr);
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
-                SF_Insert(superfeature, tmpChunk.chunkID);
+                // if (tmpChunk.deltaFlag == NO_DELTA || tmpChunk.deltaFlag == NO_LZ4)
+                //     SF_Insert(superfeature, tmpChunk.chunkID);
                 PrevDedupChunkid = findRes;
                 DedupReductSize += tmpChunk.chunkSize;
             }
