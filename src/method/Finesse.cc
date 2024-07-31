@@ -89,6 +89,8 @@ void Finesse::ProcessTrace()
                     else
                         // base chunk &lz4 compress
                         dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
+                    // Reduct total
+                    LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                 }
                 else
                 {
@@ -106,8 +108,6 @@ void Finesse::ProcessTrace()
                         cout << "bug" << endl;
                         bugCount++;
                     }
-                    // 9513209
-                    // cout << "delta size: " << tmpChunk.savesize << " chunk size is " << tmpChunk.chunksize << "base id " << basechunkinfo.chunkid << endl;
                     if (tmpChunk.saveSize == 0)
                     {
                         cout << "delta error and can't to restore" << endl;
@@ -127,6 +127,7 @@ void Finesse::ProcessTrace()
                     if (basechunkinfo.loadFromDisk)
                         free(basechunkinfo.chunkPtr);
                     dataWrite_->Chunk_Insert(tmpChunk);
+                    DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                 }
 
                 uniquechunkNum++;
@@ -136,6 +137,7 @@ void Finesse::ProcessTrace()
             {
                 free(tmpChunk.chunkPtr);
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
+                DedupReduct += tmpChunk.chunkSize;
             }
             if (tmpChunk.HeaderFlag == 0)
                 dataWrite_->Recipe_Insert(tmpChunk.chunkID);

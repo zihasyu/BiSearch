@@ -33,9 +33,6 @@ private:
     z_stream defstream;
     long errorCount = 0;
     long sameCount = 0;
-    uint64_t DedupReductSize = 0;
-    uint64_t DeltaReductSize = 0;
-    uint64_t LocalReductSize = 0;
 
 public:
     std::chrono::time_point<std::chrono::high_resolution_clock>

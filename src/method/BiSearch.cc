@@ -120,7 +120,7 @@ void BiSearch::ProcessTrace()
                         localchunkSize += tmpChunk.saveSize;
                         localPrechunkSize += tmpChunk.chunkSize;
                         localError = 0;
-                        DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize; // delta的贡献
+                        DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize; // delta的贡献
                         // save delta
                         dataWrite_->Chunk_Insert(tmpChunk);
                     }
@@ -167,7 +167,7 @@ void BiSearch::ProcessTrace()
                             basechunkSize += tmpChunk.saveSize;
                             lz4LogicalSize += tmpChunk.chunkSize;
                             lz4UniqueSize += tmpChunk.saveSize;
-                            LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
+                            LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
 
                             if (localError > LOCAL_MAX_ERROR)
                             {
@@ -231,7 +231,7 @@ void BiSearch::ProcessTrace()
                                     basechunkSize += tmpChunk.saveSize;
                                     lz4LogicalSize += tmpChunk.chunkSize;
                                     lz4UniqueSize += tmpChunk.saveSize;
-                                    LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
+                                    LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                                     if (localError > LOCAL_MAX_ERROR)
                                     {
                                         localFlag = false;
@@ -258,7 +258,7 @@ void BiSearch::ProcessTrace()
                                     deltachunkSize += tmpChunk.saveSize;
                                     finessechunkSize += tmpChunk.saveSize;
                                     finessePrechunkSize += tmpChunk.chunkSize;
-                                    DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize; // delta的贡献
+                                    DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize; // delta的贡献
                                     localFlag = true;
                                     // save delta
                                     dataWrite_->Chunk_Insert(tmpChunk);
@@ -310,7 +310,7 @@ void BiSearch::ProcessTrace()
                         basechunkSize += tmpChunk.saveSize;
                         lz4LogicalSize += tmpChunk.chunkSize;
                         lz4UniqueSize += tmpChunk.saveSize;
-                        LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
+                        LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                         // save base
                         if (tmpChunk.deltaFlag == NO_LZ4)
                             dataWrite_->Chunk_Insert(tmpChunk);
@@ -358,7 +358,7 @@ void BiSearch::ProcessTrace()
                                 basechunkSize += tmpChunk.saveSize;
                                 lz4LogicalSize += tmpChunk.chunkSize;
                                 lz4UniqueSize += tmpChunk.saveSize;
-                                LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
+                                LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                                 // save base
                                 if (tmpChunk.deltaFlag == NO_LZ4)
                                     dataWrite_->Chunk_Insert(tmpChunk);
@@ -379,7 +379,7 @@ void BiSearch::ProcessTrace()
                                 finessehit++;
                                 deltachunkNum++;
                                 deltachunkSize += tmpChunk.saveSize;
-                                DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
+                                DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                                 localFlag = true;
                                 // save delta
                                 dataWrite_->Chunk_Insert(tmpChunk);
@@ -404,7 +404,7 @@ void BiSearch::ProcessTrace()
                 plchunk.chunkType = DUP;
                 DedupGap = 0;
                 lz4LogicalSize += tmpChunk.chunkSize;
-                DedupReductSize += tmpChunk.chunkSize;
+                DedupReduct += tmpChunk.chunkSize;
             }
             if (tmpChunk.HeaderFlag == 0)
                 dataWrite_->Recipe_Insert(tmpChunk.chunkID);

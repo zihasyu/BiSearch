@@ -19,7 +19,6 @@ class Odess : public AbsMethod
 private:
     string myName_ = "Odess";
     int PrevDedupChunkid = -1;
-    int DedupGap = 0;
     int Version = 0;
     FeatureIndexTable table;
 
@@ -27,8 +26,5 @@ public:
     Odess();
     ~Odess();
     void ProcessTrace();
-    uint64_t DedupReductSize = 0;
-    uint64_t DeltaReductSize = 0;
-    uint64_t LocalReductSize = 0;
 };
 #endif

@@ -62,6 +62,12 @@ public:
     uint64_t ContainerNum = 0;
     uint64_t ContainerSize = 0;
 
+    uint64_t DedupReduct = 0;
+    // DedupReduct+=tmpChunk.chunkSize;
+    uint64_t DeltaReduct = 0;
+    // DeltaReduct+=tmpChunk.chunkSize-tmpChunk.saveSize;
+    uint64_t LocalReduct = 0;
+    // LocalReduct+=tmpChunk.chunkSize-tmpChunk.saveSize;
     // time total
     std::chrono::duration<double> sumTime1;
     std::chrono::duration<double> sumTime2;
@@ -94,5 +100,6 @@ public:
     int SF_Find(const char *key, size_t keySize);
     bool SF_Insert(const char *key, size_t keySize, int chunkid);
     uint8_t *xd3_encode(const uint8_t *targetChunkbuffer, size_t targetChunkbuffer_size, const uint8_t *baseChunkBuffer, size_t baseChunkBuffer_size, size_t *deltaChunkBuffer_size, uint8_t *tmpbuffer);
+    void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time);
 };
 #endif

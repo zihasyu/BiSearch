@@ -75,7 +75,7 @@ void Odess::ProcessTrace()
                         memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
                         deltachunkNum++;
                         deltachunkSize += tmpChunk.saveSize;
-                        DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
+                        DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                         free(deltachunk);
                     }
                     if (basechunkInfo.loadFromDisk)
@@ -104,7 +104,7 @@ void Odess::ProcessTrace()
                     table.SF_Insert(superfeature, tmpChunk.chunkID);
                     basechunkNum++;
                     basechunkSize += tmpChunk.saveSize;
-                    LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
+                    LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                     if (tmpChunk.deltaFlag == NO_LZ4)
                         // base chunk & Lz4 error
                         dataWrite_->Chunk_Insert(tmpChunk);
@@ -122,8 +122,7 @@ void Odess::ProcessTrace()
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunkid = findRes;
                 PrevDedupChunkid = findRes;
-                DedupGap = 0;
-                DedupReductSize += tmpChunk.chunkSize;
+                DedupReduct += tmpChunk.chunkSize;
             }
             if (tmpChunk.HeaderFlag == 0)
                 dataWrite_->Recipe_Insert(tmpChunk.chunkID);

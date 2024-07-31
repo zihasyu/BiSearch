@@ -48,20 +48,8 @@ void Dedup::ProcessTrace()
                     tmpChunk.deltaFlag = NO_LZ4;
                     lz4Size = tmpChunk.chunkSize;
                 }
-                //***compare diff ***/
-                // uint8_t *lz4SafeChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
-                // int decompressedSize = LZ4_decompress_safe((char *)lz4ChunkBuffer, (char *)lz4SafeChunkBuffer, lz4Size, CONTAINER_MAX_SIZE);
-                // if (decompressedSize != tmpChunk.chunkSize)
-                //     cout << "decompress error" << endl;
-
-                // cout << "cmp is " << std::memcmp(tmpChunk.chunkPtr, lz4SafeChunkBuffer, tmpChunk.chunkSize) << endl;
-
-                // free(lz4SafeChunkBuffer);
                 tmpChunk.saveSize = lz4Size;
                 FP_Insert(hashStr, tmpChunk.chunkID);
-                // /cout << tmpChunkContent << endl;
-                // Dedup get superfeature
-                // cout << "unique chunk found" << endl;
                 if (ContainerSize + tmpChunk.chunkSize > CONTAINER_MAX_SIZE)
                 {
                     tmpChunk.containerID = ++containerNum;
@@ -81,13 +69,13 @@ void Dedup::ProcessTrace()
                 basechunkSize += tmpChunk.saveSize;
                 uniquechunkNum++;
                 uniquechunkSize += tmpChunk.saveSize;
+                LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
             }
             else
             {
-                // cout << "dedup chunk found findRes is" << findRes << endl; //debug
                 free(tmpChunk.chunkPtr);
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
-                tmpChunkid = findRes; // 好像没用
+                DedupReduct += tmpChunk.chunkSize;
             }
             if (tmpChunk.HeaderFlag == 0)
                 dataWrite_->Recipe_Insert(tmpChunk.chunkID);

@@ -27,13 +27,8 @@ public:
     Palantir();
     ~Palantir();
     void ProcessTrace();
-    uint64_t DedupReductSize = 0;
-    uint64_t DeltaReductSize = 0;
-    uint64_t LocalReductSize = 0;
-
     int Version = 0;
     double LZ4Ratio = 2;
-
     unordered_map<super_feature_t, vector<uint64_t>> SFindex1;
     unordered_map<super_feature_t, vector<chunkid_version>> SFindex2;
     unordered_map<super_feature_t, vector<chunkid_version>> SFindex3;

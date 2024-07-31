@@ -102,6 +102,7 @@ void Palantir::ProcessTrace()
                         else
                             // base chunk &lz4 compress
                             dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
+                        LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                     }
                     else
                     {
@@ -113,6 +114,7 @@ void Palantir::ProcessTrace()
                         DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
                         free(deltachunk);
                         dataWrite_->Chunk_Insert(tmpChunk);
+                        DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                     }
                     if (basechunkInfo.loadFromDisk)
                         free(basechunkInfo.chunkPtr);
@@ -133,7 +135,6 @@ void Palantir::ProcessTrace()
                         tmpChunk.deltaFlag = NO_LZ4;
                         tmpChunk.saveSize = tmpChunk.chunkSize;
                     }
-
                     tmpChunk.basechunkID = -1;
                     tmpChunkid = tmpChunk.chunkID;
                     SF_Insert(superfeature, tmpChunk.chunkID);
@@ -148,6 +149,7 @@ void Palantir::ProcessTrace()
                     else
                         // base chunk &lz4 compress
                         dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
+                    LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                 }
                 uniquechunkNum++;
                 uniquechunkSize += tmpChunk.saveSize;
@@ -157,8 +159,9 @@ void Palantir::ProcessTrace()
                 // Dedup chunk found
                 free(tmpChunk.chunkPtr);
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
-                // if (tmpChunk.deltaFlag == NO_DELTA || tmpChunk.deltaFlag == NO_LZ4)
-                //     SF_Insert(superfeature, tmpChunk.chunkID);
+                if (tmpChunk.deltaFlag == NO_DELTA || tmpChunk.deltaFlag == NO_LZ4)
+                    SF_Insert(superfeature, tmpChunk.chunkID);
+                DedupReduct += tmpChunk.chunkSize;
                 PrevDedupChunkid = findRes;
                 DedupReductSize += tmpChunk.chunkSize;
             }

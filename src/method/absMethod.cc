@@ -257,3 +257,69 @@ uint8_t *AbsMethod::xd3_encode(const uint8_t *targetChunkbuffer, size_t targetCh
     memcpy(deltaChunkBuffer, tmpbuffer, deltachunkSize);
     return deltaChunkBuffer;
 }
+
+void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time)
+{
+    ofstream out;
+    string fileName = "./chunkInfoLog.txt";
+    if (!tool::FileExist(fileName))
+    {
+        out.open(fileName, ios::out);
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << endl;
+        out << "-----------------CHUNK NUM-----------------------" << endl;
+        out << "logical chunk num: " << logicalchunkNum << endl;
+        out << "unique chunk num: " << uniquechunkNum << endl;
+        out << "base chunk num: " << basechunkNum << endl;
+        out << "delta chunk num: " << deltachunkNum << endl;
+        out << "finesse hit:" << finessehit << endl;
+        out << "-----------------CHUNK SIZE-----------------------" << endl;
+        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+        out << "logical chunk size: " << logicalchunkSize << endl;
+        out << "unique chunk size: " << uniquechunkSize << endl;
+        out << "dedup chunk size: " << dedupchunkSize << endl;
+        out << "base chunk size: " << basechunkSize << endl;
+        out << "delta chunk size: " << deltachunkSize << endl;
+        out << "finesse chunk size: " << finessechunkSize << endl;
+        out << "finesse pre chunk size: " << finessePrechunkSize << endl;
+        out << "local chunk size: " << localchunkSize << endl;
+        out << "local pre chunk size: " << localPrechunkSize << endl;
+        out << "-----------------Time------------------------------" << endl;
+        out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
+        out << "total time: " << time << "s" << endl;
+        out << "-----------------Reduct----------------------------" << endl;
+        out << "dedup reduct size : " << DedupReduct << endl;
+        out << "delta reduct size : " << DeltaReduct << endl;
+        out << "local reduct size : " << LocalReduct << endl;
+    }
+    else
+    {
+        out.open(fileName, ios::app);
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << endl;
+        out << "-----------------CHUNK NUM-----------------------" << endl;
+        out << "logical chunk num: " << logicalchunkNum << endl;
+        out << "unique chunk num: " << uniquechunkNum << endl;
+        out << "base chunk num: " << basechunkNum << endl;
+        out << "delta chunk num: " << deltachunkNum << endl;
+        out << "finesse hit:" << finessehit << endl;
+        out << "-----------------CHUNK SIZE-----------------------" << endl;
+        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+        out << "logical chunk size: " << logicalchunkSize << endl;
+        out << "unique chunk size: " << uniquechunkSize << endl;
+        out << "dedup chunk size: " << dedupchunkSize << endl;
+        out << "base chunk size: " << basechunkSize << endl;
+        out << "delta chunk size: " << deltachunkSize << endl;
+        out << "finesse chunk size: " << finessechunkSize << endl;
+        out << "finesse pre chunk size: " << finessePrechunkSize << endl;
+        out << "local chunk size: " << localchunkSize << endl;
+        out << "local pre chunk size: " << localPrechunkSize << endl;
+        out << "-----------------Time------------------------------" << endl;
+        out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
+        out << "total time: " << time << "s" << endl;
+        out << "-----------------Reduct----------------------------" << endl;
+        out << "dedup reduct size : " << DedupReduct << endl;
+        out << "delta reduct size : " << DeltaReduct << endl;
+        out << "local reduct size : " << LocalReduct << endl;
+    }
+    out.close();
+    return;
+}
