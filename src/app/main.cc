@@ -71,6 +71,11 @@ int main(int argc, char **argv)
         absMethodObj = new Dedup();
         break;
     }
+    case NTRANSFORM:
+    {
+        absMethodObj = new NTransForm();
+        break;
+    }
     case FINESSE:
     {
         absMethodObj = new Finesse();
@@ -148,20 +153,20 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
-
+    absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds);
     // restore backup if you need, but it's not necessary
-    if (chunkingType != TAR_MultiHeader)
-        for (auto i = 0; i < backupNum; i++)
-        {
-            absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-            absMethodObj->dataWrite_->restoreFile(readfileList[i]);
-        }
-    else
-        for (auto i = 0; i < backupNum; i++)
-        {
-            absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-            absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
-        }
+    // if (chunkingType != TAR_MultiHeader)
+    //     for (auto i = 0; i < backupNum; i++)
+    //     {
+    //         absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+    //         absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+    //     }
+    // else
+    //     for (auto i = 0; i < backupNum; i++)
+    //     {
+    //         absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+    //         absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
+    //     }
 
     delete absMethodObj->dataWrite_;
     delete chunkerObj;

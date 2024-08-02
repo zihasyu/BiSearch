@@ -61,7 +61,6 @@ void Odess::ProcessTrace()
                 // unique chunk & delta chunk
                 {
                     auto basechunkInfo = dataWrite_->Get_Chunk_Info(basechunkid);
-                    cout << " id is " << tmpChunk.chunkID << " basechunkid is " << basechunkid << endl;
                     uint8_t *deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkInfo.chunkPtr, basechunkInfo.chunkSize, &tmpChunk.saveSize, deltaMaxChunkBuffer);
                     if (tmpChunk.saveSize == 0)
                     {

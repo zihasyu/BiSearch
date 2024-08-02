@@ -7,5 +7,6 @@
 #include "odess.h"
 #include "palantir.h"
 #include "bisearch.h"
+#include "ntransform.h"
 
 #endif

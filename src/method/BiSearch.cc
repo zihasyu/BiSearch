@@ -246,7 +246,8 @@ void BiSearch::ProcessTrace()
                                 {
                                     // unique chunk & in locality windows & odess hits &odess delta normally
                                     memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
-                                    plchunk.chunkId = basechunkID;
+                                    if (tmpChunk.HeaderFlag == 0)
+                                        plchunk.chunkId = basechunkID;
                                     plchunk.chunkType = FI;
                                     plchunk.compressionRatio = (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
                                     DedupGap = 0;
@@ -367,7 +368,8 @@ void BiSearch::ProcessTrace()
                             }
                             else
                             {
-                                plchunk.chunkId = basechunkID;
+                                if (tmpChunk.HeaderFlag == 0)
+                                    plchunk.chunkId = basechunkID;
                                 plchunk.chunkType = FI;
                                 plchunk.compressionRatio = (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
 
@@ -400,7 +402,8 @@ void BiSearch::ProcessTrace()
                 auto tmpInfo = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 tmpChunk = tmpInfo;
                 localFlag = true;
-                plchunk.chunkId = findRes;
+                if (tmpChunk.HeaderFlag == 0)
+                    plchunk.chunkId = findRes;
                 plchunk.chunkType = DUP;
                 DedupGap = 0;
                 lz4LogicalSize += tmpChunk.chunkSize;

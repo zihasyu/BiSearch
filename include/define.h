@@ -338,6 +338,7 @@ auto nofilter = [](const std::string &name)
 enum METHOD_TYPE
 {
     DEDUP = 0,
+    NTRANSFORM,
     FINESSE,
     ODESS,
     PALANTIR,

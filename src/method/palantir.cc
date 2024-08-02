@@ -63,7 +63,6 @@ void Palantir::ProcessTrace()
                 if (basechunkid != -1)
                 // unique chunk & delta chunk
                 {
-                    // cout << "basechunkid is " << basechunkid << endl;
                     auto basechunkInfo = dataWrite_->Get_Chunk_Info(basechunkid);
                     uint8_t *deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkInfo.chunkPtr, basechunkInfo.chunkSize, &tmpChunk.saveSize, deltaMaxChunkBuffer);
                     if (tmpChunk.saveSize == 0)
@@ -95,7 +94,6 @@ void Palantir::ProcessTrace()
                         basechunkOriSize += tmpChunk.chunkSize;
                         basechunkSize += tmpChunk.saveSize;
                         LZ4Ratio = (double)basechunkOriSize / (double)basechunkSize;
-                        LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
                         if (tmpChunk.deltaFlag == NO_LZ4)
                             // base chunk & Lz4 error
                             dataWrite_->Chunk_Insert(tmpChunk);
@@ -111,7 +109,6 @@ void Palantir::ProcessTrace()
                         memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
                         deltachunkNum++;
                         deltachunkSize += tmpChunk.saveSize;
-                        DeltaReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
                         free(deltachunk);
                         dataWrite_->Chunk_Insert(tmpChunk);
                         DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
@@ -142,7 +139,6 @@ void Palantir::ProcessTrace()
                     basechunkOriSize += tmpChunk.chunkSize;
                     basechunkSize += tmpChunk.saveSize;
                     LZ4Ratio = (double)basechunkOriSize / (double)basechunkSize;
-                    LocalReductSize += tmpChunk.chunkSize - tmpChunk.saveSize;
                     if (tmpChunk.deltaFlag == NO_LZ4)
                         // base chunk & Lz4 error
                         dataWrite_->Chunk_Insert(tmpChunk);
@@ -163,7 +159,6 @@ void Palantir::ProcessTrace()
                     SF_Insert(superfeature, tmpChunk.chunkID);
                 DedupReduct += tmpChunk.chunkSize;
                 PrevDedupChunkid = findRes;
-                DedupReductSize += tmpChunk.chunkSize;
             }
 
             if (tmpChunk.HeaderFlag == 0)
