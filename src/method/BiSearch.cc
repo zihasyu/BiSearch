@@ -153,7 +153,7 @@ void BiSearch::ProcessTrace()
                             }
                             else
                             {
-                                cout << "lz4 compress error" << endl;
+                                //cout << "lz4 compress error" << endl;
                                 tmpChunk.deltaFlag = NO_LZ4;
                                 tmpChunk.saveSize = tmpChunk.chunkSize;
                             }
