@@ -44,7 +44,7 @@ void Dedup::ProcessTrace()
                 int lz4Size = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
                 if (lz4Size <= 0)
                 {
-                   // cout << "lz4 compress error" << endl;
+                    // cout << "lz4 compress error" << endl;
                     tmpChunk.deltaFlag = NO_LZ4;
                     lz4Size = tmpChunk.chunkSize;
                 }
