@@ -84,8 +84,8 @@ void BiSearch::ProcessTrace()
 
                     if (tmpdeltachunksize > tmpChunk.chunkSize)
                     {
-                        cout << "bug in unique chunk & locality try & in locality windows" << endl;
-                        cout << "tmpdeltachunksize:" << tmpdeltachunksize << " tmpchunk size is " << tmpChunk.chunkSize << " tmpchunk id is " << tmpChunk.chunkID << endl;
+                        // cout << "bug in unique chunk & locality try & in locality windows" << endl;
+                        // cout << "tmpdeltachunksize:" << tmpdeltachunksize << " tmpchunk size is " << tmpChunk.chunkSize << " tmpchunk id is " << tmpChunk.chunkID << endl;
                         bugCount++;
                         tmpChunk.saveSize = tmpChunk.chunkSize;
                         tmpChunk.deltaFlag = NO_DELTA;
@@ -205,7 +205,7 @@ void BiSearch::ProcessTrace()
                                 // odess hit but odess bug
                                 if (tmpChunk.saveSize > tmpChunk.chunkSize)
                                 {
-                                    cout << "bug in odess hit but odess bug" << endl;
+                                    // cout << "bug in odess hit but odess bug" << endl;
                                     bugCount++;
                                     int tmpChunkLz4CompressSize = 0;
 
@@ -336,7 +336,7 @@ void BiSearch::ProcessTrace()
                         {
                             if (tmpChunk.saveSize > tmpChunk.chunkSize)
                             {
-                                cout << "bug in odess try & not in locality windows &odess hits" << endl;
+                                // cout << "bug in odess try & not in locality windows &odess hits" << endl;
                                 bugCount++;
                                 int tmpChunkLz4CompressSize = 0;
                                 tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);

@@ -2,9 +2,8 @@ cd bin
 path=/mnt/dataset2/vmdk-tar
 name=_vmdk
 num=100
-./BiSearch -i $path -c 1 -m 3 -n $num  >Odess$name.txt
+# ./BiSearch -i $path -c 1 -m 3 -n $num  >Odess$name.txt
 ./BiSearch -i $path -c 4 -m 5 -n $num  >BiSearchMultiTar$name.txt
-
 
 ./BiSearch -i $path -c 1 -m 0 -n $num  >Dedup$name.txt
 ./BiSearch -i $path -c 1 -m 1 -n $num  >Ntransform$name.txt

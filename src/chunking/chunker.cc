@@ -99,7 +99,7 @@ void Chunker::ChunkerInit()
 void Chunker::Chunking()
 {
     bool end = false;
-    uint32_t totalOffset = 0;
+    uint64_t totalOffset = 0;
     while (!end)
     {
         memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
@@ -174,12 +174,12 @@ void Chunker::Chunking()
     return;
 }
 
-uint32_t Chunker::CutPointFastCDC(const uint8_t *src, const uint32_t len)
+uint32_t Chunker::CutPointFastCDC(const uint8_t *src, const uint64_t len)
 {
-    uint32_t n;
+    uint64_t n;
     uint32_t fp = 0;
-    uint32_t i;
-    i = min(len, static_cast<uint32_t>(minChunkSize));
+    uint64_t i;
+    i = min(len, static_cast<uint64_t>(minChunkSize));
     n = min(normalSize, len);
     for (; i < n; i++)
     {
@@ -190,7 +190,7 @@ uint32_t Chunker::CutPointFastCDC(const uint8_t *src, const uint32_t len)
         }
     }
 
-    n = min(static_cast<uint32_t>(maxChunkSize), len);
+    n = min(static_cast<uint64_t>(maxChunkSize), len);
     for (; i < n; i++)
     {
         fp = (fp >> 1) + GEAR[src[i]];
@@ -201,10 +201,10 @@ uint32_t Chunker::CutPointFastCDC(const uint8_t *src, const uint32_t len)
     }
     return i;
 };
-uint32_t Chunker::CutPointGear(const uint8_t *src, const uint32_t len)
+uint32_t Chunker::CutPointGear(const uint8_t *src, const uint64_t len)
 {
     uint32_t fp = 0;
-    uint32_t i = 0;
+    uint64_t i = 0;
     for (; i < len; i++)
     {
         fp = (fp >> 1) + GEAR[src[i]];
@@ -215,7 +215,7 @@ uint32_t Chunker::CutPointGear(const uint8_t *src, const uint32_t len)
     }
     return i;
 };
-uint32_t Chunker::CutPointTarFast(const uint8_t *src, const uint32_t len)
+uint32_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
 {
     switch (Next_Chunk_Type)
     {
@@ -372,7 +372,7 @@ inline uint32_t Chunker::DivCeil(uint32_t a, uint32_t b)
     }
 }
 
-uint32_t Chunker::CutPointTarHeader(const uint8_t *src, const uint32_t len)
+uint32_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
 // 调用CutPointTarFast，因为有NextChunkType的全局变量，所以断在哪里都没关系。但是为了减少recipe压力（一对segment可恢复），满足结尾时下一个type还是header即可。
 {
     uint64_t blockTypeMask;
@@ -519,7 +519,7 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
 
         // data chunk rewrite
         bool end = false;
-        uint32_t totalOffset = 0;
+        uint64_t totalOffset = 0;
         while (!end)
         {
             memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);

@@ -27,10 +27,10 @@ private:
     // uint64_t avgChunkSize_;
     // uint64_t minChunkSize_;
     // uint64_t maxChunkSize_;
-    uint32_t minChunkSize = 4096;
-    uint32_t avgChunkSize = 8192;
-    uint32_t maxChunkSize = 16384;
-    uint32_t normalSize;
+    uint64_t minChunkSize = 4096;
+    uint64_t avgChunkSize = 8192;
+    uint64_t maxChunkSize = 16384;
+    uint64_t normalSize;
     uint32_t bits;
     uint32_t maskS;
     uint32_t maskL;
@@ -78,11 +78,11 @@ public:
     uint32_t CalNormalSize(const uint32_t min, const uint32_t av, const uint32_t max);
     inline uint32_t DivCeil(uint32_t a, uint32_t b);
     // Chunking Methods
-    uint32_t CutPointFixSized(const uint8_t *src, const uint32_t len);
-    uint32_t CutPointFastCDC(const uint8_t *src, const uint32_t len);
-    uint32_t CutPointGear(const uint8_t *src, const uint32_t len);
-    uint32_t CutPointTarFast(const uint8_t *src, const uint32_t len);
-    uint32_t CutPointTarHeader(const uint8_t *src, const uint32_t len);
+    uint32_t CutPointFixSized(const uint8_t *src, const uint64_t len);
+    uint32_t CutPointFastCDC(const uint8_t *src, const uint64_t len);
+    uint32_t CutPointGear(const uint8_t *src, const uint64_t len);
+    uint32_t CutPointTarFast(const uint8_t *src, const uint64_t len);
+    uint32_t CutPointTarHeader(const uint8_t *src, const uint64_t len);
     void MTar(vector<string> &readfileList, uint32_t backupNum);
 
     // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it
