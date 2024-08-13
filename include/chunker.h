@@ -79,10 +79,10 @@ public:
     inline uint32_t DivCeil(uint32_t a, uint32_t b);
     // Chunking Methods
     uint32_t CutPointFixSized(const uint8_t *src, const uint64_t len);
-    uint32_t CutPointFastCDC(const uint8_t *src, const uint64_t len);
+    uint64_t CutPointFastCDC(const uint8_t *src, const uint64_t len);
     uint32_t CutPointGear(const uint8_t *src, const uint64_t len);
-    uint32_t CutPointTarFast(const uint8_t *src, const uint64_t len);
-    uint32_t CutPointTarHeader(const uint8_t *src, const uint64_t len);
+    uint64_t CutPointTarFast(const uint8_t *src, const uint64_t len);
+    uint64_t CutPointTarHeader(const uint8_t *src, const uint64_t len);
     void MTar(vector<string> &readfileList, uint32_t backupNum);
 
     // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it

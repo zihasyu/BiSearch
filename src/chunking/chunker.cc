@@ -116,7 +116,7 @@ void Chunker::Chunking()
             // cout << " len is " << len << " localOffset is " << localOffset << endl;
             Chunk_t chunk;
             // compute cutPoint
-            uint32_t cp = 0;
+            uint64_t cp = 0;
             switch (chunkType)
             {
             case FIXED_SIZE:
@@ -174,7 +174,7 @@ void Chunker::Chunking()
     return;
 }
 
-uint32_t Chunker::CutPointFastCDC(const uint8_t *src, const uint64_t len)
+uint64_t Chunker::CutPointFastCDC(const uint8_t *src, const uint64_t len)
 {
     uint64_t n;
     uint32_t fp = 0;
@@ -215,7 +215,7 @@ uint32_t Chunker::CutPointGear(const uint8_t *src, const uint64_t len)
     }
     return i;
 };
-uint32_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
+uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
 {
     switch (Next_Chunk_Type)
     {
@@ -245,6 +245,7 @@ uint32_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
                 //     Big_Chunk_Allowance--;
                 //     Big_Chunk_Last_Size = CONTAINER_MAX_SIZE;
                 // }
+                // cout << "REGTYPE BigChunkSize is " << Big_Chunk_Size << endl;
             }
         }
         if (*(src + 156) == AREGTYPE)
@@ -254,20 +255,22 @@ uint32_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             {
                 Next_Chunk_Size = Next_Chunk_Size * 8 + data[i];
             }
+            // cout << "AREGTYPE ChunkSize is " << Next_Chunk_Size << endl;
+            Next_Chunk_Size = 0;
             if (Next_Chunk_Size <= CONTAINER_MAX_SIZE)
                 Next_Chunk_Type = FILE_CHUNK;
             else
             {
                 Next_Chunk_Type = BIG_CHUNK;
+                Next_Chunk_Size = 0;
+                for (int i = 0; i < 11; i++)
+                {
+                    Next_Chunk_Size = Next_Chunk_Size * 8 + data[i] - 48;
+                    cout << data[i];
+                }
                 Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
                 Big_Chunk_Offset = 0;
-                // Big_Chunk_Allowance = Next_Chunk_Size / CONTAINER_MAX_SIZE;
-                // Big_Chunk_Last_Size = Next_Chunk_Size % CONTAINER_MAX_SIZE;
-                // if (Big_Chunk_Last_Size == 0)
-                // {
-                //     Big_Chunk_Allowance--;
-                //     Big_Chunk_Last_Size = CONTAINER_MAX_SIZE;
-                // }
+                // cout << "AREGTYPE BigChunkSize is " << Big_Chunk_Size << endl;
             }
         }
         if (*(src + 156) == 'x' || *(src + 156) == GNUTYPE_LONGNAME)
@@ -293,7 +296,7 @@ uint32_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
     }
     case FILE_CHUNK:
     {
-        uint32_t roundedUp = (Next_Chunk_Size + 511) / 512 * 512;
+        uint64_t roundedUp = (Next_Chunk_Size + 511) / 512 * 512;
         Next_Chunk_Type = FILE_HEADER;
         Next_Chunk_Size = 512;
         if (roundedUp < len)
@@ -308,7 +311,7 @@ uint32_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
         {
             // Big_Chunk_Allowance--;
             // cout << " BigChunkSize is " << Big_Chunk_Size << " BigChunkOffset is" << Big_Chunk_Offset << endl;
-            uint32_t cp = CutPointFastCDC(src,
+            uint64_t cp = CutPointFastCDC(src,
                                           Big_Chunk_Size - Big_Chunk_Offset);
             Big_Chunk_Offset += cp;
             // cout << "offset is " << Big_Chunk_Offset << " cp is " << cp << endl;
@@ -372,11 +375,11 @@ inline uint32_t Chunker::DivCeil(uint32_t a, uint32_t b)
     }
 }
 
-uint32_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
+uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
 // 调用CutPointTarFast，因为有NextChunkType的全局变量，所以断在哪里都没关系。但是为了减少recipe压力（一对segment可恢复），满足结尾时下一个type还是header即可。
 {
     uint64_t blockTypeMask;
-    size_t cpSum = 0;
+    uint64_t cpSum = 0;
     uint64_t loopTime = 1;
     if (Next_Chunk_Type == FILE_HEADER)
     {
