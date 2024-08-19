@@ -11,7 +11,7 @@ using namespace std;
 class BiSearch : public AbsMethod
 {
 private:
-    string myName_ = "BiSearch";
+    const string myName_ = "BiSearch";
     PLChunk plchunk;
     uint64_t logicalId = 0;
     int DedupGap = 0;

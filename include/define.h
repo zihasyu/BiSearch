@@ -342,7 +342,8 @@ enum METHOD_TYPE
     FINESSE,
     ODESS,
     PALANTIR,
-    BiSEARCH
+    BiSEARCH,
+    LOCALITY
 };
 
 enum DELTA_TYPE

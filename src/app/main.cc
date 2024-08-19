@@ -96,6 +96,11 @@ int main(int argc, char **argv)
         absMethodObj = new BiSearch(8.0);
         break;
     }
+    case LOCALITY:
+    {
+        absMethodObj = new LocalDedup();
+        break;
+    }
     default:
         break;
     }

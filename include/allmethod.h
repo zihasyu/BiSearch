@@ -8,5 +8,6 @@
 #include "palantir.h"
 #include "bisearch.h"
 #include "ntransform.h"
+#include "locality.h"
 
 #endif
