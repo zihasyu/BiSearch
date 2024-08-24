@@ -31,8 +31,6 @@ int main(int argc, char **argv)
     if (argc < sizeof(optString))
     {
         cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number>" << endl;
-        cout << "Chunking Methods: " << "0 for fixed size chunking, 1 for FastCDC chunking" << endl;
-        cout << "Compression Methods: " << "0 for lz4, 1 lz4-cluster-basline" << endl;
         return 0;
     }
 
@@ -159,7 +157,8 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
     absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds);
-    // restore backup if you need, but it's not necessary
+
+    //  restore backup if you need, but it's not necessary
     // if (chunkingType != TAR_MultiHeader)
     //     for (auto i = 0; i < backupNum; i++)
     //     {
@@ -172,7 +171,8 @@ int main(int argc, char **argv)
     //         absMethodObj->dataWrite_->SetFilename(readfileList[i]);
     //         absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
     //     }
-
+    string fileName = "C" + to_string(chunkingType) + "_M" + to_string(compressionMethod);
+    absMethodObj->dataWrite_->Save_to_File_unique(fileName);
     delete absMethodObj->dataWrite_;
     delete chunkerObj;
     delete absMethodObj;

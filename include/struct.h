@@ -22,8 +22,8 @@ typedef struct
     uint8_t *chunkPtr;
     int basechunkID;
     uint8_t deltaFlag = NO_DELTA;
-    bool loadFromDisk;
-    bool HeaderFlag = 0;
+    bool loadFromDisk = false;
+    bool HeaderFlag = false;
     // offset and containerId
     uint64_t offset;
     uint64_t containerID;

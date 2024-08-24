@@ -94,23 +94,12 @@ public:
     int Get_Chunk_Num();
     int Get_Container_Num(Chunk_t chunk);
     Chunk_t Get_Chunk_Info(int id);
-    // bool FP_Insert(string fp, int chunkid);
-    // int FP_Find(string fp);
-    //  int Obj_Find(uint32_t objid);
-    //  bool Obj_Insert(uint32_t objid, int chunkid);
-    // int Obj_Find(string objid);
-    // bool Obj_Insert(string objid, int chunkid);
+
     bool Recipe_Insert(uint64_t chunkID);
     bool Recipe_Header_Insert(uint64_t chunkID);
     void restoreFile(string fileName);
     void restoreHeaderFile(string fileName);
-    // bool SF_Insert(const char *key, size_t keySize, int chunkid);
-    // bool SF_Insert_Adjacency(const char *key, size_t keySize, int chunkid);
-    // int SF_Find(const char *key, size_t keySize);
-    // int SF_Find_random(const char *key, size_t keySize);
-    // int SF_Find_Debug(const char *key, size_t keySize);
-    // int SF_Find_Adjacency(const char *key, size_t keySize);
-    //_Adjacency
+
     void Save_to_File(string methodname);
     void Save_to_File_unique(string methodname);
     void Save_to_File_Chunking(string methodname);

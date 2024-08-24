@@ -121,10 +121,6 @@ bool dataWrite::Chunk_Insert(Chunk_t chunk)
     chunkNum++;
     containerSize += chunk.saveSize;
     curContainer.chunkNum++;
-    if (chunk.chunkID == 1149)
-    {
-        cout << "1149 is here and is delta" << endl;
-    }
     if (curContainer.size + tmpSize > CONTAINER_MAX_SIZE)
     {
         // TODO put into MQ
@@ -736,67 +732,6 @@ void dataWrite::Save_to_File(string methodname)
     return;
 }
 
-void dataWrite::Save_to_File_unique(string methodname)
-{
-    ofstream outfile;
-    // uint64_t traceid = 0;
-    string filename = "./" + methodname + "_recipe_unique.txt";
-    if (!tool::FileExist(filename))
-    {
-        outfile.open(filename, ios::out);
-        outfile << "ChunkID,"
-                << "BasechunkID,"
-                << "ChunkSize,"
-                << "SaveSize,"
-                << "DeltaFlag,"
-                << "ChunkFlag"
-                //<< "tmpFinesseSize"
-                //<< "tmpLocalSize"
-                << endl;
-    }
-    else
-    {
-        outfile.open(filename, ios::out | ios::binary);
-    }
-
-    if (!outfile.is_open())
-    {
-        cout << "open file failed" << endl;
-        return;
-    }
-    for (int i = 0; i < chunklist.size(); i++)
-    {
-        Chunk_t tmpChunkrecipe = this->Get_Chunk_Info(i);
-        int basechunkID = tmpChunkrecipe.basechunkID;
-        uint64_t chunkSize = tmpChunkrecipe.chunkSize;
-        uint64_t saveSize = tmpChunkrecipe.saveSize;
-        int DeltaFlag = tmpChunkrecipe.deltaFlag;
-        string ChunkFlag;
-        if (DeltaFlag == NO_DELTA)
-        {
-            ChunkFlag = "Base";
-        }
-        else if (DeltaFlag == FINESSE_TO_BASE)
-        {
-            ChunkFlag = "Finesse_To_Base";
-        }
-        else if (DeltaFlag == FINESSE_DELTA)
-        {
-            ChunkFlag = "Odess";
-        }
-        else if (DeltaFlag == LOCAL_DELTA)
-        {
-            // cout << "Local" << endl;
-            ChunkFlag = "Local";
-        }
-
-        outfile << i << "," << basechunkID << "," << chunkSize << "," << saveSize
-                << "," << DeltaFlag << "," << ChunkFlag << endl;
-    }
-    outfile.close();
-    return;
-}
-
 void dataWrite::writeContainers()
 {
     Container_t tmpContainer;
@@ -1162,4 +1097,44 @@ void dataWrite::chunkprint(const Chunk_t chunk)
     cout << " Offset: " << chunk.offset << endl;
     cout << " containerID: " << chunk.containerID << endl;
     cout << endl;
+}
+
+void dataWrite::Save_to_File_unique(string methodname)
+{
+    ofstream outfile;
+    // uint64_t traceid = 0;
+    string filename = "./" + methodname + "_chunkIndex.txt";
+    if (!tool::FileExist(filename))
+    {
+        outfile.open(filename, ios::out);
+        outfile << "ChunkID,"
+                << "BasechunkID,"
+                << "ChunkSize,"
+                << "SaveSize,"
+                << "DeltaFlag,"
+                << "loadFromDisk, "
+                << "HeaderFlag, "
+                << "offset, "
+                << "containerID, "
+                << endl;
+    }
+    else
+    {
+        outfile.open(filename, ios::out | ios::binary);
+    }
+
+    if (!outfile.is_open())
+    {
+        cout << "open file failed" << endl;
+        return;
+    }
+    for (int i = 0; i < chunklist.size(); i++)
+    {
+        Chunk_t tmpChunk = this->Get_Chunk_MetaInfo(i);
+        outfile << tmpChunk.chunkID << "," << tmpChunk.basechunkID << "," << tmpChunk.chunkSize << "," << tmpChunk.saveSize
+                << "," << (uint64_t)tmpChunk.deltaFlag << "," << tmpChunk.loadFromDisk << "," << tmpChunk.HeaderFlag << ","
+                << tmpChunk.offset << "," << tmpChunk.containerID << endl;
+    }
+    outfile.close();
+    return;
 }
