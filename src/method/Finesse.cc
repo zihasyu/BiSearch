@@ -118,8 +118,7 @@ void Finesse::ProcessTrace()
                         memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
                         tmpChunk.deltaFlag = FINESSE_DELTA;
                         tmpChunk.basechunkID = basechunkID;
-                        deltachunkNum++;
-                        deltachunkSize += tmpChunk.saveSize;
+                        StatsDelta(tmpChunk);
                         free(deltachunk);
                     }
 
@@ -127,7 +126,6 @@ void Finesse::ProcessTrace()
                     if (basechunkinfo.loadFromDisk)
                         free(basechunkinfo.chunkPtr);
                     dataWrite_->Chunk_Insert(tmpChunk);
-                    DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                 }
 
                 uniquechunkNum++;
@@ -147,13 +145,7 @@ void Finesse::ProcessTrace()
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
-    cout << "logical chunk num: " << logicalchunkNum << endl;
-    cout << "unique chunk num: " << uniquechunkNum << endl;
-    cout << "base chunk num: " << basechunkNum << endl;
-    cout << "delta chunk num: " << deltachunkNum << endl;
-    cout << "logicalchunkSize is " << logicalchunkSize << endl;
-    cout << "uniquechunkSize is " << uniquechunkSize << endl;
-    cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    Version_log();
     recieveQueue->done_ = false;
     return;
 }

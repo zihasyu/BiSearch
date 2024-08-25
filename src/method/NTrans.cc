@@ -72,9 +72,7 @@ void NTransForm::ProcessTrace()
                         tmpChunk.deltaFlag = DELTA;
                         tmpChunk.basechunkID = basechunkid;
                         memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
-                        deltachunkNum++;
-                        deltachunkSize += tmpChunk.saveSize;
-                        DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+                        StatsDelta(tmpChunk);
                         free(deltachunk);
                     }
                     if (basechunkInfo.loadFromDisk)
@@ -131,13 +129,7 @@ void NTransForm::ProcessTrace()
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
-    cout << "logical chunk num: " << logicalchunkNum << endl;
-    cout << "unique chunk num: " << uniquechunkNum << endl;
-    cout << "base chunk num: " << basechunkNum << endl;
-    cout << "delta chunk num: " << deltachunkNum << endl;
-    cout << "logicalchunkSize is " << logicalchunkSize << endl;
-    cout << "uniquechunkSize is " << uniquechunkSize << endl;
-    cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    Version_log();
     recieveQueue->done_ = false;
     return;
 }

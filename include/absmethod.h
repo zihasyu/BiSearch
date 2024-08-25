@@ -54,6 +54,7 @@ public:
     uint64_t basechunkSize = 0;
     uint64_t basechunkOriSize = 0;
     uint64_t deltachunkSize = 0;
+    uint64_t deltachunkOriSize = 0;
     uint64_t finessechunkSize = 0;
     uint64_t finessePrechunkSize = 0;
     uint64_t localchunkSize = 0;
@@ -101,5 +102,7 @@ public:
     bool SF_Insert(const char *key, size_t keySize, int chunkid);
     uint8_t *xd3_encode(const uint8_t *targetChunkbuffer, size_t targetChunkbuffer_size, const uint8_t *baseChunkBuffer, size_t baseChunkBuffer_size, size_t *deltaChunkBuffer_size, uint8_t *tmpbuffer);
     void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time);
+    void StatsDelta(Chunk_t &tmpChunk);
+    void Version_log();
 };
 #endif

@@ -112,15 +112,12 @@ void BiSearch::ProcessTrace()
                         tmpChunk.saveSize = tmpdeltachunksize;
                         memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
                         free(deltachunk);
-
-                        deltachunkNum++;
-                        deltachunkSize += tmpChunk.saveSize;
                         localUniqueSize += tmpChunk.saveSize;
                         localLogicalSize += tmpChunk.chunkSize;
                         localchunkSize += tmpChunk.saveSize;
                         localPrechunkSize += tmpChunk.chunkSize;
                         localError = 0;
-                        DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize; // delta的贡献
+                        StatsDelta(tmpChunk);
                         // save delta
                         dataWrite_->Chunk_Insert(tmpChunk);
                     }
@@ -255,11 +252,9 @@ void BiSearch::ProcessTrace()
                                     tmpChunk.basechunkID = basechunkID;
                                     localError = 0;
                                     finessehit++;
-                                    deltachunkNum++;
-                                    deltachunkSize += tmpChunk.saveSize;
                                     finessechunkSize += tmpChunk.saveSize;
                                     finessePrechunkSize += tmpChunk.chunkSize;
-                                    DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize; // delta的贡献
+                                    StatsDelta(tmpChunk);
                                     localFlag = true;
                                     // save delta
                                     dataWrite_->Chunk_Insert(tmpChunk);
@@ -379,9 +374,7 @@ void BiSearch::ProcessTrace()
                                 tmpChunk.deltaFlag = FINESSE_DELTA;
                                 tmpChunk.basechunkID = basechunkID;
                                 finessehit++;
-                                deltachunkNum++;
-                                deltachunkSize += tmpChunk.saveSize;
-                                DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+                                StatsDelta(tmpChunk);
                                 localFlag = true;
                                 // save delta
                                 dataWrite_->Chunk_Insert(tmpChunk);
@@ -418,9 +411,7 @@ void BiSearch::ProcessTrace()
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
-    cout << "logicalchunkSize is " << logicalchunkSize << endl;
-    cout << "uniquechunkSize is " << uniquechunkSize << endl;
-    cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    Version_log();
     recieveQueue->done_ = false;
     return;
 }

@@ -107,11 +107,9 @@ void Palantir::ProcessTrace()
                         tmpChunk.deltaFlag = DELTA;
                         tmpChunk.basechunkID = basechunkid;
                         memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
-                        deltachunkNum++;
-                        deltachunkSize += tmpChunk.saveSize;
+                        StatsDelta(tmpChunk);
                         free(deltachunk);
                         dataWrite_->Chunk_Insert(tmpChunk);
-                        DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                     }
                     if (basechunkInfo.loadFromDisk)
                         free(basechunkInfo.chunkPtr);
@@ -170,13 +168,7 @@ void Palantir::ProcessTrace()
         }
     }
     cout << " avg Lz4Ratio is " << LZ4Ratio << endl;
-    cout << "logical chunk num: " << logicalchunkNum << endl;
-    cout << "unique chunk num: " << uniquechunkNum << endl;
-    cout << "base chunk num: " << basechunkNum << endl;
-    cout << "delta chunk num: " << deltachunkNum << endl;
-    cout << "logicalchunkSize is " << logicalchunkSize << endl;
-    cout << "uniquechunkSize is " << uniquechunkSize << endl;
-    cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    Version_log();
     recieveQueue->done_ = false;
     return;
 }

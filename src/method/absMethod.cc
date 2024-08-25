@@ -319,3 +319,23 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     out.close();
     return;
 }
+
+void AbsMethod::StatsDelta(Chunk_t &tmpChunk)
+{
+    deltachunkOriSize += tmpChunk.chunkSize;
+    deltachunkSize += tmpChunk.saveSize;
+    deltachunkNum++;
+    DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+}
+
+void AbsMethod::Version_log()
+{
+    cout << "logical chunk num: " << logicalchunkNum << endl;
+    cout << "unique chunk num: " << uniquechunkNum << endl;
+    cout << "base chunk num: " << basechunkNum << endl;
+    cout << "delta chunk num: " << deltachunkNum << endl;
+    cout << "logicalchunkSize is " << logicalchunkSize << endl;
+    cout << "uniquechunkSize is " << uniquechunkSize << endl;
+    cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    cout << "Delta Compression Ratio: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+}
