@@ -3,7 +3,7 @@
 
 #include "absmethod.h"
 #include "odess_similarity_detection.h"
-
+#include "../../../gurobi1102/linux64/include/gurobi_c++.h"
 using namespace std;
 
 class OptimalOdess : public AbsMethod
@@ -19,7 +19,7 @@ public:
     ~OptimalOdess();
     void ProcessTrace();
     std::vector<uint64_t> matrixS();
-    std::vector<std::vector<std::pair<uint64_t, uint64_t>>> matrixD();
+    std::vector<std::unordered_map<uint64_t, uint64_t>> matrixD();
     void ILP();
 };
 #endif

@@ -31,6 +31,7 @@ void OptimalOdess::ProcessTrace()
         {
             // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
+            Version++;
             break;
         }
         Chunk_t tmpChunk;
@@ -104,6 +105,8 @@ void OptimalOdess::ProcessTrace()
 
     Version_log();
     recieveQueue->done_ = false;
+    if (Version == backupnum)
+        ILP();
     return;
 }
 
@@ -122,11 +125,11 @@ std::vector<uint64_t> OptimalOdess::matrixS()
     return S;
 };
 
-std::vector<std::vector<std::pair<uint64_t, uint64_t>>> OptimalOdess::matrixD()
+std::vector<std::unordered_map<uint64_t, uint64_t>> OptimalOdess::matrixD()
 {
     std::ofstream matrixD("matrixD.txt");
     const int n = dataWrite_->Get_Chunk_Num();
-    std::vector<std::vector<std::pair<uint64_t, uint64_t>>> D;
+    std::vector<std::unordered_map<uint64_t, uint64_t>> D;
     for (int i = 0; i < n; ++i)
     {
         auto tmpChunk = dataWrite_->Get_Chunk_Info(i);
@@ -136,6 +139,8 @@ std::vector<std::vector<std::pair<uint64_t, uint64_t>>> OptimalOdess::matrixD()
 
         for (const auto &basechunkidvalue : basechunkid)
         {
+            if (basechunkidvalue >= i)
+                continue;
             uint64_t DeltaSize = 0;
             auto basechunkInfo = dataWrite_->Get_Chunk_Info(basechunkidvalue);
             uint8_t *deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkInfo.chunkPtr, basechunkInfo.chunkSize, &DeltaSize, deltaMaxChunkBuffer);
@@ -144,7 +149,7 @@ std::vector<std::vector<std::pair<uint64_t, uint64_t>>> OptimalOdess::matrixD()
                 cout << "delta error" << endl;
             }
             else
-                D[i].push_back(std::make_pair(basechunkidvalue, DeltaSize));
+                D[i].emplace(basechunkidvalue, DeltaSize);
             matrixD << "(" << i << ", " << basechunkidvalue << ") delta size: " << DeltaSize << endl;
             if (basechunkInfo.loadFromDisk)
                 free(basechunkInfo.chunkPtr);
@@ -158,5 +163,135 @@ std::vector<std::vector<std::pair<uint64_t, uint64_t>>> OptimalOdess::matrixD()
 void OptimalOdess::ILP()
 {
     std::vector<uint64_t> S = matrixS();
-    std::vector<std::vector<std::pair<uint64_t, uint64_t>>> D = matrixD();
+    std::vector<std::unordered_map<uint64_t, uint64_t>> D = matrixD();
+    try
+    {
+        std::srand(std::time(nullptr));
+        std::ofstream caseLog("case.txt");
+        GRBEnv env = GRBEnv(true);
+        env.set("LogFile", "chunk_optimization.log");
+        env.set(GRB_IntParam_Threads, 4);            // 减少线程数以节省内存
+        env.set(GRB_IntParam_Presolve, 2);           // 启用预处理
+        env.set(GRB_DoubleParam_NodefileStart, 0.2); // 将节点文件写入磁盘的阈值
+        env.set(GRB_DoubleParam_MemLimit, 20480);    // 设置内存限制为32GB
+        // env.set(GRB_IntParam_Crossover, 0);          // 禁用交叉求解阶段
+        // env.set(GRB_IntParam_Method, 1);             // 使用单纯形法
+        env.start();
+        GRBModel model = GRBModel(env);
+        const int n = dataWrite_->Get_Chunk_Num();
+        std::vector<GRBVar> x(n);
+        std::vector<std::vector<GRBVar>> y(n, std::vector<GRBVar>(n));
+        for (int i = 0; i < n; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                y[i][j] = model.addVar(0.0, 1.0, 0.0, GRB_BINARY); // init
+            }
+        }
+        // std::vector<std::vector<std::pair<int, GRBVar>>> y;
+        std::vector<GRBVar> z(n);
+
+        for (int i = 0; i < n; ++i)
+        {
+            x[i] = model.addVar(0.0, 1.0, S[i], GRB_BINARY);
+            z[i] = model.addVar(0.0, 1.0, 0.0, GRB_BINARY);
+            // for (const auto &elem : D[i])
+            // {
+            //     int var1 = elem.first;
+            //     GRBVar var2 = model.addVar(0.0, 1.0, elem.second, GRB_BINARY);
+            //     y[i].push_back(std::make_pair(var1, var2));
+            // }
+            for (const auto &elem : D[i])
+            {
+                int var1 = elem.first;
+                y[i][elem.first] = model.addVar(0.0, 1.0, elem.second, GRB_BINARY); // var1 must be less than i
+            }
+        }
+
+        for (int i = 0; i < n; ++i)
+        {
+            GRBLinExpr lhs = x[i];
+            for (int j = 0; j < n; ++j)
+            {
+                if (i != j && j < i)
+                {
+                    lhs += y[i][j];
+                }
+            }
+            model.addConstr(lhs == 1);
+        }
+
+        for (int j = 0; j < n; ++j)
+        {
+            GRBLinExpr lhs = 0;
+            for (int i = 0; i < n; ++i)
+            {
+                if (i != j && i < j)
+                {
+                    lhs += y[j][i];
+                }
+            }
+            model.addConstr(z[j] == lhs);
+        }
+
+        for (int i = 0; i < n; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                if (i != j && j < i)
+                {
+                    model.addConstr(y[i][j] <= 1 - z[j]);
+                }
+            }
+        }
+
+        GRBLinExpr objective = 0;
+        for (int i = 0; i < n; ++i)
+        {
+            objective += x[i] * S[i];
+            for (int j = 0; j < n; ++j)
+            {
+                if (i != j && j < i)
+                {
+                    objective += y[i][j] * D[i][j];
+                }
+            }
+        }
+        model.setObjective(objective, GRB_MINIMIZE);
+
+        model.optimize();
+
+        std::ofstream file("outputLog");
+
+        for (int i = 0; i < n; ++i)
+        {
+            if (x[i].get(GRB_DoubleAttr_X) > 0.5)
+            {
+                file << "Chunk " << i << " is stored fully." << std::endl;
+            }
+            else
+            {
+                for (int j = 0; j < i; ++j)
+                {
+                    if (y[i][j].get(GRB_DoubleAttr_X) > 0.5)
+                    {
+                        file << "Chunk " << i << " is stored as delta based on chunk " << j << "." << std::endl;
+                        break;
+                    }
+                }
+            }
+        }
+
+        file.close();
+        caseLog.close();
+    }
+    catch (GRBException e)
+    {
+        std::cout << "Error code = " << e.getErrorCode() << std::endl;
+        std::cout << e.getMessage() << std::endl;
+    }
+    catch (...)
+    {
+        std::cout << "Exception during optimization" << std::endl;
+    }
 };

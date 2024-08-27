@@ -22,6 +22,8 @@ protected:
 public:
     // util
     string filename;
+    int Version = 0;
+    int backupnum = 0;
     dataWrite *dataWrite_;
     uint8_t *lz4ChunkBuffer;
     uint8_t *hashBuf;

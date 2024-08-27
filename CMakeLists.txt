@@ -1,6 +1,7 @@
 set(CMAKE_BUILD_TYPE "Release")
 # set(CMAKE_BUILD_TYPE "Debug")
 cmake_minimum_required(VERSION 3.1)
+
 project(BiSearch)
 
 set(CMAKE_CXX_STANDARD 17)

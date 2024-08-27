@@ -99,6 +99,12 @@ int main(int argc, char **argv)
         absMethodObj = new LocalDedup();
         break;
     }
+    case OPTIMAL_ODESS:
+    {
+        absMethodObj = new OptimalOdess();
+        absMethodObj->backupnum = backupNum;
+        break;
+    }
     default:
         break;
     }

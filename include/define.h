@@ -343,7 +343,8 @@ enum METHOD_TYPE
     ODESS,
     PALANTIR,
     BiSEARCH,
-    LOCALITY
+    LOCALITY,
+    OPTIMAL_ODESS
 };
 
 enum DELTA_TYPE
