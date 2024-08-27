@@ -129,6 +129,7 @@ public:
   unordered_map<super_feature_t, vector<uint64_t>> SFindex;
   uint64_t SF_Find(const SuperFeatures &superfeatures);
   void SF_Insert(const SuperFeatures &superfeatures, const uint64_t chunkid);
+  std::vector<uint64_t> SF_MutiFind(const SuperFeatures &superfeatures);
 
 private:
   // unordered_map<super_feature_t, unordered_set<string>> feature_key_table_;

@@ -123,7 +123,6 @@ int main(int argc, char **argv)
 
     if (chunkingType == MTAR)
     {
-
         chunkerObj->MTar(readfileList, backupNum);
     }
 

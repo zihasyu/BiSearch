@@ -218,6 +218,21 @@ uint64_t FeatureIndexTable::SF_Find(const SuperFeatures &superfeatures)
   // return -1 if not found, uint64_t's MAX value
   return -1;
 }
+std::vector<uint64_t> FeatureIndexTable::SF_MutiFind(const SuperFeatures &superfeatures)
+{
+  std::vector<uint64_t> results;
+  for (const super_feature_t &sf : superfeatures)
+  {
+    if (auto it = SFindex.find(sf) != SFindex.end())
+    {
+      for (auto id : SFindex[sf])
+      {
+        results.push_back(id);
+      }
+    }
+  }
+  return results;
+}
 void FeatureIndexTable::SF_Insert(const SuperFeatures &superfeatures, const uint64_t chunkid)
 {
 
