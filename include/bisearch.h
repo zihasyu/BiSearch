@@ -28,6 +28,7 @@ private:
     uint64_t sameContainerTimes = 0;
     uint64_t lastContainerId = 0;
 
+    uint64_t costSum = 0;
     vector<char> chunkingbuffer;
     uint64_t bugCount = 0;
     z_stream defstream;
@@ -41,6 +42,7 @@ public:
     BiSearch(double ratio);
     ~BiSearch();
     void ProcessTrace();
+    bool estimateGain(uint64_t chunkSize, uint64_t deltaSize);
     long deflateCompress(uint8_t *in, size_t in_size, uint8_t *out, size_t out_size);
 };
 #endif

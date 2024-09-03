@@ -1,10 +1,10 @@
 cd bin
-method=6
-chunking=1
+method=5
+chunking=4
 
-name=LKT
-num=84
-./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C"${chunking}M${method}_${name}".txt
+# name=LKT
+# num=84
+# ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C"${chunking}M${method}_${name}".txt
 
 name=WEB
 num=102
