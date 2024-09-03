@@ -457,8 +457,6 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
     // TODO: cache read container
     // cout << "chunk list size is " << chunklist.size() << endl;
     int tmpSize = 0;
-    cout << "id is " << id << endl;
-    cout << "flag is " << chunklist[id].deltaFlag << endl;
     if (chunklist[id].deltaFlag == NO_DELTA)
         tmpSize = chunklist[id].chunkSize;
     else
