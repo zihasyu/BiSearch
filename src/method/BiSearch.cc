@@ -124,7 +124,7 @@ void BiSearch::ProcessTrace()
                     // unique chunk & locality hit &locality can be accept
                     // tmpratio > LZ4_RATIO && tmpChunk.deltaFlag != NO_DELTA
                     // estimateGain(tmpChunk.chunkSize, tmpdeltachunksize) && tmpChunk.deltaFlag != NO_DELTA
-                    if (estimateGain(tmpChunk.chunkSize, tmpdeltachunksize) && tmpChunk.deltaFlag != NO_DELTA) //&&  ((plchunk.chunkType == FI && (tmpratio  >= plchunk.compressionRatio - FiOffset)) || plchunk.chunkType == DUP) )
+                    if (tmpratio > LZ4_RATIO && tmpChunk.deltaFlag != NO_DELTA) //&&  ((plchunk.chunkType == FI && (tmpratio  >= plchunk.compressionRatio - FiOffset)) || plchunk.chunkType == DUP) )
                     {
                         tmpChunk.deltaFlag = LOCAL_DELTA;
                         tmpChunk.saveSize = tmpdeltachunksize;

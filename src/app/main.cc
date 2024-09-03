@@ -21,13 +21,13 @@ int main(int argc, char **argv)
     uint32_t chunkingType;
     uint32_t compressionMethod;
     uint32_t backupNum;
-
+    double ratio =8;
     string dirName;
     string myName = "BiSearchSystem";
 
     vector<string> readfileList;
 
-    const char optString[] = "i:m:c:n:";
+    const char optString[] = "i:m:c:n:r:";
     if (argc < sizeof(optString))
     {
         cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number>" << endl;
@@ -51,6 +51,9 @@ int main(int argc, char **argv)
             break;
         case 'n':
             backupNum = atoi(optarg);
+            break;
+        case 'r':
+            ratio = atoi(optarg);
             break;
         default:
             break;
@@ -91,7 +94,7 @@ int main(int argc, char **argv)
     }
     case BiSEARCH:
     {
-        absMethodObj = new BiSearch(8.0);
+        absMethodObj = new BiSearch(ratio);
         break;
     }
     case LOCALITY:
@@ -156,7 +159,7 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
-    absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds);
+    absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds,ratio);
 
     //  restore backup if you need, but it's not necessary
     // if (chunkingType != TAR_MultiHeader)

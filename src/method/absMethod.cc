@@ -258,7 +258,7 @@ uint8_t *AbsMethod::xd3_encode(const uint8_t *targetChunkbuffer, size_t targetCh
     return deltaChunkBuffer;
 }
 
-void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time)
+void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time,double ratio)
 {
     ofstream out;
     string fileName = "./chunkInfoLog.txt";
@@ -266,7 +266,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     {
         out.open(fileName, ios::out);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum <<" -r "<<ratio<< endl;
         out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
@@ -293,7 +293,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     {
         out.open(fileName, ios::app);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r "<<ratio<<endl;
         out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
