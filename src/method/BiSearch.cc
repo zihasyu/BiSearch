@@ -25,12 +25,12 @@ bool BiSearch::estimateGain(uint64_t chunkSize, uint64_t deltaSize)
 {
     // lz4 cost
     double avgLz4CompressionRatio = (double)lz4LogicalSize / (double)lz4UniqueSize;
-    uint64_t CostSelf = chunkSize - (chunkSize / avgLz4CompressionRatio);
+    double CostSelf = chunkSize - (chunkSize / avgLz4CompressionRatio);
 
-    uint64_t newDeltaNum = deltachunkNum / basechunkNum;
-    uint64_t deltaGain = DeltaReduct / deltachunkNum;
+    double newDeltaNum = deltachunkNum / basechunkNum;
+    double deltaGain = DeltaReduct / deltachunkNum;
 
-    uint64_t futureDeltaCost = deltaGain * newDeltaNum;
+    double futureDeltaCost = deltaGain * newDeltaNum;
     if (CostSelf + futureDeltaCost > (chunkSize - deltaSize))
         return false;
     else
@@ -123,7 +123,8 @@ void BiSearch::ProcessTrace()
 
                     // unique chunk & locality hit &locality can be accept
                     // tmpratio > LZ4_RATIO && tmpChunk.deltaFlag != NO_DELTA
-                    if (estimateGain(tmpChunk.chunkSize, tmpdeltachunksize) && tmpChunk.deltaFlag != NO_DELTA) //&&  ((plchunk.chunkType == FI && (tmpratio  >= plchunk.compressionRatio - FiOffset)) || plchunk.chunkType == DUP) )
+                    // estimateGain(tmpChunk.chunkSize, tmpdeltachunksize) && tmpChunk.deltaFlag != NO_DELTA
+                    if (tmpratio > LZ4_RATIO && tmpChunk.deltaFlag != NO_DELTA) //&&  ((plchunk.chunkType == FI && (tmpratio  >= plchunk.compressionRatio - FiOffset)) || plchunk.chunkType == DUP) )
                     {
                         tmpChunk.deltaFlag = LOCAL_DELTA;
                         tmpChunk.saveSize = tmpdeltachunksize;

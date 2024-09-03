@@ -287,7 +287,7 @@ void dataWrite::restoreHeaderFile(string fileName)
             // reset MultiHeaderSize and offset
             MultiHeaderChunkSize = tmpChunkInfo.chunkSize;
             MultiHeaderOffset = 0;
-            if (tmpChunkInfo.deltaFlag == NO_DELTA)
+            if (tmpChunkInfo.deltaFlag == NO_DELTA || tmpChunkInfo.deltaFlag == NO_LZ4)
             {
                 memcpy(MultiHeaderBuffer, tmpChunkInfo.chunkPtr, tmpChunkInfo.chunkSize);
             }
@@ -354,7 +354,7 @@ void dataWrite::restoreHeaderFile(string fileName)
             while (BigChunkSize)
             {
                 Chunk_t tmpChunkInfo = Get_Chunk_Info(*DataP++);
-                if (tmpChunkInfo.deltaFlag == NO_DELTA)
+                if (tmpChunkInfo.deltaFlag == NO_DELTA || tmpChunkInfo.deltaFlag == NO_LZ4)
                 {
                     outFile.write((char *)tmpChunkInfo.chunkPtr, tmpChunkInfo.chunkSize);
                 }
@@ -457,6 +457,8 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
     // TODO: cache read container
     // cout << "chunk list size is " << chunklist.size() << endl;
     int tmpSize = 0;
+    cout << "id is " << id << endl;
+    cout << "flag is " << chunklist[id].deltaFlag << endl;
     if (chunklist[id].deltaFlag == NO_DELTA)
         tmpSize = chunklist[id].chunkSize;
     else
