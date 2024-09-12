@@ -335,7 +335,7 @@ void AbsMethod::StatsDelta(Chunk_t &tmpChunk)
 
 void AbsMethod::Version_log()
 {
-    cout << "Version: " << Version << endl;
+    cout << "Version: " << ads_Version << endl;
     cout << "-----------------CHUNK NUM-----------------------" << endl;
     cout << "logical chunk num: " << logicalchunkNum << endl;
     cout << "unique chunk num: " << uniquechunkNum << endl;

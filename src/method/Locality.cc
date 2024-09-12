@@ -32,6 +32,7 @@ void LocalDedup::ProcessTrace()
             // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             Version++;
+            ads_Version++;
             break;
         }
         Chunk_t tmpChunk;

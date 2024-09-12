@@ -27,6 +27,7 @@ void Dedup::ProcessTrace()
             // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             cout << "dedup done" << endl;
+            ads_Version++;
             break;
         }
         Chunk_t tmpChunk;

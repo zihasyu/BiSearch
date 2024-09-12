@@ -24,6 +24,7 @@ private:
     FeatureIndexTable table;
 
 public:
+    int Version = 0;
     Palantir();
     ~Palantir();
     void ProcessTrace();

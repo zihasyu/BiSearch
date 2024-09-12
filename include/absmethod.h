@@ -20,7 +20,7 @@ class AbsMethod
 {
 protected:
 public:
-    int Version = 0;
+    int ads_Version = 0;
     // util
     string filename;
     dataWrite *dataWrite_;

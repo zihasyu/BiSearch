@@ -34,6 +34,7 @@ void Palantir::ProcessTrace()
             recieveQueue->done_ = false;
             CleanIndex();
             Version++;
+            ads_Version++;
             break;
         }
         Chunk_t tmpChunk;

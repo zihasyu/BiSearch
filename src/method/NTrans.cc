@@ -31,6 +31,7 @@ void NTransForm::ProcessTrace()
         {
             // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
+            ads_Version++;
             break;
         }
         Chunk_t tmpChunk;
