@@ -28,8 +28,9 @@ int main(int argc, char **argv)
     vector<string> readfileList;
 
     const char optString[] = "i:m:c:n:r:";
-    if (argc != sizeof(optString) || argc != sizeof(optString) - 2)
+    if (argc != sizeof(optString) && argc != sizeof(optString) - 2)
     {
+        cout << "argc is " << argc << endl;
         cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio>" << endl;
         return 0;
     }

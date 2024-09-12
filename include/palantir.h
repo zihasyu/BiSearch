@@ -27,7 +27,6 @@ public:
     Palantir();
     ~Palantir();
     void ProcessTrace();
-    int Version = 0;
     double LZ4Ratio = 2;
     unordered_map<super_feature_t, vector<uint64_t>> SFindex1;
     unordered_map<super_feature_t, vector<chunkid_version>> SFindex2;

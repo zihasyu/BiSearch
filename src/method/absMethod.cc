@@ -258,7 +258,7 @@ uint8_t *AbsMethod::xd3_encode(const uint8_t *targetChunkbuffer, size_t targetCh
     return deltaChunkBuffer;
 }
 
-void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time,double ratio)
+void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio)
 {
     ofstream out;
     string fileName = "./chunkInfoLog.txt";
@@ -266,7 +266,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     {
         out.open(fileName, ios::out);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum <<" -r "<<ratio<< endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << endl;
         out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
@@ -279,6 +279,8 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "unique chunk size: " << uniquechunkSize << endl;
         out << "base chunk size: " << basechunkSize << endl;
         out << "delta chunk size: " << deltachunkSize << endl;
+        out << "DCE: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+        out << "DCR: " << DCRSum / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "total time: " << time << "s" << endl;
@@ -293,7 +295,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     {
         out.open(fileName, ios::app);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r "<<ratio<<endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << endl;
         out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
@@ -306,6 +308,8 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "unique chunk size: " << uniquechunkSize << endl;
         out << "base chunk size: " << basechunkSize << endl;
         out << "delta chunk size: " << deltachunkSize << endl;
+        out << "DCE: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+        out << "DCR: " << DCRSum / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "total time: " << time << "s" << endl;
@@ -326,16 +330,22 @@ void AbsMethod::StatsDelta(Chunk_t &tmpChunk)
     deltachunkSize += tmpChunk.saveSize;
     deltachunkNum++;
     DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+    DCRSum += tmpChunk.chunkSize / tmpChunk.saveSize;
 }
 
 void AbsMethod::Version_log()
 {
+    cout << "Version: " << Version << endl;
+    cout << "-----------------CHUNK NUM-----------------------" << endl;
     cout << "logical chunk num: " << logicalchunkNum << endl;
     cout << "unique chunk num: " << uniquechunkNum << endl;
     cout << "base chunk num: " << basechunkNum << endl;
     cout << "delta chunk num: " << deltachunkNum << endl;
+    cout << "-----------------CHUNK SIZE-----------------------" << endl;
     cout << "logicalchunkSize is " << logicalchunkSize << endl;
     cout << "uniquechunkSize is " << uniquechunkSize << endl;
     cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
-    cout << "Delta Compression Ratio: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+    cout << "DCE: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+    cout << "DCR: " << DCRSum / (double)deltachunkNum << endl;
+    cout << "-----------------END-------------------------------" << endl;
 }
