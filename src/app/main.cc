@@ -21,16 +21,16 @@ int main(int argc, char **argv)
     uint32_t chunkingType;
     uint32_t compressionMethod;
     uint32_t backupNum;
-    double ratio =8;
+    double ratio = 8;
     string dirName;
     string myName = "BiSearchSystem";
 
     vector<string> readfileList;
 
     const char optString[] = "i:m:c:n:r:";
-    if (argc < sizeof(optString))
+    if (argc != sizeof(optString) || argc != sizeof(optString) - 2)
     {
-        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number>" << endl;
+        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio>" << endl;
         return 0;
     }
 
@@ -159,7 +159,7 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
-    absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds,ratio);
+    absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio);
 
     //  restore backup if you need, but it's not necessary
     // if (chunkingType != TAR_MultiHeader)
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
     //     for (auto i = 0; i < backupNum; i++)
     //     {
     //         absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-    // absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
+    //         absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
     //     }
 
     string fileName = "C" + to_string(chunkingType) + "_M" + to_string(compressionMethod);
