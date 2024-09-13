@@ -34,6 +34,7 @@ private:
     z_stream defstream;
     long errorCount = 0;
     long sameCount = 0;
+    double β = 0;
 
 public:
     std::chrono::time_point<std::chrono::high_resolution_clock>
