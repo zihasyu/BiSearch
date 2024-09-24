@@ -38,6 +38,11 @@ public:
     uint64_t bugCount = 0;
     uint64_t finessehit = 0;
     double DCESum = 0;
+    uint64_t SFnum = 0;
+    // time statics
+    std::chrono::time_point<std::chrono::high_resolution_clock> startSF, endSF;
+    std::chrono::duration<double> preSFTime;
+    std::chrono::duration<double> SFTime;
 
     unordered_map<string, int> FPindex; //(fp,chunkid)
     // 消息队列
@@ -50,6 +55,7 @@ public:
     // total
     std::chrono::duration<double> deltaCompressionTime;
     std::chrono::duration<double> lz4CompressionTime;
+    uint64_t preLogicalchunkiSize = 0;
     uint64_t logicalchunkSize = 0;
     uint64_t uniquechunkSize = 0;
     uint64_t dedupchunkSize = 0;
@@ -105,6 +111,6 @@ public:
     uint8_t *xd3_encode(const uint8_t *targetChunkbuffer, size_t targetChunkbuffer_size, const uint8_t *baseChunkBuffer, size_t baseChunkBuffer_size, size_t *deltaChunkBuffer_size, uint8_t *tmpbuffer);
     void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio);
     void StatsDelta(Chunk_t &tmpChunk);
-    void Version_log();
+    void Version_log(double time);
 };
 #endif

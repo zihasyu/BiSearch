@@ -274,11 +274,12 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "delta chunk num: " << deltachunkNum << endl;
         out << "finesse hit:" << finessehit << endl;
         out << "-----------------CHUNK SIZE-----------------------" << endl;
-        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
         out << "logical chunk size: " << logicalchunkSize << endl;
         out << "unique chunk size: " << uniquechunkSize << endl;
         out << "base chunk size: " << basechunkSize << endl;
         out << "delta chunk size: " << deltachunkSize << endl;
+        out << "-----------------METRICS-------------------------" << endl;
+        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
@@ -286,10 +287,13 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
+        out << "SF generation time: " << SFTime.count() << "s" << endl;
+        out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
+        out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
@@ -308,11 +312,12 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "delta chunk num: " << deltachunkNum << endl;
         out << "finesse hit:" << finessehit << endl;
         out << "-----------------CHUNK SIZE-----------------------" << endl;
-        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
         out << "logical chunk size: " << logicalchunkSize << endl;
         out << "unique chunk size: " << uniquechunkSize << endl;
         out << "base chunk size: " << basechunkSize << endl;
         out << "delta chunk size: " << deltachunkSize << endl;
+        out << "-----------------METRICS-------------------------" << endl;
+        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
@@ -320,10 +325,13 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
+        out << "SF generation time: " << SFTime.count() << "s" << endl;
+        out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
+        out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
@@ -343,7 +351,7 @@ void AbsMethod::StatsDelta(Chunk_t &tmpChunk)
     DCESum += tmpChunk.chunkSize / tmpChunk.saveSize;
 }
 
-void AbsMethod::Version_log()
+void AbsMethod::Version_log(double time)
 {
     cout << "Version: " << ads_Version << endl;
     cout << "-----------------CHUNK NUM-----------------------" << endl;
@@ -354,9 +362,26 @@ void AbsMethod::Version_log()
     cout << "-----------------CHUNK SIZE-----------------------" << endl;
     cout << "logicalchunkSize is " << logicalchunkSize << endl;
     cout << "uniquechunkSize is " << uniquechunkSize << endl;
+    cout << "base chunk size: " << basechunkSize << endl;
+    cout << "delta chunk size: " << deltachunkSize << endl;
+    cout << "-----------------METRICS-------------------------" << endl;
     cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
     cout << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
     cout << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
     cout << "DCE: " << DCESum / (double)deltachunkNum << endl;
+    cout << "-----------------Time------------------------------" << endl;
+    // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
+    cout << "Version time: " << time << "s" << endl;
+    cout << "Throughput: " << (double)(logicalchunkSize - preLogicalchunkiSize) / time / 1024 / 1024 << "MiB/s" << endl;
+    cout << "SF generation time: " << SFTime.count() - preSFTime.count() << "s" << endl;
+    cout << "SF generation throughput: " << (double)(logicalchunkSize - preLogicalchunkiSize) / (SFTime.count() - preSFTime.count()) / 1024 / 1024 << "MiB/s" << endl;
+    cout << "-----------------OverHead--------------------------" << endl;
+    // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
+    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+    cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
+    cout << "SF number: " << SFnum << endl;
     cout << "-----------------END-------------------------------" << endl;
+
+    preLogicalchunkiSize = logicalchunkSize;
+    preSFTime = SFTime;
 }

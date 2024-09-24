@@ -181,7 +181,7 @@ void LocalDedup::ProcessTrace()
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
-    Version_log();
+
     recieveQueue->done_ = false;
     return;
 }

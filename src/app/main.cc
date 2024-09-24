@@ -124,16 +124,14 @@ int main(int argc, char **argv)
     //     chunkerObj->SetOutputMaskMQ(MaskMQ);
     //     absMethodObj->SetInputMaskMQ(MaskMQ);
     // }
-
+    auto startsum = std::chrono::high_resolution_clock::now();
     if (chunkingType == MTAR)
     {
-
         chunkerObj->MTar(readfileList, backupNum);
     }
-
-    auto start = std::chrono::high_resolution_clock::now();
     for (auto i = 0; i < backupNum; i++)
     {
+        auto startTmp = std::chrono::high_resolution_clock::now();
         // set backup name
         chunkerObj->LoadChunkFile(readfileList[i]);
         absMethodObj->SetFilename(readfileList[i]);
@@ -149,11 +147,14 @@ int main(int argc, char **argv)
         {
             delete it;
         }
+        auto endTmp = std::chrono::high_resolution_clock::now();
+        auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
+        absMethodObj->Version_log(TimeTmp);
     }
 
-    auto end = std::chrono::high_resolution_clock::now();
-    auto sumTime = (end - start);
-    auto sumTimeInSeconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+    auto endsum = std::chrono::high_resolution_clock::now();
+    auto sumTime = (endsum - startsum);
+    auto sumTimeInSeconds = std::chrono::duration_cast<std::chrono::seconds>(endsum - startsum).count();
     std::cout << "Time taken by for loop: " << sumTimeInSeconds << " s " << std::endl;
     tool::Logging(myName.c_str(), "logical Chunk Num is %d\n", absMethodObj->logicalchunkNum);
     tool::Logging(myName.c_str(), "unique Chunk Num is %d\n", absMethodObj->uniquechunkNum);
@@ -177,7 +178,7 @@ int main(int argc, char **argv)
     //     }
 
     string fileName = "C" + to_string(chunkingType) + "_M" + to_string(compressionMethod);
-    absMethodObj->dataWrite_->Save_to_File_unique(fileName);
+    // absMethodObj->dataWrite_->Save_to_File_unique(fileName);
     delete absMethodObj->dataWrite_;
     delete chunkerObj;
     delete absMethodObj;

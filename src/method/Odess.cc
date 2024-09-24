@@ -26,13 +26,12 @@ void Odess::ProcessTrace()
     {
         string hashStr;
         hashStr.assign(CHUNK_HASH_SIZE, 0);
-        std::chrono::time_point<std::chrono::high_resolution_clock> startTime, endTime;
-
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
             // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             ads_Version++;
+            SFnum = basechunkNum * 3;
             break;
         }
         Chunk_t tmpChunk;
@@ -53,8 +52,12 @@ void Odess::ProcessTrace()
                 FP_Insert(hashStr, tmpChunk.chunkID);
                 tmpChunkContent.assign((char *)tmpChunk.chunkPtr, tmpChunk.chunkSize);
                 tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
-                // Odess get superfeature
+                // Odess get superfeature & get time
+                startSF = std::chrono::high_resolution_clock::now();
                 auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
+                endSF = std::chrono::high_resolution_clock::now();
+                SFTime += (endSF - startSF);
+
                 auto basechunkid = table.SF_Find(superfeature);
                 // auto ret = table.GetSimilarRecordsKeys(tmpChunkHash);
 
@@ -130,8 +133,6 @@ void Odess::ProcessTrace()
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
-
-    Version_log();
     recieveQueue->done_ = false;
     return;
 }

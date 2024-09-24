@@ -35,6 +35,7 @@ void Palantir::ProcessTrace()
             CleanIndex();
             Version++;
             ads_Version++;
+            SFnum = SFNew - SFDelete;
             break;
         }
         Chunk_t tmpChunk;
@@ -49,7 +50,10 @@ void Palantir::ProcessTrace()
             int findRes = FP_Find(hashStr);
             // Palantir get superfeature per logical chunk
             tmpChunkContent.assign((char *)tmpChunk.chunkPtr, tmpChunk.chunkSize);
+            startSF = std::chrono::high_resolution_clock::now();
             auto superfeature = table.feature_generator_.PalantirGetSF(tmpChunkContent);
+            endSF = std::chrono::high_resolution_clock::now();
+            SFTime += (endSF - startSF);
             if (findRes == -1)
             {
                 // Unique chunk found
@@ -155,7 +159,9 @@ void Palantir::ProcessTrace()
                 free(tmpChunk.chunkPtr);
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 if (tmpChunk.deltaFlag == NO_DELTA || tmpChunk.deltaFlag == NO_LZ4)
+                {
                     SF_Insert(superfeature, tmpChunk.chunkID);
+                }
                 DedupReduct += tmpChunk.chunkSize;
                 PrevDedupChunkid = findRes;
             }
@@ -169,8 +175,8 @@ void Palantir::ProcessTrace()
         }
     }
     cout << " avg Lz4Ratio is " << LZ4Ratio << endl;
-    Version_log();
     recieveQueue->done_ = false;
+    cout << "SFNew is " << SFNew << " SFDe is " << SFDelete << endl;
     return;
 }
 
@@ -213,7 +219,10 @@ void Palantir::SF_Insert(const SuperFeatures &superfeatures, const uint64_t chun
     for (int i = 0; i < 3; i++)
     {
         if (SFindex1[superfeatures[i]].empty())
+        {
             SFindex1[superfeatures[i]].push_back(chunkid);
+            SFNew++;
+        }
         else
             SFindex1[superfeatures[i]][0] = chunkid;
     }
@@ -222,6 +231,7 @@ void Palantir::SF_Insert(const SuperFeatures &superfeatures, const uint64_t chun
         if (SFindex2[superfeatures[i]].empty())
         {
             SFindex2[superfeatures[i]].push_back({chunkid, Version});
+            SFNew++;
         }
         else
         {
@@ -233,6 +243,7 @@ void Palantir::SF_Insert(const SuperFeatures &superfeatures, const uint64_t chun
         if (SFindex3[superfeatures[i]].empty())
         {
             SFindex3[superfeatures[i]].push_back({chunkid, Version});
+            SFNew++;
         }
         else
         {
@@ -250,7 +261,9 @@ void Palantir::CleanIndex()
     {
         if (!pair.second.empty() && pair.second[0].version < Version - 5)
         {
+
             pair.second.erase(pair.second.begin());
+            SFDelete++;
             // cout << "clear and the version is " << pair.second[0].version << endl;
         }
     }
@@ -258,7 +271,10 @@ void Palantir::CleanIndex()
     {
         if (!pair.second.empty() && pair.second[0].version < Version - 2)
         {
+
             pair.second.erase(pair.second.begin());
+
+            SFDelete++;
             // cout << "clear and the version is " << pair.second[0].version << endl;
         }
     }

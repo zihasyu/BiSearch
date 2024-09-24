@@ -32,6 +32,7 @@ void NTransForm::ProcessTrace()
             // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             ads_Version++;
+            SFnum = basechunkNum * 3;
             break;
         }
         Chunk_t tmpChunk;
@@ -53,8 +54,12 @@ void NTransForm::ProcessTrace()
                 tmpChunkContent.assign((char *)tmpChunk.chunkPtr, tmpChunk.chunkSize);
                 tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
                 // NTrans get superfeature
+                startSF = std::chrono::high_resolution_clock::now();
                 vector<uint64_t> sf(3);
                 auto ret = ntrans.getFeatureList(tmpChunk.chunkPtr, tmpChunk.chunkSize, fealist, sf);
+                endSF = std::chrono::high_resolution_clock::now();
+                SFTime += (endSF - startSF);
+
                 int basechunkid = ntrans.querySF(sf);
                 // auto ret = table.GetSimilarRecordsKeys(tmpChunkHash);
 
@@ -130,7 +135,7 @@ void NTransForm::ProcessTrace()
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
-    Version_log();
+
     recieveQueue->done_ = false;
     return;
 }

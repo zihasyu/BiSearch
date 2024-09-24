@@ -53,6 +53,7 @@ void BiSearch::ProcessTrace()
             recieveQueue->done_ = false;
             Version++;
             ads_Version++;
+            SFnum = basechunkNum * 3;
             break;
         }
         Chunk_t tmpChunk;
@@ -153,7 +154,10 @@ void BiSearch::ProcessTrace()
                         string ret = "not found";
                         if (tmpChunk.chunkSize >= 60)
                         {
+                            startSF = std::chrono::high_resolution_clock::now();
                             auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
+                            endSF = std::chrono::high_resolution_clock::now();
+                            SFTime += (endSF - startSF);
                             ret = table.GetSimilarRecordKey(superfeature);
                         }
                         // unique chunk & in locality windows & odess considered this is a base chunk
@@ -298,7 +302,10 @@ void BiSearch::ProcessTrace()
                     string ret = "not found";
                     if (tmpChunk.chunkSize >= 60)
                     {
+                        startSF = std::chrono::high_resolution_clock::now();
                         auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
+                        endSF = std::chrono::high_resolution_clock::now();
+                        SFTime += (endSF - startSF);
                         ret = table.GetSimilarRecordKey(superfeature);
                     }
                     computeSFtimes++;
@@ -431,7 +438,6 @@ void BiSearch::ProcessTrace()
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
-    Version_log();
     recieveQueue->done_ = false;
     return;
 }

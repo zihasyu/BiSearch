@@ -34,6 +34,7 @@ void Finesse::ProcessTrace()
             // outputMQ_->done_ = true;
             recieveQueue->done_ = false;
             ads_Version++;
+            SFnum = basechunkNum * 3;
             break;
         }
         Chunk_t tmpChunk;
@@ -53,11 +54,11 @@ void Finesse::ProcessTrace()
                 FP_Insert(hashStr, tmpChunk.chunkID);
 
                 // find basechunk
-                startTime = std::chrono::high_resolution_clock::now();
+                startSF = std::chrono::high_resolution_clock::now();
                 GetSF(tmpChunk.chunkPtr, mdCtx, tmpChunkSF, tmpChunk.chunkSize);
                 int basechunkID = SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
-                endTime = std::chrono::high_resolution_clock::now();
-                getSFTime += (endTime - startTime);
+                endSF = std::chrono::high_resolution_clock::now();
+                SFTime += (endSF - startSF);
                 computeSFtimes++;
                 if (basechunkID == -1)
                 {
@@ -146,7 +147,7 @@ void Finesse::ProcessTrace()
             logicalchunkSize += tmpChunk.chunkSize;
         }
     }
-    Version_log();
+
     recieveQueue->done_ = false;
     return;
 }
