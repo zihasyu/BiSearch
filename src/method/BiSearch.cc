@@ -145,24 +145,39 @@ void BiSearch::ProcessTrace()
                     // unique chunk & locality can't be accept
                     else
                     {
-                        if (deltachunk != nullptr)
-                        {
-                            free(deltachunk);
-                            deltachunk = nullptr;
-                        }
+
                         // unique chunk & in locality windows & running odess
-                        string ret = "not found";
-                        if (tmpChunk.chunkSize >= 60)
+                        uint64_t basechunkID  = -1;
+
+                        startSF = std::chrono::high_resolution_clock::now();
+                        auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
+                        endSF = std::chrono::high_resolution_clock::now();
+                        SFTime += (endSF - startSF);
+                        basechunkID  = table.SF_Find(superfeature);
+                        
+                        if(tmpChunk.basechunkID==basechunkID && tmpChunk.deltaFlag != NO_DELTA)
                         {
-                            startSF = std::chrono::high_resolution_clock::now();
-                            auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
-                            endSF = std::chrono::high_resolution_clock::now();
-                            SFTime += (endSF - startSF);
-                            ret = table.GetSimilarRecordKey(superfeature);
+                            tmpChunk.deltaFlag = LOCAL_DELTA;
+                            tmpChunk.saveSize = tmpdeltachunksize;
+                            memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
+                            free(deltachunk);
+                            localUniqueSize += tmpChunk.saveSize;
+                            localLogicalSize += tmpChunk.chunkSize;
+                            localchunkSize += tmpChunk.saveSize;
+                            localPrechunkSize += tmpChunk.chunkSize;
+                            localError = 0;
+                            StatsDelta(tmpChunk);
+                            // save delta
+                            dataWrite_->Chunk_Insert(tmpChunk);
                         }
                         // unique chunk & in locality windows & odess considered this is a base chunk
-                        if (ret == "not found")
+                        else if (basechunkID  == -1)
                         {
+                            if (deltachunk != nullptr)
+                            {
+                                free(deltachunk);
+                                deltachunk = nullptr;
+                            }
                             int tmpChunkLz4CompressSize = 0;
                             startTime = std::chrono::high_resolution_clock::now();
                             tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
@@ -181,9 +196,7 @@ void BiSearch::ProcessTrace()
 
                             localError++;
                             tmpChunk.basechunkID = -1;
-
-                            if (tmpChunk.chunkSize >= 60)
-                                table.Put(tmpChunkHash, tmpChunkContent);
+                            table.SF_Insert(superfeature, tmpChunk.chunkID);
                             basechunkNum++;
                             basechunkSize += tmpChunk.saveSize;
                             lz4LogicalSize += tmpChunk.chunkSize;
@@ -205,7 +218,11 @@ void BiSearch::ProcessTrace()
                         // unique chunk & in locality windows & odess hits
                         else
                         {
-                            int basechunkID = FP_Find(ret);
+                            if (deltachunk != nullptr)
+                            {
+                                free(deltachunk);
+                                deltachunk = nullptr;
+                            }
                             Chunk_t basechunkinfo;
                             uint8_t *deltachunk;
                             tmpChunk.saveSize = 0;
@@ -245,9 +262,7 @@ void BiSearch::ProcessTrace()
                                     }
                                     localError++;
                                     tmpChunk.basechunkID = -1;
-
-                                    if (tmpChunk.chunkSize >= 60)
-                                        table.Put(tmpChunkHash, tmpChunkContent);
+                                    table.SF_Insert(superfeature, tmpChunk.chunkID);
                                     basechunkNum++;
                                     basechunkSize += tmpChunk.saveSize;
                                     lz4LogicalSize += tmpChunk.chunkSize;
@@ -299,17 +314,16 @@ void BiSearch::ProcessTrace()
                 // odess try & not in locality windows
                 else
                 {
-                    string ret = "not found";
-                    if (tmpChunk.chunkSize >= 60)
-                    {
-                        startSF = std::chrono::high_resolution_clock::now();
-                        auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
-                        endSF = std::chrono::high_resolution_clock::now();
-                        SFTime += (endSF - startSF);
-                        ret = table.GetSimilarRecordKey(superfeature);
-                    }
+                    uint64_t basechunkID = -1;
+
+                    startSF = std::chrono::high_resolution_clock::now();
+                    auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
+                    endSF = std::chrono::high_resolution_clock::now();
+                    SFTime += (endSF - startSF);
+                    basechunkID = table.SF_Find(superfeature);
+
                     computeSFtimes++;
-                    if (ret == "not found")
+                    if (basechunkID==-1)
                     // odess try & not in locality windows &odess considered this is a base chunk
                     {
                         int tmpChunkLz4CompressSize = 0;
@@ -327,8 +341,7 @@ void BiSearch::ProcessTrace()
                         }
                         tmpChunk.basechunkID = -1;
 
-                        if (tmpChunk.chunkSize >= 60)
-                            table.Put(tmpChunkHash, tmpChunkContent);
+                        table.SF_Insert(superfeature, tmpChunk.chunkID);
                         basechunkNum++;
                         basechunkSize += tmpChunk.saveSize;
                         lz4LogicalSize += tmpChunk.chunkSize;
@@ -346,7 +359,6 @@ void BiSearch::ProcessTrace()
                         Chunk_t basechunkinfo;
                         tmpChunk.saveSize = 0;
                         uint8_t *deltachunk;
-                        int basechunkID = FP_Find(ret);
                         basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkID);
                         deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkinfo.chunkPtr, basechunkinfo.chunkSize, &tmpChunk.saveSize, deltaMaxChunkBuffer);
                         if (tmpChunk.saveSize == 0)
@@ -375,8 +387,7 @@ void BiSearch::ProcessTrace()
                                 }
                                 tmpChunk.basechunkID = -1;
 
-                                if (tmpChunk.chunkSize >= 60)
-                                    table.Put(tmpChunkHash, tmpChunkContent);
+                                table.SF_Insert(superfeature, tmpChunk.chunkID);
                                 basechunkNum++;
                                 basechunkSize += tmpChunk.saveSize;
                                 lz4LogicalSize += tmpChunk.chunkSize;

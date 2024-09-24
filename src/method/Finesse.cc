@@ -56,9 +56,9 @@ void Finesse::ProcessTrace()
                 // find basechunk
                 startSF = std::chrono::high_resolution_clock::now();
                 GetSF(tmpChunk.chunkPtr, mdCtx, tmpChunkSF, tmpChunk.chunkSize);
-                int basechunkID = SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
                 endSF = std::chrono::high_resolution_clock::now();
                 SFTime += (endSF - startSF);
+                int basechunkID = SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
                 computeSFtimes++;
                 if (basechunkID == -1)
                 {
