@@ -37,7 +37,7 @@ public:
     uint64_t deltachunkNum = 0;
     uint64_t bugCount = 0;
     uint64_t finessehit = 0;
-    double DCRSum = 0;
+    double DCESum = 0;
 
     unordered_map<string, int> FPindex; //(fp,chunkid)
     // 消息队列

@@ -279,12 +279,17 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "unique chunk size: " << uniquechunkSize << endl;
         out << "base chunk size: " << basechunkSize << endl;
         out << "delta chunk size: " << deltachunkSize << endl;
-        out << "DCE: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
-        out << "DCR: " << DCRSum / (double)deltachunkNum << endl;
+        out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
+        out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+        out << "DCE: " << DCESum / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
+        out << "-----------------OverHead--------------------------" << endl;
+        // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "-----------------Reduct----------------------------" << endl;
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
@@ -308,12 +313,17 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "unique chunk size: " << uniquechunkSize << endl;
         out << "base chunk size: " << basechunkSize << endl;
         out << "delta chunk size: " << deltachunkSize << endl;
-        out << "DCE: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
-        out << "DCR: " << DCRSum / (double)deltachunkNum << endl;
+        out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
+        out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+        out << "DCE: " << DCESum / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
+        out << "-----------------OverHead--------------------------" << endl;
+        // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "-----------------Reduct----------------------------" << endl;
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
@@ -330,7 +340,7 @@ void AbsMethod::StatsDelta(Chunk_t &tmpChunk)
     deltachunkSize += tmpChunk.saveSize;
     deltachunkNum++;
     DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
-    DCRSum += tmpChunk.chunkSize / tmpChunk.saveSize;
+    DCESum += tmpChunk.chunkSize / tmpChunk.saveSize;
 }
 
 void AbsMethod::Version_log()
@@ -345,7 +355,8 @@ void AbsMethod::Version_log()
     cout << "logicalchunkSize is " << logicalchunkSize << endl;
     cout << "uniquechunkSize is " << uniquechunkSize << endl;
     cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
-    cout << "DCE: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
-    cout << "DCR: " << DCRSum / (double)deltachunkNum << endl;
+    cout << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
+    cout << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+    cout << "DCE: " << DCESum / (double)deltachunkNum << endl;
     cout << "-----------------END-------------------------------" << endl;
 }

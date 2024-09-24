@@ -1,5 +1,5 @@
 #include "../../include/bisearch.h"
-
+#define LOCAL_MAX_ERROR 2
 BiSearch::BiSearch(double ratio)
 {
     lz4ChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
@@ -7,8 +7,7 @@ BiSearch::BiSearch(double ratio)
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
     deltaMaxChunkBuffer = (uint8_t *)malloc(2 * CONTAINER_MAX_SIZE * sizeof(uint8_t));
     // only biSearch has
-    // β = ratio;
-    LOCAL_MAX_ERROR = ratio;
+    β = ratio;
     plchunk.chunkId = -1;
     plchunk.chunkType = DUP;
     plchunk.compressionRatio = 0.0;
@@ -30,7 +29,7 @@ bool BiSearch::estimateGain(uint64_t chunkSize, uint64_t deltaSize)
 
     double newDeltaNum = deltachunkNum / basechunkNum;
     // double deltaGain = DeltaReduct / deltachunkNum;
-    double deltaGain = DCRSum / deltachunkNum;
+    double deltaGain = DCESum / deltachunkNum;
 
     double futureDeltaCost = deltaGain * newDeltaNum;
     if (avgLz4CompressionRatio + futureDeltaCost / β > (chunkSize / deltaSize))
