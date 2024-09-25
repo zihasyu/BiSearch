@@ -281,3 +281,38 @@ void Palantir::CleanIndex()
     // return -1 if not found, uint64_t's MAX value
     return;
 }
+
+void Palantir::Version_log(double time)
+{
+    cout << "Version: " << ads_Version << endl;
+    cout << "-----------------CHUNK NUM-----------------------" << endl;
+    cout << "logical chunk num: " << logicalchunkNum << endl;
+    cout << "unique chunk num: " << uniquechunkNum << endl;
+    cout << "base chunk num: " << basechunkNum << endl;
+    cout << "delta chunk num: " << deltachunkNum << endl;
+    cout << "-----------------CHUNK SIZE-----------------------" << endl;
+    cout << "logicalchunkSize is " << logicalchunkSize << endl;
+    cout << "uniquechunkSize is " << uniquechunkSize << endl;
+    cout << "base chunk size: " << basechunkSize << endl;
+    cout << "delta chunk size: " << deltachunkSize << endl;
+    cout << "-----------------METRICS-------------------------" << endl;
+    cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    cout << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
+    cout << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+    cout << "DCE: " << DCESum / (double)deltachunkNum << endl;
+    cout << "-----------------Time------------------------------" << endl;
+    // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
+    cout << "Version time: " << time << "s" << endl;
+    cout << "Throughput: " << (double)(logicalchunkSize - preLogicalchunkiSize) / time / 1024 / 1024 << "MiB/s" << endl;
+    cout << "SF generation time: " << SFTime.count() - preSFTime.count() << "s" << endl;
+    cout << "SF generation throughput: " << (double)(logicalchunkSize - preLogicalchunkiSize) / (SFTime.count() - preSFTime.count()) / 1024 / 1024 << "MiB/s" << endl;
+    cout << "-----------------OverHead--------------------------" << endl;
+    // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
+    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + SFnum * 16) / 1024 / 1024 << "MiB" << endl;
+    cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
+    cout << "SF number: " << SFnum << endl;
+    cout << "-----------------END-------------------------------" << endl;
+
+    preLogicalchunkiSize = logicalchunkSize;
+    preSFTime = SFTime;
+}

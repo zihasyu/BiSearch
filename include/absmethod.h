@@ -111,6 +111,6 @@ public:
     uint8_t *xd3_encode(const uint8_t *targetChunkbuffer, size_t targetChunkbuffer_size, const uint8_t *baseChunkBuffer, size_t baseChunkBuffer_size, size_t *deltaChunkBuffer_size, uint8_t *tmpbuffer);
     void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio);
     void StatsDelta(Chunk_t &tmpChunk);
-    void Version_log(double time);
+    virtual void Version_log(double time);
 };
 #endif

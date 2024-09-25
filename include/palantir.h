@@ -37,5 +37,6 @@ public:
     uint64_t SF_Find(const SuperFeatures &superfeatures);
     void SF_Insert(const SuperFeatures &superfeatures, const uint64_t chunkid);
     void CleanIndex();
+    void Version_log(double time);
 };
 #endif

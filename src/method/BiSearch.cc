@@ -7,7 +7,7 @@ BiSearch::BiSearch(double ratio)
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
     deltaMaxChunkBuffer = (uint8_t *)malloc(2 * CONTAINER_MAX_SIZE * sizeof(uint8_t));
     // only biSearch has
-    β = ratio;
+    // β = ratio;
     plchunk.chunkId = -1;
     plchunk.chunkType = DUP;
     plchunk.compressionRatio = 0.0;
@@ -42,10 +42,10 @@ void BiSearch::ProcessTrace()
 {
     string tmpChunkHash;
     string tmpChunkContent;
+    string hashStr;
+    hashStr.assign(CHUNK_HASH_SIZE, 0);
     while (true)
     {
-        string hashStr;
-        hashStr.assign(CHUNK_HASH_SIZE, 0);
         std::chrono::time_point<std::chrono::high_resolution_clock> startTime, endTime;
         if (recieveQueue->done_ && recieveQueue->IsEmpty())
         {
