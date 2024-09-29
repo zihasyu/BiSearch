@@ -149,7 +149,10 @@ int main(int argc, char **argv)
         }
         auto endTmp = std::chrono::high_resolution_clock::now();
         auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
-        absMethodObj->Version_log(TimeTmp);
+        if (compressionMethod != 5)
+            absMethodObj->Version_log(TimeTmp);
+        else
+            absMethodObj->Version_log(TimeTmp, chunkerObj->ChunkTime.count());
     }
 
     auto endsum = std::chrono::high_resolution_clock::now();
@@ -161,7 +164,10 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
-    absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio);
+    if (compressionMethod != 5)
+        absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio);
+    else
+        absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, chunkerObj->ChunkTime.count());
 
     //  restore backup if you need, but it's not necessary
     // if (chunkingType != TAR_MultiHeader)

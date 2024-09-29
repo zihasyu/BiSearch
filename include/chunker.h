@@ -86,7 +86,12 @@ public:
     void MTar(vector<string> &readfileList, uint32_t backupNum);
 
     // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it
-
+    std::chrono::time_point<std::chrono::high_resolution_clock> startChunk, endChunk;
+    std::chrono::duration<double> ChunkTime;
+    void SetTime(std::chrono::time_point<std::chrono::high_resolution_clock> &atime)
+    {
+        atime = std::chrono::high_resolution_clock::now();
+    }
     int Next_Chunk_Type = FILE_HEADER;
     int localType = FILE_HEADER;
     size_t localOffset = 0;

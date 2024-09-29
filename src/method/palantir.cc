@@ -304,6 +304,7 @@ void Palantir::Version_log(double time)
     // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
     cout << "Version time: " << time << "s" << endl;
     cout << "Throughput: " << (double)(logicalchunkSize - preLogicalchunkiSize) / time / 1024 / 1024 << "MiB/s" << endl;
+    cout << "Reduce data speed: " << (double)(logicalchunkSize - preLogicalchunkiSize - uniquechunkSize + preuniquechunkSize) / time / 1024 / 1024 << "MiB/s" << endl;
     cout << "SF generation time: " << SFTime.count() - preSFTime.count() << "s" << endl;
     cout << "SF generation throughput: " << (double)(logicalchunkSize - preLogicalchunkiSize) / (SFTime.count() - preSFTime.count()) / 1024 / 1024 << "MiB/s" << endl;
     cout << "-----------------OverHead--------------------------" << endl;

@@ -100,6 +100,7 @@ void Chunker::Chunking()
 {
     bool end = false;
     uint64_t totalOffset = 0;
+
     while (!end)
     {
         memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
@@ -141,8 +142,11 @@ void Chunker::Chunking()
             }
             case TAR_MultiHeader:
             {
+                SetTime(startChunk);
                 size_t cpOffset = CutPointTarHeader(readFileBuffer + localOffset, len - localOffset);
                 localOffset += cpOffset;
+                SetTime(endChunk);
+                ChunkTime += (endChunk - startChunk);
                 continue;
             }
             default:
@@ -169,6 +173,7 @@ void Chunker::Chunking()
         inputFile.seekg(totalOffset, ios_base::beg);
     }
     // cout << "chunking done." << endl;
+
     outputMQ_->done_ = true;
     tool::Logging(myName_.c_str(), "chunking done.\n");
     return;

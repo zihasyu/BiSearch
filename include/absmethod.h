@@ -39,11 +39,27 @@ public:
     uint64_t finessehit = 0;
     double DCESum = 0;
     uint64_t SFnum = 0;
-    // time statics
+    // SF time statics
     std::chrono::time_point<std::chrono::high_resolution_clock> startSF, endSF;
     std::chrono::duration<double> preSFTime;
     std::chrono::duration<double> SFTime;
+    // time breakdown
 
+    std::chrono::time_point<std::chrono::high_resolution_clock> startDedup, endDedup;
+    std::chrono::duration<double> DedupTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock> startLocalityMatch, endLocalityMatch;
+    std::chrono::duration<double> LocalityMatchTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock> startLocalityDelta, endLocalityDelta;
+    std::chrono::duration<double> LocalityDeltaTime, LocalityDeltaTmp;
+    std::chrono::time_point<std::chrono::high_resolution_clock> startLz4, endLz4;
+    std::chrono::duration<double> lz4CompressionTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock> startFeatureMatch, endFeatureMatch;
+    std::chrono::duration<double> FeatureMatchTime,FeatureMatchTime1;
+    std::chrono::time_point<std::chrono::high_resolution_clock> startFeatureDelta, endFeatureDelta;
+    std::chrono::duration<double> FeatureDeltaTime;
+    std::chrono::duration<double> deltaCompressionTime;
+
+    // index
     unordered_map<string, int> FPindex; //(fp,chunkid)
     // 消息队列
     MessageQueue<Chunk_t> *recieveQueue;
@@ -53,10 +69,10 @@ public:
     std::chrono::duration<double> getSFTime;
     uint64_t computeSFtimes = 0;
     // total
-    std::chrono::duration<double> deltaCompressionTime;
-    std::chrono::duration<double> lz4CompressionTime;
+
     uint64_t preLogicalchunkiSize = 0;
     uint64_t logicalchunkSize = 0;
+    uint64_t preuniquechunkSize = 0;
     uint64_t uniquechunkSize = 0;
     uint64_t dedupchunkSize = 0;
     uint64_t basechunkSize = 0;
@@ -80,10 +96,6 @@ public:
     uint64_t LocalityReduct = 0;
     uint64_t FeatureReduct = 0;
 
-    // time total
-
-    std::chrono::duration<double> fetchBaseChunkTime;
-
     AbsMethod();
     ~AbsMethod();
     void SetFilename(string name);
@@ -104,9 +116,12 @@ public:
     bool SF_Insert(const char *key, size_t keySize, int chunkid);
     uint8_t *xd3_encode(const uint8_t *targetChunkbuffer, size_t targetChunkbuffer_size, const uint8_t *baseChunkBuffer, size_t baseChunkBuffer_size, size_t *deltaChunkBuffer_size, uint8_t *tmpbuffer);
     virtual void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio);
+    virtual void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double chunktime);
     void StatsDelta(Chunk_t &tmpChunk);
     void StatsDeltaFeature(Chunk_t &tmpChunk);
     void StatsDeltaLocality(Chunk_t &tmpChunk);
     virtual void Version_log(double time);
+    virtual void Version_log(double time, double chunktime);
+    void SetTime(std::chrono::time_point<std::chrono::high_resolution_clock> &atime);
 };
 #endif
