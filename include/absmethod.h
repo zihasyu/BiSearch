@@ -70,23 +70,17 @@ public:
 
     uint64_t ContainerNum = 0;
     uint64_t ContainerSize = 0;
-
+    // impact reduct
     uint64_t DedupReduct = 0;
     // DedupReduct+=tmpChunk.chunkSize;
     uint64_t DeltaReduct = 0;
     // DeltaReduct+=tmpChunk.chunkSize-tmpChunk.saveSize;
     uint64_t LocalReduct = 0;
     // LocalReduct+=tmpChunk.chunkSize-tmpChunk.saveSize;
+    uint64_t LocalityReduct = 0;
+    uint64_t FeatureReduct = 0;
+
     // time total
-    std::chrono::duration<double> sumTime1;
-    std::chrono::duration<double> sumTime2;
-    std::chrono::duration<double> sumTime3;
-    std::chrono::duration<double> sumTime4;
-    std::chrono::duration<double> sumTime5;
-    std::chrono::duration<double> sumTime6;
-    std::chrono::duration<double> sumTime7;
-    std::chrono::duration<double> sumTime8;
-    std::chrono::duration<double> sumTime9;
 
     std::chrono::duration<double> fetchBaseChunkTime;
 
@@ -111,6 +105,8 @@ public:
     uint8_t *xd3_encode(const uint8_t *targetChunkbuffer, size_t targetChunkbuffer_size, const uint8_t *baseChunkBuffer, size_t baseChunkBuffer_size, size_t *deltaChunkBuffer_size, uint8_t *tmpbuffer);
     void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio);
     void StatsDelta(Chunk_t &tmpChunk);
+    void StatsDeltaFeature(Chunk_t &tmpChunk);
+    void StatsDeltaLocality(Chunk_t &tmpChunk);
     virtual void Version_log(double time);
 };
 #endif

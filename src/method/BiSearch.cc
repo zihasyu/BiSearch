@@ -138,7 +138,7 @@ void BiSearch::ProcessTrace()
                         localchunkSize += tmpChunk.saveSize;
                         localPrechunkSize += tmpChunk.chunkSize;
                         localError = 0;
-                        StatsDelta(tmpChunk);
+                        StatsDeltaLocality(tmpChunk);
                         // save delta
                         dataWrite_->Chunk_Insert(tmpChunk);
                     }
@@ -147,15 +147,15 @@ void BiSearch::ProcessTrace()
                     {
 
                         // unique chunk & in locality windows & running odess
-                        uint64_t basechunkID  = -1;
+                        uint64_t basechunkID = -1;
 
                         startSF = std::chrono::high_resolution_clock::now();
                         auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
                         endSF = std::chrono::high_resolution_clock::now();
                         SFTime += (endSF - startSF);
-                        basechunkID  = table.SF_Find(superfeature);
-                        
-                        if(tmpChunk.basechunkID==basechunkID && tmpChunk.deltaFlag != NO_DELTA)
+                        basechunkID = table.SF_Find(superfeature);
+
+                        if (tmpChunk.basechunkID == basechunkID && tmpChunk.deltaFlag != NO_DELTA)
                         {
                             tmpChunk.deltaFlag = LOCAL_DELTA;
                             tmpChunk.saveSize = tmpdeltachunksize;
@@ -166,12 +166,12 @@ void BiSearch::ProcessTrace()
                             localchunkSize += tmpChunk.saveSize;
                             localPrechunkSize += tmpChunk.chunkSize;
                             localError = 0;
-                            StatsDelta(tmpChunk);
+                            StatsDeltaLocality(tmpChunk);
                             // save delta
                             dataWrite_->Chunk_Insert(tmpChunk);
                         }
                         // unique chunk & in locality windows & odess considered this is a base chunk
-                        else if (basechunkID  == -1)
+                        else if (basechunkID == -1)
                         {
                             if (deltachunk != nullptr)
                             {
@@ -293,7 +293,7 @@ void BiSearch::ProcessTrace()
                                     finessehit++;
                                     finessechunkSize += tmpChunk.saveSize;
                                     finessePrechunkSize += tmpChunk.chunkSize;
-                                    StatsDelta(tmpChunk);
+                                    StatsDeltaFeature(tmpChunk);
                                     localFlag = true;
                                     // save delta
                                     dataWrite_->Chunk_Insert(tmpChunk);
@@ -307,9 +307,6 @@ void BiSearch::ProcessTrace()
                         }
                         // free(tmpChunkSF);
                     }
-
-                    endTime = std::chrono::high_resolution_clock::now();
-                    sumTime5 += (endTime - startTime);
                 }
                 // odess try & not in locality windows
                 else
@@ -323,7 +320,7 @@ void BiSearch::ProcessTrace()
                     basechunkID = table.SF_Find(superfeature);
 
                     computeSFtimes++;
-                    if (basechunkID==-1)
+                    if (basechunkID == -1)
                     // odess try & not in locality windows &odess considered this is a base chunk
                     {
                         int tmpChunkLz4CompressSize = 0;
@@ -412,7 +409,7 @@ void BiSearch::ProcessTrace()
                                 tmpChunk.deltaFlag = FINESSE_DELTA;
                                 tmpChunk.basechunkID = basechunkID;
                                 finessehit++;
-                                StatsDelta(tmpChunk);
+                                StatsDeltaFeature(tmpChunk);
                                 localFlag = true;
                                 // save delta
                                 dataWrite_->Chunk_Insert(tmpChunk);

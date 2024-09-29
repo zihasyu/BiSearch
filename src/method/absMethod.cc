@@ -350,6 +350,25 @@ void AbsMethod::StatsDelta(Chunk_t &tmpChunk)
     DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
     DCESum += tmpChunk.chunkSize / tmpChunk.saveSize;
 }
+void AbsMethod::StatsDeltaFeature(Chunk_t &tmpChunk)
+{
+    deltachunkOriSize += tmpChunk.chunkSize;
+    deltachunkSize += tmpChunk.saveSize;
+    deltachunkNum++;
+    DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+    FeatureReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+    DCESum += tmpChunk.chunkSize / tmpChunk.saveSize;
+}
+
+void AbsMethod::StatsDeltaLocality(Chunk_t &tmpChunk)
+{
+    deltachunkOriSize += tmpChunk.chunkSize;
+    deltachunkSize += tmpChunk.saveSize;
+    deltachunkNum++;
+    DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+    LocalityReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+    DCESum += tmpChunk.chunkSize / tmpChunk.saveSize;
+}
 
 void AbsMethod::Version_log(double time)
 {
