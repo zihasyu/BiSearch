@@ -82,7 +82,7 @@ void BiSearch::ProcessTrace()
                 tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
 
                 // unique chunk & locality try & in locality windows
-                if (plchunk.chunkId + DedupGap < tmpChunk.chunkID - 1 && Version > 0 && localFlag == true)
+                if (plchunk.chunkId + DedupGap < tmpChunk.chunkID - 1 && Version > 0 && localFlag == true && tmpChunk.NameExist)
                 {
                     SetTime(startLocalityMatch);
                     uint8_t *deltachunk;

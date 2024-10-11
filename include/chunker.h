@@ -54,6 +54,12 @@ private:
     MessageQueue<Chunk_t> *outputMQ_;
     // MessageQueue<uint64_t> *MaskoutputMQ_;
 
+    bool NameExist = 0;
+    bool IsLongNameChunk = 0;
+    std::unordered_set<std::string> nameHashSet;
+    char name[101];
+    char LongName[513];
+
 public:
     Chunker(int chunkType_);
     ~Chunker();
@@ -102,5 +108,7 @@ public:
     uint64_t Big_Chunk_Offset = 0;    // CutPointTarFast
     long sameCount = 0;
     uint64_t recipeSegCount = 0;
+    bool FindName(const char *src);
+    bool FindLongName(const char *src);
 };
 #endif

@@ -7,6 +7,8 @@ Chunker::Chunker(int chunkType_)
     // specifiy chunk type
     chunkType = chunkType_;
     // init chunker
+    name[100] = '\0';
+    LongName[512] = '\0';
     ChunkerInit();
     // in different chunking method, the chunkBuffer is different
 }
@@ -241,6 +243,7 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             else
             {
                 Next_Chunk_Type = BIG_CHUNK;
+                NameExist = true;
                 Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
                 Big_Chunk_Offset = 0;
                 // Big_Chunk_Allowance = Next_Chunk_Size / CONTAINER_MAX_SIZE;
@@ -267,6 +270,7 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             else
             {
                 Next_Chunk_Type = BIG_CHUNK;
+                NameExist = true;
                 Next_Chunk_Size = 0;
                 for (int i = 0; i < 11; i++)
                 {
@@ -279,7 +283,11 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             }
         }
         if (*(src + 156) == 'x' || *(src + 156) == GNUTYPE_LONGNAME)
+        {
             Next_Chunk_Type = FILE_CHUNK;
+            IsLongNameChunk = true;
+            FindName((char *)src);
+        }
         /*use to debug*/
         // cout<<"Next_Chunk_Flag: " <<int(*(src + 156));
         // cout<<"Next_Chunk_Type: " <<Next_Chunk_Type;
@@ -301,6 +309,11 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
     }
     case FILE_CHUNK:
     {
+        if (IsLongNameChunk)
+        {
+            FindLongName((char *)src);
+            IsLongNameChunk = false;
+        }
         uint64_t roundedUp = (Next_Chunk_Size + 511) / 512 * 512;
         Next_Chunk_Type = FILE_HEADER;
         Next_Chunk_Size = 512;
@@ -416,6 +429,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 chunk.chunkPtr = (uint8_t *)malloc(cp);
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
+                chunk.NameExist = NameExist;
                 // input MQ
                 if (!outputMQ_->Push(chunk))
                 {
@@ -450,6 +464,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
         memcpy(chunk.chunkPtr, headerBuffer, HeaderCp);
         chunk.chunkSize = HeaderCp;
         chunk.HeaderFlag = true;
+        chunk.NameExist = true;
         // reset
         HeaderCp = 0;
         // input chunk MQ
@@ -485,6 +500,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 chunk.chunkPtr = (uint8_t *)malloc(cp);
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
+                chunk.NameExist = true;
                 if (!outputMQ_->Push(chunk))
                 {
                     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
@@ -613,4 +629,43 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
     localType = FILE_HEADER;
     Next_Chunk_Type = FILE_HEADER;
     return;
+}
+
+// 查找文件名是否已经存在于哈希表中
+bool Chunker::FindName(const char *src)
+{
+    // 提取文件名
+    std::strncpy(name, src, 100);
+
+    // 查找文件名是否存在于哈希表中
+    if (nameHashSet.find(std::string(name)) != nameHashSet.end())
+    {
+        NameExist = 1;
+        return 1; // 文件名已存在
+    }
+    else
+    {
+        NameExist = 0;
+        nameHashSet.insert(std::string(name));
+        return 0; // 文件名不存在
+    }
+}
+
+bool Chunker::FindLongName(const char *src)
+{
+    // 提取文件名
+    std::strncpy(LongName, src, 512);
+
+    // 查找文件名是否存在于哈希表中
+    if (nameHashSet.find(std::string(LongName)) != nameHashSet.end())
+    {
+        NameExist = 1;
+        return 1; // 文件名已存在
+    }
+    else
+    {
+        NameExist = 0;
+        nameHashSet.insert(std::string(LongName));
+        return 0; // 文件名不存在
+    }
 }

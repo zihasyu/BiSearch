@@ -24,6 +24,7 @@ typedef struct
     uint8_t deltaFlag = NO_DELTA;
     bool loadFromDisk = false;
     bool HeaderFlag = false;
+    bool NameExist = true;
     // offset and containerId
     uint64_t offset;
     uint64_t containerID;
