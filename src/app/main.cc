@@ -170,18 +170,18 @@ int main(int argc, char **argv)
         absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, chunkerObj->ChunkTime.count());
 
     //  restore backup if you need, but it's not necessary
-    // if (chunkingType != TAR_MultiHeader)
-    //     for (auto i = 0; i < backupNum; i++)
-    //     {
-    //         absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-    //         absMethodObj->dataWrite_->restoreFile(readfileList[i]);
-    //     }
-    // else
-    //     for (auto i = 0; i < backupNum; i++)
-    //     {
-    //         absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-    //         absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
-    //     }
+    if (chunkingType != TAR_MultiHeader)
+        for (auto i = 0; i < backupNum; i++)
+        {
+            absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+            absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+        }
+    else
+        for (auto i = 0; i < backupNum; i++)
+        {
+            absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+            absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
+        }
 
     string fileName = "C" + to_string(chunkingType) + "_M" + to_string(compressionMethod);
     // absMethodObj->dataWrite_->Save_to_File_unique(fileName);

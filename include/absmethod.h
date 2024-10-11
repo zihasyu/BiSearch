@@ -54,9 +54,13 @@ public:
     std::chrono::time_point<std::chrono::high_resolution_clock> startLz4, endLz4;
     std::chrono::duration<double> lz4CompressionTime;
     std::chrono::time_point<std::chrono::high_resolution_clock> startFeatureMatch, endFeatureMatch;
-    std::chrono::duration<double> FeatureMatchTime,FeatureMatchTime1;
+    std::chrono::duration<double> FeatureMatchTime, FeatureMatchTime1;
     std::chrono::time_point<std::chrono::high_resolution_clock> startFeatureDelta, endFeatureDelta;
     std::chrono::duration<double> FeatureDeltaTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock> startIOGet, endIOGet;
+    std::chrono::duration<double> IOGetTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock> startIOWrite, endIOWrite;
+    std::chrono::duration<double> IOWriteTime;
     std::chrono::duration<double> deltaCompressionTime;
 
     // index

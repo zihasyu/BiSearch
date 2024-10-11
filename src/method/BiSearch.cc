@@ -92,6 +92,7 @@ void BiSearch::ProcessTrace()
                     SetTime(endLocalityMatch);
                     LocalityMatchTime += (endLocalityMatch - startLocalityMatch);
                     // the chunk who locality find is delta chunk, then we need to find its basechunk as tmpchunk's base chunk
+                    SetTime(startIOGet);
                     if (tmpLocalChunkInfo.deltaFlag == FINESSE_DELTA || tmpLocalChunkInfo.deltaFlag == LOCAL_DELTA)
                     {
                         tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(tmpLocalChunkInfo.basechunkID);
@@ -103,7 +104,8 @@ void BiSearch::ProcessTrace()
                         tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(plchunk.chunkId + DedupGap);
                         tmpChunk.basechunkID = plchunk.chunkId + DedupGap;
                     }
-
+                    SetTime(endIOGet);
+                    IOGetTime += endIOGet - startIOGet;
                     // Locality match and need to delta compress
                     SetTime(startLocalityDelta);
                     deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, tmpbaseChunkinfo.chunkPtr, tmpbaseChunkinfo.chunkSize, &tmpdeltachunksize, deltaMaxChunkBuffer);
@@ -149,7 +151,10 @@ void BiSearch::ProcessTrace()
                         localError = 0;
                         StatsDeltaLocality(tmpChunk);
                         // save delta
+                        SetTime(startIOWrite);
                         dataWrite_->Chunk_Insert(tmpChunk);
+                        SetTime(endIOWrite);
+                        IOWriteTime += endIOWrite - startIOWrite;
                     }
                     // unique chunk & locality can't be accept
                     else
@@ -179,7 +184,10 @@ void BiSearch::ProcessTrace()
                             localError = 0;
                             StatsDeltaLocality(tmpChunk);
                             // save delta
+                            SetTime(startIOWrite);
                             dataWrite_->Chunk_Insert(tmpChunk);
+                            SetTime(endIOWrite);
+                            IOWriteTime += endIOWrite - startIOWrite;
                         }
                         // unique chunk & in locality windows & odess considered this is a base chunk
                         else if (basechunkID == -1)
@@ -223,10 +231,13 @@ void BiSearch::ProcessTrace()
                             }
 
                             // save base
+                            SetTime(startIOWrite);
                             if (tmpChunk.deltaFlag == NO_LZ4)
                                 dataWrite_->Chunk_Insert(tmpChunk);
                             else
                                 dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
+                            SetTime(endIOWrite);
+                            IOWriteTime += endIOWrite - startIOWrite;
                         }
                         // unique chunk & in locality windows & odess hits
                         else
@@ -239,7 +250,11 @@ void BiSearch::ProcessTrace()
                             Chunk_t basechunkinfo;
                             uint8_t *deltachunk;
                             tmpChunk.saveSize = 0;
+                            SetTime(startIOGet);
                             basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkID);
+                            SetTime(endIOGet);
+                            IOGetTime += endIOGet - startIOGet;
+
                             SetTime(startFeatureDelta);
                             deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkinfo.chunkPtr, basechunkinfo.chunkSize, &tmpChunk.saveSize, deltaMaxChunkBuffer);
                             SetTime(endFeatureDelta);
@@ -288,10 +303,13 @@ void BiSearch::ProcessTrace()
                                         localFlag = false;
                                     }
                                     // save base
+                                    SetTime(startIOWrite);
                                     if (tmpChunk.deltaFlag == NO_LZ4)
                                         dataWrite_->Chunk_Insert(tmpChunk);
                                     else
                                         dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
+                                    SetTime(endIOWrite);
+                                    IOWriteTime += endIOWrite - startIOWrite;
                                 }
                                 else
                                 {
@@ -311,7 +329,10 @@ void BiSearch::ProcessTrace()
                                     StatsDeltaFeature(tmpChunk);
                                     localFlag = true;
                                     // save delta
+                                    SetTime(startIOWrite);
                                     dataWrite_->Chunk_Insert(tmpChunk);
+                                    SetTime(endIOWrite);
+                                    IOWriteTime += endIOWrite - startIOWrite;
                                 }
                                 free(deltachunk);
                                 if (basechunkinfo.loadFromDisk)
@@ -364,10 +385,13 @@ void BiSearch::ProcessTrace()
                         lz4UniqueSize += tmpChunk.saveSize;
                         LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                         // save base
+                        SetTime(startIOWrite);
                         if (tmpChunk.deltaFlag == NO_LZ4)
                             dataWrite_->Chunk_Insert(tmpChunk);
                         else
                             dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
+                        SetTime(endIOWrite);
+                        IOWriteTime += endIOWrite - startIOWrite;
                     }
                     else
                     // odess try & not in locality windows &odess hits
@@ -375,11 +399,15 @@ void BiSearch::ProcessTrace()
                         Chunk_t basechunkinfo;
                         tmpChunk.saveSize = 0;
                         uint8_t *deltachunk;
+                        SetTime(startIOGet);
                         basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkID);
+                        SetTime(endIOGet);
+                        IOGetTime += endIOGet - startIOGet;
                         SetTime(startFeatureDelta);
                         deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkinfo.chunkPtr, basechunkinfo.chunkSize, &tmpChunk.saveSize, deltaMaxChunkBuffer);
                         SetTime(endFeatureDelta);
                         FeatureDeltaTime += (endFeatureDelta - startFeatureDelta);
+                        deltaCompressionTime += (endFeatureDelta - startFeatureDelta);
                         if (tmpChunk.saveSize == 0)
                         {
                             cout << "delta error" << endl;
@@ -413,10 +441,13 @@ void BiSearch::ProcessTrace()
                                 lz4UniqueSize += tmpChunk.saveSize;
                                 LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
                                 // save base
+                                SetTime(startIOWrite);
                                 if (tmpChunk.deltaFlag == NO_LZ4)
                                     dataWrite_->Chunk_Insert(tmpChunk);
                                 else
                                     dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
+                                SetTime(endIOWrite);
+                                IOWriteTime += endIOWrite - startIOWrite;
                             }
                             else
                             {
@@ -434,7 +465,10 @@ void BiSearch::ProcessTrace()
                                 StatsDeltaFeature(tmpChunk);
                                 localFlag = true;
                                 // save delta
+                                SetTime(startIOWrite);
                                 dataWrite_->Chunk_Insert(tmpChunk);
+                                SetTime(endIOWrite);
+                                IOWriteTime += endIOWrite - startIOWrite;
                             }
                             free(deltachunk);
                             if (basechunkinfo.loadFromDisk)
@@ -501,6 +535,8 @@ void BiSearch::Version_log(double time)
     cout << "Locality Delta Time: " << LocalityDeltaTime.count() << "s" << endl;
     cout << "Feature Match Time: " << FeatureMatchTime.count() << "s" << endl;
     cout << "Feature Delta Time: " << FeatureDeltaTime.count() << "s" << endl;
+    cout << "IOGet Time: " << IOGetTime.count() << "s" << endl;
+    cout << "IOWrite Time: " << IOWriteTime.count() << "s" << endl;
     cout << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
     cout << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
     cout << "-----------------OVERHEAD--------------------------" << endl;
@@ -550,6 +586,8 @@ void BiSearch::Version_log(double time, double chunktime)
     cout << "Feature Match Time: " << FeatureMatchTime.count() << "s" << endl;
     cout << "Feature Match Time1: " << FeatureMatchTime1.count() << "s" << endl;
     cout << "Feature Delta Time: " << FeatureDeltaTime.count() << "s" << endl;
+    cout << "IOGet Time: " << IOGetTime.count() << "s" << endl;
+    cout << "IOWrite Time: " << IOWriteTime.count() << "s" << endl;
     cout << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
     cout << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
     cout << "-----------------OVERHEAD--------------------------" << endl;
@@ -604,6 +642,8 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Locality Delta Time: " << LocalityDeltaTime.count() << "s" << endl;
         out << "Feature Match Time: " << FeatureMatchTime.count() << "s" << endl;
         out << "Feature Delta Time: " << FeatureDeltaTime.count() << "s" << endl;
+        out << "IOGet Time: " << IOGetTime.count() << "s" << endl;
+        out << "IOWrite Time: " << IOWriteTime.count() << "s" << endl;
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
@@ -650,6 +690,8 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Locality Delta Time: " << LocalityDeltaTime.count() << "s" << endl;
         out << "Feature Match Time: " << FeatureMatchTime.count() << "s" << endl;
         out << "Feature Delta Time: " << FeatureDeltaTime.count() << "s" << endl;
+        out << "IOGet Time: " << IOGetTime.count() << "s" << endl;
+        out << "IOWrite Time: " << IOWriteTime.count() << "s" << endl;
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
@@ -705,6 +747,8 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Locality Delta Time: " << LocalityDeltaTime.count() << "s" << endl;
         out << "Feature Match Time: " << FeatureMatchTime.count() << "s" << endl;
         out << "Feature Delta Time: " << FeatureDeltaTime.count() << "s" << endl;
+        out << "IOGet Time: " << IOGetTime.count() << "s" << endl;
+        out << "IOWrite Time: " << IOWriteTime.count() << "s" << endl;
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
@@ -752,6 +796,8 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Locality Delta Time: " << LocalityDeltaTime.count() << "s" << endl;
         out << "Feature Match Time: " << FeatureMatchTime.count() << "s" << endl;
         out << "Feature Delta Time: " << FeatureDeltaTime.count() << "s" << endl;
+        out << "IOGet Time: " << IOGetTime.count() << "s" << endl;
+        out << "IOWrite Time: " << IOWriteTime.count() << "s" << endl;
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
