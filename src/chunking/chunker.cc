@@ -165,6 +165,7 @@ void Chunker::Chunking()
                 continue;
             }
             localOffset += cp;
+            chunk.NameExist = true;
             if (!outputMQ_->Push(chunk))
             {
                 tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
@@ -178,6 +179,13 @@ void Chunker::Chunking()
 
     outputMQ_->done_ = true;
     tool::Logging(myName_.c_str(), "chunking done.\n");
+
+    size_t element_size = sizeof(std::string);
+    size_t num_elements = nameHashSet.size();
+    size_t bucket_count = nameHashSet.bucket_count();
+    size_t bucket_size = sizeof(void *); // 每个桶的指针大小
+
+    size_t total_size = (element_size * num_elements) + (bucket_size * bucket_count);
     return;
 }
 
@@ -239,7 +247,10 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
         if (*(src + 156) == REGTYPE)
         {
             if (Next_Chunk_Size <= CONTAINER_MAX_SIZE)
+            {
                 Next_Chunk_Type = FILE_CHUNK;
+                FindName((char *)src);
+            }
             else
             {
                 Next_Chunk_Type = BIG_CHUNK;
@@ -266,7 +277,10 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             // cout << "AREGTYPE ChunkSize is " << Next_Chunk_Size << endl;
             Next_Chunk_Size = 0;
             if (Next_Chunk_Size <= CONTAINER_MAX_SIZE)
+            {
                 Next_Chunk_Type = FILE_CHUNK;
+                FindName((char *)src);
+            }
             else
             {
                 Next_Chunk_Type = BIG_CHUNK;
