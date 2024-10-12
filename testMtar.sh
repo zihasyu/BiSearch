@@ -4,8 +4,8 @@ path=/mnt/dataset2/LKT
 name=_LKT
 num=84
 
-# rm -r mTarFile
-# mkdir mTarFile
+rm -r mTarFile
+mkdir mTarFile
 # ./BiSearch -i $path -c 5 -m 1 -n $num  >NtransformMtar$name.txt
 # rm -r mTarFile
 # mkdir mTarFile
@@ -84,5 +84,5 @@ num=240
 # rm -r mTarFile
 # mkdir mTarFile
 # ./BiSearch -i $path -c 5 -m 5 -n $num  >BiSearchMtar$name.txt
-# rm -r mTarFile
-# mkdir mTarFile
+rm -r mTarFile
+mkdir mTarFile
