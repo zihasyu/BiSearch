@@ -52,14 +52,19 @@ void Finesse::ProcessTrace()
                 tmpChunk.chunkID = uniquechunkNum;
                 tmpChunk.deltaFlag = NO_DELTA;
                 FP_Insert(hashStr, tmpChunk.chunkID);
-
+                int basechunkID =  -1;
+                if(tmpChunk.chunkSize>576)
+                {
                 // find basechunk
                 startSF = std::chrono::high_resolution_clock::now();
                 GetSF(tmpChunk.chunkPtr, mdCtx, tmpChunkSF, tmpChunk.chunkSize);
                 endSF = std::chrono::high_resolution_clock::now();
                 SFTime += (endSF - startSF);
-                int basechunkID = SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
+                basechunkID = SF_Find((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE);
                 computeSFtimes++;
+                }
+
+
                 if (basechunkID == -1)
                 {
                     int tmpChunkLz4CompressSize = 0;
@@ -81,7 +86,8 @@ void Finesse::ProcessTrace()
                     // cout << "lz4 chunk size is " << tmpChunk.chunksize << "save size is " << tmpChunk.savesize << endl;
 
                     tmpChunk.basechunkID = -1;
-                    SF_Insert((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE, tmpChunk.chunkID);
+                    if(tmpChunk.chunkSize>576)
+                        SF_Insert((char *)tmpChunkSF, FINESSE_SF_NUM * CHUNK_HASH_SIZE, tmpChunk.chunkID);
                     basechunkNum++;
                     basechunkSize += tmpChunk.saveSize;
 
