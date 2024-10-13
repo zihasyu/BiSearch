@@ -84,6 +84,7 @@ void BiSearch::ProcessTrace()
                 // unique chunk & locality try & in locality windows
                 if (plchunk.chunkId + DedupGap < tmpChunk.chunkID - 1 && Version > 0 && localFlag == true && tmpChunk.NameExist)
                 {
+                    // cout << " tmpChunk.NameExist is " << tmpChunk.NameExist << " tmpChunk.HeaderFlag is " << tmpChunk.HeaderFlag << endl;
                     SetTime(startLocalityMatch);
                     uint8_t *deltachunk;
                     uint64_t tmpdeltachunksize = 0;

@@ -186,6 +186,7 @@ void Chunker::Chunking()
     size_t bucket_size = sizeof(void *); // 每个桶的指针大小
 
     size_t total_size = (element_size * num_elements) + (bucket_size * bucket_count);
+    cout << "total_size is " << total_size << endl;
     return;
 }
 
@@ -654,11 +655,13 @@ bool Chunker::FindName(const char *src)
     // 查找文件名是否存在于哈希表中
     if (nameHashSet.find(std::string(name)) != nameHashSet.end())
     {
+        // cout << "do exist name is " << name << endl;
         NameExist = 1;
         return 1; // 文件名已存在
     }
     else
     {
+        // cout << "not exist name is " << name << endl;
         NameExist = 0;
         nameHashSet.insert(std::string(name));
         return 0; // 文件名不存在
@@ -673,11 +676,13 @@ bool Chunker::FindLongName(const char *src)
     // 查找文件名是否存在于哈希表中
     if (nameHashSet.find(std::string(LongName)) != nameHashSet.end())
     {
+        // cout << "do long exist name is " << name << endl;
         NameExist = 1;
         return 1; // 文件名已存在
     }
     else
     {
+        // cout << "no long exist name is " << name << endl;
         NameExist = 0;
         nameHashSet.insert(std::string(LongName));
         return 0; // 文件名不存在
