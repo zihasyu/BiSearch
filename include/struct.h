@@ -28,6 +28,7 @@ typedef struct
     // offset and containerId
     uint64_t offset;
     uint64_t containerID;
+    std::string name;
 } Chunk_t;
 
 typedef struct

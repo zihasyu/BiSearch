@@ -80,9 +80,11 @@ void BiSearch::ProcessTrace()
                 DedupGap++;
                 tmpChunkContent.assign((char *)tmpChunk.chunkPtr, tmpChunk.chunkSize);
                 tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
-
+                bool SameName = 0;
+                if (Version > 0)
+                    SameName = dataWrite_->chunklist[plchunk.chunkId + DedupGap].name == tmpChunk.name;
                 // unique chunk & locality try & in locality windows
-                if (plchunk.chunkId + DedupGap < tmpChunk.chunkID - 1 && Version > 0 && localFlag == true && tmpChunk.NameExist)
+                if (plchunk.chunkId + DedupGap < tmpChunk.chunkID - 1 && Version > 0 && localFlag == true && SameName)
                 {
                     // cout << " tmpChunk.NameExist is " << tmpChunk.NameExist << " tmpChunk.HeaderFlag is " << tmpChunk.HeaderFlag << endl;
                     SetTime(startLocalityMatch);

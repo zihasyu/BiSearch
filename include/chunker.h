@@ -110,5 +110,7 @@ public:
     uint64_t recipeSegCount = 0;
     bool FindName(const char *src);
     bool FindLongName(const char *src);
+    const char *FindNameBegin(const char *src);
+    const char *FindLongNameBegin(const char *src);
 };
 #endif

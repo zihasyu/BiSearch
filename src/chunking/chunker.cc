@@ -445,6 +445,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
                 chunk.NameExist = NameExist;
+                chunk.name = name;
                 // input MQ
                 if (!outputMQ_->Push(chunk))
                 {
@@ -516,6 +517,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
                 chunk.NameExist = true;
+                chunk.name = name;
                 if (!outputMQ_->Push(chunk))
                 {
                     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
@@ -663,22 +665,22 @@ bool Chunker::FindName(const char *src)
         relativePath = src; // 如果没有找到'/'，则使用原始src
     }
     std::copy(relativePath, src + 100, name);
-    // std::strncpy(name, relativePath, sizeof(name) - 1);
     // cout << "name is " << name << endl;
-    // 查找文件名是否存在于哈希表中
-    if (nameHashSet.find(std::string(name)) != nameHashSet.end())
-    {
-        // cout << "do exist name is " << name << endl;
-        NameExist = 1;
-        return 1; // 文件名已存在
-    }
-    else
-    {
-        // cout << "not exist name is " << name << endl;
-        NameExist = 0;
-        nameHashSet.insert(std::string(name));
-        return 0; // 文件名不存在
-    }
+    //  查找文件名是否存在于哈希表中
+    //  if (nameHashSet.find(std::string(name)) != nameHashSet.end())
+    //  {
+    //      // cout << "do exist name is " << name << endl;
+    //      NameExist = 1;
+    //      return 1; // 文件名已存在
+    //  }
+    //  else
+    //  {
+    //      // cout << "not exist name is " << name << endl;
+    //      NameExist = 0;
+    //      nameHashSet.insert(std::string(name));
+    //      return 0; // 文件名不存在
+    //  }
+    return 1;
 }
 
 bool Chunker::FindLongName(const char *src)
@@ -701,17 +703,50 @@ bool Chunker::FindLongName(const char *src)
     // std::strncpy(LongName, src, 512);
 
     // 查找文件名是否存在于哈希表中
-    if (nameHashSet.find(std::string(LongName)) != nameHashSet.end())
+    // if (nameHashSet.find(std::string(LongName)) != nameHashSet.end())
+    // {
+    //     // cout << "do long exist name is " << name << endl;
+    //     NameExist = 1;
+    //     return 1; // 文件名已存在
+    // }
+    // else
+    // {
+    //     // cout << "no long exist name is " << name << endl;
+    //     NameExist = 0;
+    //     nameHashSet.insert(std::string(LongName));
+    //     return 0; // 文件名不存在
+    // }
+    return 1;
+}
+const char *Chunker::FindNameBegin(const char *src)
+{
+    const char *end = src + 100;
+    const char *relativePath = std::find(src, end, '/');
+
+    // 如果找到了'/'，则剔除其之前的内容
+    if (relativePath != end)
     {
-        // cout << "do long exist name is " << name << endl;
-        NameExist = 1;
-        return 1; // 文件名已存在
+        relativePath++; // 跳过第一个'/'
     }
     else
     {
-        // cout << "no long exist name is " << name << endl;
-        NameExist = 0;
-        nameHashSet.insert(std::string(LongName));
-        return 0; // 文件名不存在
+        relativePath = src; // 如果没有找到'/'，则使用原始src
     }
+    return relativePath;
+}
+const char *Chunker::FindLongNameBegin(const char *src)
+{
+    const char *end = src + 512;
+    const char *relativePath = std::find(src, end, '/');
+
+    // 如果找到了'/'，则剔除其之前的内容
+    if (relativePath != end)
+    {
+        relativePath++; // 跳过第一个'/'
+    }
+    else
+    {
+        relativePath = src; // 如果没有找到'/'，则使用原始src
+    }
+    return relativePath;
 }
