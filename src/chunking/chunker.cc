@@ -650,8 +650,21 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
 bool Chunker::FindName(const char *src)
 {
     // 提取文件名
-    std::strncpy(name, src, 100);
+    const char *end = src + 100;
+    const char *relativePath = std::find(src, end, '/');
 
+    // 如果找到了'/'，则剔除其之前的内容
+    if (relativePath != end)
+    {
+        relativePath++; // 跳过第一个'/'
+    }
+    else
+    {
+        relativePath = src; // 如果没有找到'/'，则使用原始src
+    }
+    std::copy(relativePath, src + 100, name);
+    // std::strncpy(name, relativePath, sizeof(name) - 1);
+    // cout << "name is " << name << endl;
     // 查找文件名是否存在于哈希表中
     if (nameHashSet.find(std::string(name)) != nameHashSet.end())
     {
@@ -671,7 +684,21 @@ bool Chunker::FindName(const char *src)
 bool Chunker::FindLongName(const char *src)
 {
     // 提取文件名
-    std::strncpy(LongName, src, 512);
+    // 提取文件名
+    const char *end = src + 512;
+    const char *relativePath = std::find(src, end, '/');
+
+    // 如果找到了'/'，则剔除其之前的内容
+    if (relativePath != nullptr)
+    {
+        relativePath++; // 跳过第一个'/'
+    }
+    else
+    {
+        relativePath = src; // 如果没有找到'/'，则使用原始src
+    }
+    std::copy(relativePath, src + 512, LongName);
+    // std::strncpy(LongName, src, 512);
 
     // 查找文件名是否存在于哈希表中
     if (nameHashSet.find(std::string(LongName)) != nameHashSet.end())
