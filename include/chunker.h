@@ -112,5 +112,7 @@ public:
     bool FindLongName(const char *src);
     const char *FindNameBegin(const char *src);
     const char *FindLongNameBegin(const char *src);
+    uint16_t hashNameToUint16(const char* name) ;
+
 };
 #endif

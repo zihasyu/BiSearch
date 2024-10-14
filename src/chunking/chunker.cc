@@ -445,7 +445,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
                 chunk.NameExist = NameExist;
-                 chunk.name = name;
+                chunk.name = hashNameToUint16(name);
                 // input MQ
                 if (!outputMQ_->Push(chunk))
                 {
@@ -517,7 +517,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
                 chunk.NameExist = true;
-                //chunk.name = name;
+                // chunk.name = name;
                 if (!outputMQ_->Push(chunk))
                 {
                     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
@@ -749,4 +749,14 @@ const char *Chunker::FindLongNameBegin(const char *src)
         relativePath = src; // 如果没有找到'/'，则使用原始src
     }
     return relativePath;
+}
+
+uint16_t Chunker::hashNameToUint16(const char *name)
+{
+    uint16_t hash = 0;
+    for (int i = 0; i < 101 && name[i] != '\0'; ++i)
+    {
+        hash = hash * 31 + name[i];
+    }
+    return hash;
 }
