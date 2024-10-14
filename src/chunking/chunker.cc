@@ -445,7 +445,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
                 chunk.NameExist = NameExist;
-                chunk.name = name;
+                 chunk.name = name;
                 // input MQ
                 if (!outputMQ_->Push(chunk))
                 {
@@ -517,7 +517,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
                 chunk.NameExist = true;
-                chunk.name = name;
+                //chunk.name = name;
                 if (!outputMQ_->Push(chunk))
                 {
                     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
