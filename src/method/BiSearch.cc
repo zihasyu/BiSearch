@@ -543,7 +543,7 @@ void BiSearch::Version_log(double time)
     cout << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
     cout << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
     cout << "-----------------OVERHEAD--------------------------" << endl;
-    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------REDUCT----------------------------" << endl;
@@ -594,7 +594,7 @@ void BiSearch::Version_log(double time, double chunktime)
     cout << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
     cout << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
     cout << "-----------------OVERHEAD--------------------------" << endl;
-    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------REDUCT----------------------------" << endl;
@@ -650,7 +650,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
@@ -698,7 +698,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
@@ -755,7 +755,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
@@ -804,7 +804,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
