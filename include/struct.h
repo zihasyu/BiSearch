@@ -16,20 +16,35 @@
 
 typedef struct
 {
-    uint64_t chunkID;
+    uint64_t chunkID;             // 8 bytes
+    uint64_t chunkSize;           // 8 bytes
+    uint64_t saveSize;            // 8 bytes
+    uint64_t offset;              // 8 bytes
+    uint64_t containerID;         // 8 bytes
+    uint8_t *chunkPtr;            // 8 bytes (assuming 64-bit pointer)
+    uint64_t name = 0;            // 8 bytes
+    int basechunkID;              // 4 bytes
+    uint8_t deltaFlag = NO_DELTA; // 1 byte
+    bool loadFromDisk = false;    // 1 byte
+    bool HeaderFlag = false;      // 1 byte
+    bool NameExist = true;        // 1 byte
+    // 1 byte padding to align the structure to 8 bytes boundary
+} Chunk_t;
+
+typedef struct
+{
     uint64_t chunkSize;
     uint64_t saveSize;
-    uint8_t *chunkPtr;
-    int basechunkID;
-    uint8_t deltaFlag = NO_DELTA;
-    bool loadFromDisk = false;
-    bool HeaderFlag = false;
-    bool NameExist = true;
-    // offset and containerId
     uint64_t offset;
     uint64_t containerID;
-    uint16_t name = 0;
-} Chunk_t;
+    uint8_t *chunkPtr;
+    std::string basechunkFP; // 32B
+    uint8_t deltaFlag = NO_DELTA;
+    bool loadFromDisk = false;
+    // bool HeaderFlag = false;
+    //  bool NameExist = true;
+    // offset and containerId
+} Chunk_t_odess;
 
 typedef struct
 {

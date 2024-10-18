@@ -7,8 +7,8 @@ num=84
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 # ./BiSearch -i $path -c 1 -m 1 -n $num  >Ntransform$name.txt
-# sudo rm Containers/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
 ./BiSearch -i $path -c 1 -m 2 -n $num  >Finesse$name.txt
 sudo rm Containers/*
 sudo echo 3 > /proc/sys/vm/drop_caches
@@ -83,6 +83,8 @@ sudo echo 3 > /proc/sys/vm/drop_caches
 sudo rm Containers/*
 sudo echo 3 > /proc/sys/vm/drop_caches
 ./BiSearch -i $path -c 1 -m 5 -n $num  >BiSearch$name.txt
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
 # # ./BiSearch -i $path -c 1 -m 6 -n $num  >Locality$name.txt
 # ./BiSearch -i $path -c 5 -m 3 -n $num  >OdessMTar$name.txt
 # sudo rm Containers/*

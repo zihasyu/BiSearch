@@ -543,18 +543,18 @@ void BiSearch::Version_log(double time)
     cout << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
     cout << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
     cout << "-----------------OVERHEAD--------------------------" << endl;
-    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
-    cout << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl;
-    cout << "ID Index Overhead: " << (double)uniquechunkNum * 72 / 1024 / 1024 << "MiB" << endl;
-    cout << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl;
+    cout << "Index Overhead: " << (double)(uniquechunkNum * 40 + uniquechunkNum * 64 + uniquechunkNum * 8 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+    cout << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl; //(32B→8B)
+    cout << "ID Index Overhead: " << (double)uniquechunkNum * (8 + 64) / 1024 / 1024 << "MiB" << endl;
+    cout << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl; //(8B+8B)*3
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------REDUCT----------------------------" << endl;
-    cout << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "dedup reduct size : " << (double)DedupReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "delta reduct size : " << (double)DeltaReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "local reduct size : " << (double)LocalReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "Feature reduct size: " << (double)FeatureReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "Locality reduct size: " << (double)LocalityReduct / 1024 / 1024 << "MiB" << endl;
     cout << "-----------------END-------------------------------" << endl;
 
     preLogicalchunkiSize = logicalchunkSize;
@@ -597,18 +597,18 @@ void BiSearch::Version_log(double time, double chunktime)
     cout << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
     cout << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
     cout << "-----------------OVERHEAD--------------------------" << endl;
-    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
-    cout << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl;
-    cout << "ID Index Overhead: " << (double)uniquechunkNum * 72 / 1024 / 1024 << "MiB" << endl;
-    cout << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl;
+    cout << "Index Overhead: " << (double)(uniquechunkNum * 40 + uniquechunkNum * 64 + uniquechunkNum * 8 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+    cout << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl; //(32B→8B)
+    cout << "ID Index Overhead: " << (double)uniquechunkNum * (8 + 64) / 1024 / 1024 << "MiB" << endl;
+    cout << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl; //(8B+8B)*3
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------REDUCT----------------------------" << endl;
-    cout << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "dedup reduct size : " << (double)DedupReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "delta reduct size : " << (double)DeltaReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "local reduct size : " << (double)LocalReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "Feature reduct size: " << (double)FeatureReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "Locality reduct size: " << (double)LocalityReduct / 1024 / 1024 << "MiB" << endl;
     cout << "-----------------END-------------------------------" << endl;
 
     preLogicalchunkiSize = logicalchunkSize;
@@ -656,18 +656,18 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl;
-        out << "ID Index Overhead: " << (double)uniquechunkNum * 72 / 1024 / 1024 << "MiB" << endl;
-        out << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 40 + uniquechunkNum * 64 + uniquechunkNum * 8 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl; //(32B→8B)
+        out << "ID Index Overhead: " << (double)uniquechunkNum * (8 + 64) / 1024 / 1024 << "MiB" << endl;
+        out << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl; //(8B+8B)*3
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
-        out << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-        out << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-        out << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+        out << "dedup reduct size : " << (double)DedupReduct / 1024 / 1024 << "MiB" << endl;
+        out << "delta reduct size : " << (double)DeltaReduct / 1024 / 1024 << "MiB" << endl;
+        out << "local reduct size : " << (double)LocalReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Feature reduct size: " << (double)FeatureReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Locality reduct size: " << (double)LocalityReduct / 1024 / 1024 << "MiB" << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -707,18 +707,18 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl;
-        out << "ID Index Overhead: " << (double)uniquechunkNum * 72 / 1024 / 1024 << "MiB" << endl;
-        out << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 40 + uniquechunkNum * 64 + uniquechunkNum * 8 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl; //(32B→8B)
+        out << "ID Index Overhead: " << (double)uniquechunkNum * (8 + 64) / 1024 / 1024 << "MiB" << endl;
+        out << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl; //(8B+8B)*3
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
-        out << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-        out << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-        out << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+        out << "dedup reduct size : " << (double)DedupReduct / 1024 / 1024 << "MiB" << endl;
+        out << "delta reduct size : " << (double)DeltaReduct / 1024 / 1024 << "MiB" << endl;
+        out << "local reduct size : " << (double)LocalReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Feature reduct size: " << (double)FeatureReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Locality reduct size: " << (double)LocalityReduct / 1024 / 1024 << "MiB" << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();
@@ -767,18 +767,18 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl;
-        out << "ID Index Overhead: " << (double)uniquechunkNum * 72 / 1024 / 1024 << "MiB" << endl;
-        out << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 40 + uniquechunkNum * 64 + uniquechunkNum * 8 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl; //(32B→8B)
+        out << "ID Index Overhead: " << (double)uniquechunkNum * (8 + 64) / 1024 / 1024 << "MiB" << endl;
+        out << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl; //(8B+8B)*3
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
-        out << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-        out << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-        out << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+        out << "dedup reduct size : " << (double)DedupReduct / 1024 / 1024 << "MiB" << endl;
+        out << "delta reduct size : " << (double)DeltaReduct / 1024 / 1024 << "MiB" << endl;
+        out << "local reduct size : " << (double)LocalReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Feature reduct size: " << (double)FeatureReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Locality reduct size: " << (double)LocalityReduct / 1024 / 1024 << "MiB" << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -819,18 +819,18 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + uniquechunkNum * 16 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl;
-        out << "ID Index Overhead: " << (double)uniquechunkNum * 72 / 1024 / 1024 << "MiB" << endl;
-        out << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 40 + uniquechunkNum * 64 + uniquechunkNum * 8 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl; //(32B→8B)
+        out << "ID Index Overhead: " << (double)uniquechunkNum * (8 + 64) / 1024 / 1024 << "MiB" << endl;
+        out << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl; //(8B+8B)*3
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
-        out << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-        out << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-        out << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+        out << "dedup reduct size : " << (double)DedupReduct / 1024 / 1024 << "MiB" << endl;
+        out << "delta reduct size : " << (double)DeltaReduct / 1024 / 1024 << "MiB" << endl;
+        out << "local reduct size : " << (double)LocalReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Feature reduct size: " << (double)FeatureReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Locality reduct size: " << (double)LocalityReduct / 1024 / 1024 << "MiB" << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();

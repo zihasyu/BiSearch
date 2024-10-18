@@ -295,7 +295,9 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+        out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
@@ -334,7 +336,9 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+        out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
@@ -403,7 +407,9 @@ void AbsMethod::Version_log(double time)
     cout << "SF generation throughput: " << (double)(logicalchunkSize - preLogicalchunkiSize) / (SFTime.count() - preSFTime.count()) / 1024 / 1024 << "MiB/s" << endl;
     cout << "-----------------OverHead--------------------------" << endl;
     // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+    cout << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
+    cout << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+    cout << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------END-------------------------------" << endl;
@@ -452,7 +458,9 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+        out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
@@ -499,7 +507,9 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
         out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
         out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+        out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
@@ -547,7 +557,9 @@ void AbsMethod::Version_log(double time, double chunktime)
     cout << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
     cout << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
     cout << "-----------------OVERHEAD--------------------------" << endl;
-    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+    cout << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
+    cout << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+    cout << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------REDUCT----------------------------" << endl;

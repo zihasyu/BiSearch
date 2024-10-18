@@ -445,7 +445,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
                 chunk.NameExist = NameExist;
-                chunk.name = hashNameToUint16(name);
+                chunk.name = hashNameToUint64(name);
                 // input MQ
                 if (!outputMQ_->Push(chunk))
                 {
@@ -757,6 +757,16 @@ uint16_t Chunker::hashNameToUint16(const char *name)
     for (int i = 0; i < 101 && name[i] != '\0'; ++i)
     {
         hash = hash * 31 + name[i];
+    }
+    return hash;
+}
+
+uint64_t Chunker::hashNameToUint64(const char *name)
+{
+    uint64_t hash = 0;
+    for (int i = 0; i < 101 && name[i] != '\0'; ++i)
+    {
+        hash = hash * prime + name[i];
     }
     return hash;
 }

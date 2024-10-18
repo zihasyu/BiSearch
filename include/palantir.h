@@ -38,5 +38,6 @@ public:
     void SF_Insert(const SuperFeatures &superfeatures, const uint64_t chunkid);
     void CleanIndex();
     void Version_log(double time);
+    void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double chunktime);
 };
 #endif

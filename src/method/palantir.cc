@@ -309,11 +309,119 @@ void Palantir::Version_log(double time)
     cout << "SF generation throughput: " << (double)(logicalchunkSize - preLogicalchunkiSize) / (SFTime.count() - preSFTime.count()) / 1024 / 1024 << "MiB/s" << endl;
     cout << "-----------------OverHead--------------------------" << endl;
     // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-    cout << "Index Overhead: " << (double)(uniquechunkNum * 96 + SFnum * 16) / 1024 / 1024 << "MiB" << endl;
+    cout << "Index Overhead: " << (double)(uniquechunkNum * 112 + SFnum * (8 + 32)) / 1024 / 1024 << "MiB" << endl;
+    cout << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+    cout << "SF Overhead: " << (double)(SFnum * (8 + 32)) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------END-------------------------------" << endl;
 
     preLogicalchunkiSize = logicalchunkSize;
     preSFTime = SFTime;
+}
+
+void Palantir::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double chunktime)
+{
+    ofstream out;
+    string fileName = "./chunkInfoLog.txt";
+    if (!tool::FileExist(fileName))
+    {
+        out.open(fileName, ios::out);
+        out << "-----------------INSTRUCTION----------------------" << endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << endl;
+        out << "-----------------CHUNK NUM-----------------------" << endl;
+        out << "logical chunk num: " << logicalchunkNum << endl;
+        out << "unique chunk num: " << uniquechunkNum << endl;
+        out << "base chunk num: " << basechunkNum << endl;
+        out << "delta chunk num: " << deltachunkNum << endl;
+        out << "finesse hit:" << finessehit << endl;
+        out << "-----------------CHUNK SIZE-----------------------" << endl;
+        out << "logical chunk size: " << logicalchunkSize << endl;
+        out << "unique chunk size: " << uniquechunkSize << endl;
+        out << "base chunk size: " << basechunkSize << endl;
+        out << "delta chunk size: " << deltachunkSize << endl;
+        out << "-----------------METRICS-------------------------" << endl;
+        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+        out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
+        out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+        out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "-----------------Time------------------------------" << endl;
+        out << "total time: " << time << "s" << endl;
+        out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
+        out << "Reduce data speed: " << (double)(logicalchunkSize - uniquechunkSize) / time / 1024 / 1024 << "MiB/s" << endl;
+        out << "SF generation time: " << SFTime.count() << "s" << endl;
+        out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
+        out << "Chunk Time: " << chunktime << "s" << endl;
+        out << "Dedup Time: " << DedupTime.count() << "s" << endl;
+        out << "Locality Match Time: " << LocalityMatchTime.count() << "s" << endl;
+        out << "Locality Delta Time: " << LocalityDeltaTime.count() << "s" << endl;
+        out << "Feature Match Time: " << FeatureMatchTime.count() << "s" << endl;
+        out << "Feature Delta Time: " << FeatureDeltaTime.count() << "s" << endl;
+        out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
+        out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
+        out << "-----------------OverHead--------------------------" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + SFnum * (8 + 32)) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+        out << "SF Overhead: " << (double)(SFnum * (8 + 32)) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
+        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
+        out << "SF number: " << SFnum << endl;
+        out << "-----------------Reduct----------------------------" << endl;
+        out << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
+        out << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
+        out << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+        out << "-----------------END-------------------------------" << endl;
+    }
+    else
+    {
+        out.open(fileName, ios::app);
+        out << "-----------------INSTRUCTION----------------------" << endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << endl;
+        out << "-----------------CHUNK NUM-----------------------" << endl;
+        out << "logical chunk num: " << logicalchunkNum << endl;
+        out << "unique chunk num: " << uniquechunkNum << endl;
+        out << "base chunk num: " << basechunkNum << endl;
+        out << "delta chunk num: " << deltachunkNum << endl;
+        out << "finesse hit:" << finessehit << endl;
+        out << "-----------------CHUNK SIZE-----------------------" << endl;
+        out << "logical chunk size: " << logicalchunkSize << endl;
+        out << "unique chunk size: " << uniquechunkSize << endl;
+        out << "base chunk size: " << basechunkSize << endl;
+        out << "delta chunk size: " << deltachunkSize << endl;
+        out << "-----------------METRICS-------------------------" << endl;
+        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+        out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
+        out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+        out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "-----------------Time------------------------------" << endl;
+        out << "total time: " << time << "s" << endl;
+        out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
+        out << "Reduce data speed: " << (double)(logicalchunkSize - uniquechunkSize) / time / 1024 / 1024 << "MiB/s" << endl;
+        out << "SF generation time: " << SFTime.count() << "s" << endl;
+        out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
+        out << "Chunk Time: " << chunktime << "s" << endl;
+        out << "Dedup Time: " << DedupTime.count() << "s" << endl;
+        out << "Locality Match Time: " << LocalityMatchTime.count() << "s" << endl;
+        out << "Locality Delta Time: " << LocalityDeltaTime.count() << "s" << endl;
+        out << "Feature Match Time: " << FeatureMatchTime.count() << "s" << endl;
+        out << "Feature Delta Time: " << FeatureDeltaTime.count() << "s" << endl;
+        out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
+        out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
+        out << "-----------------OverHead--------------------------" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + SFnum * (8 + 32)) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+        out << "SF Overhead: " << (double)(SFnum * (8 + 32)) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
+        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
+        out << "SF number: " << SFnum << endl;
+        out << "-----------------Reduct----------------------------" << endl;
+        out << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
+        out << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
+        out << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+        out << "-----------------END-------------------------------" << endl;
+    }
+    out.close();
+    return;
 }
