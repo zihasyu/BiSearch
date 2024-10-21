@@ -22,6 +22,9 @@ public:
     LocalDedup();
     ~LocalDedup();
     void ProcessTrace();
+    virtual void Version_log(double time);
+    virtual void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double chunktime);
+    virtual void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio);
 };
 
 #endif
