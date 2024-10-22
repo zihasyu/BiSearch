@@ -55,6 +55,7 @@ void Odess::ProcessTrace()
                 tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
                 // Odess get superfeature & get time
                 uint64_t basechunkid = -1;
+                // cout << "tmpChunk.chunkSize: " << tmpChunk.chunkSize << endl;
                 if (tmpChunk.chunkSize > 60)
                 {
                     startSF = std::chrono::high_resolution_clock::now();
@@ -76,17 +77,48 @@ void Odess::ProcessTrace()
                         cout << "delta error" << endl;
                         return;
                     }
+                    else if (tmpChunk.saveSize > tmpChunk.chunkSize)
+                    {
+                        int tmpChunkLz4CompressSize = 0;
+                        tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
+                        if (tmpChunkLz4CompressSize > 0)
+                        {
+                            tmpChunk.deltaFlag = NO_DELTA;
+                            tmpChunk.saveSize = tmpChunkLz4CompressSize;
+                        }
+                        else
+                        {
+                            // cout << "lz4 compress error" << endl;
+                            tmpChunk.deltaFlag = NO_LZ4;
+                            tmpChunk.saveSize = tmpChunk.chunkSize;
+                        }
+
+                        tmpChunk.basechunkID = -1;
+                        tmpChunkid = tmpChunk.chunkID;
+                        if (tmpChunk.chunkSize > 60)
+                            table.SF_Insert(superfeature, tmpChunk.chunkID);
+                        basechunkNum++;
+                        basechunkSize += tmpChunk.saveSize;
+                        LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+                        if (tmpChunk.deltaFlag == NO_LZ4)
+                            // base chunk & Lz4 error
+                            dataWrite_->Chunk_Insert(tmpChunk);
+                        else
+                            // base chunk &lz4 compress
+                            dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
+                    }
                     else
                     {
                         tmpChunk.deltaFlag = DELTA;
                         tmpChunk.basechunkID = basechunkid;
+                        // cout << "tmpChunk.savesize is " << tmpChunk.saveSize << endl;
                         memcpy(tmpChunk.chunkPtr, deltachunk, tmpChunk.saveSize);
                         StatsDelta(tmpChunk);
                         free(deltachunk);
+                        if (basechunkInfo.loadFromDisk)
+                            free(basechunkInfo.chunkPtr);
+                        dataWrite_->Chunk_Insert(tmpChunk);
                     }
-                    if (basechunkInfo.loadFromDisk)
-                        free(basechunkInfo.chunkPtr);
-                    dataWrite_->Chunk_Insert(tmpChunk);
                 }
                 // unique chunk & base chunk
                 else
