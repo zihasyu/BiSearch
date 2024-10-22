@@ -22,6 +22,7 @@ void Odess::ProcessTrace()
 {
     string tmpChunkHash;
     string tmpChunkContent;
+    SuperFeatures superfeature;
     while (true)
     {
         string hashStr;
@@ -53,13 +54,17 @@ void Odess::ProcessTrace()
                 tmpChunkContent.assign((char *)tmpChunk.chunkPtr, tmpChunk.chunkSize);
                 tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
                 // Odess get superfeature & get time
-                startSF = std::chrono::high_resolution_clock::now();
-                auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
-                endSF = std::chrono::high_resolution_clock::now();
-                SFTime += (endSF - startSF);
+                uint64_t basechunkid = -1;
+                if (tmpChunk.chunkSize > 60)
+                {
+                    startSF = std::chrono::high_resolution_clock::now();
+                    superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
+                    endSF = std::chrono::high_resolution_clock::now();
+                    SFTime += (endSF - startSF);
 
-                auto basechunkid = table.SF_Find(superfeature);
-                // auto ret = table.GetSimilarRecordsKeys(tmpChunkHash);
+                    basechunkid = table.SF_Find(superfeature);
+                    // auto ret = table.GetSimilarRecordsKeys(tmpChunkHash);
+                }
 
                 if (basechunkid != -1)
                 // unique chunk & delta chunk
@@ -102,7 +107,8 @@ void Odess::ProcessTrace()
 
                     tmpChunk.basechunkID = -1;
                     tmpChunkid = tmpChunk.chunkID;
-                    table.SF_Insert(superfeature, tmpChunk.chunkID);
+                    if (tmpChunk.chunkSize > 60)
+                        table.SF_Insert(superfeature, tmpChunk.chunkID);
                     basechunkNum++;
                     basechunkSize += tmpChunk.saveSize;
                     LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
