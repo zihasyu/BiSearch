@@ -99,6 +99,7 @@ public:
     // LocalReduct+=tmpChunk.chunkSize-tmpChunk.saveSize;
     uint64_t LocalityReduct = 0;
     uint64_t FeatureReduct = 0;
+    z_stream defstream;
 
     AbsMethod();
     ~AbsMethod();
@@ -127,5 +128,7 @@ public:
     virtual void Version_log(double time);
     virtual void Version_log(double time, double chunktime);
     void SetTime(std::chrono::time_point<std::chrono::high_resolution_clock> &atime);
+    // int deflateCompress(uint8_t *in, uint8_t *out, size_t in_size, size_t out_size, int level);
+    int deflateCompress(const char *in, char *out, int in_size, int out_size, int level);
 };
 #endif

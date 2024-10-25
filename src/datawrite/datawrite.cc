@@ -14,6 +14,9 @@ dataWrite::dataWrite()
     maskS = GenerateFastCDCMask(bits + 1);
     maskL = GenerateFastCDCMask(bits - 1);
     lz4SafeChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
+    infstream.zalloc = Z_NULL;
+    infstream.zfree = Z_NULL;
+    infstream.opaque = Z_NULL;
 }
 dataWrite::~dataWrite()
 {
@@ -232,14 +235,6 @@ bool dataWrite::Chunk_Insert(Chunk_t chunk, uint8_t *lz4Buffer)
     // }
 
     memcpy(curContainer.data + curOffset, lz4Buffer, tmpSize);
-
-    // **compare diff**
-    // uint8_t *lz4SafeChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
-    // int decompressedSize = LZ4_decompress_safe((char *)curContainer.data + curOffset, (char *)lz4SafeChunkBuffer, tmpSize, CONTAINER_MAX_SIZE);
-    // if (decompressedSize != chunk.chunkSize)
-    //     cout << "decompress error" << endl;
-    // // cout << "cmp is " << std::memcmp(chunk.chunkPtr, lz4SafeChunkBuffer, chunk.chunkSize) << endl;
-    // free(lz4SafeChunkBuffer);
 
     curOffset += tmpSize;
     // cout << "free chunk " << endl;
@@ -483,7 +478,7 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
         else
         {
             // base chunk & lz4 compress
-            int decompressedSize = LZ4_decompress_safe((char *)(tmpContainerData + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+            int decompressedSize = inflateDecompress((char *)(tmpContainerData + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
             chunklist[id].chunkPtr = (uint8_t *)malloc(chunklist[id].chunkSize);
             memcpy(chunklist[id].chunkPtr, lz4SafeChunkBuffer, tmpSize);
             chunklist[id].loadFromDisk = true;
@@ -522,7 +517,7 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
             else
             {
                 // base chunk & lz4 compress
-                int decompressedSize = LZ4_decompress_safe((char *)(container.c_str() + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+                int decompressedSize = inflateDecompress((char *)(container.c_str() + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
                 memcpy(chunklist[id].chunkPtr, lz4SafeChunkBuffer, tmpSize);
             }
 
@@ -554,7 +549,7 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
             else
             {
                 // base chunk & lz4 compress
-                int decompressedSize = LZ4_decompress_safe((char *)(curContainer.data + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+                int decompressedSize = inflateDecompress((char *)(curContainer.data + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
                 chunklist[id].chunkPtr = (uint8_t *)malloc(chunklist[id].chunkSize);
                 memcpy(chunklist[id].chunkPtr, lz4SafeChunkBuffer, tmpSize);
                 chunklist[id].loadFromDisk = true;
@@ -1079,6 +1074,30 @@ inline uint32_t dataWrite::CompareLimit(uint32_t input, uint32_t lower, uint32_t
     {
         return input;
     }
+}
+int dataWrite::inflateDecompress(const char *source, char *dest, int compressedSize, int maxDecompressedSize)
+{
+    infstream.avail_in = (uInt)compressedSize;       // size of input
+    infstream.next_in = (Bytef *)source;             // input char array
+    infstream.avail_out = (uInt)maxDecompressedSize; // size of output
+    infstream.next_out = (Bytef *)dest;              // output char array
+
+    int ret = inflateInit(&infstream);
+    if (ret != Z_OK)
+    {
+        return ret; // 返回错误代码
+    }
+
+    ret = inflate(&infstream, Z_NO_FLUSH);
+    if (ret != Z_STREAM_END && ret != Z_OK)
+    {
+        inflateEnd(&infstream);
+        return ret; // 返回错误代码
+    }
+
+    inflateEnd(&infstream);
+
+    return infstream.total_out; // 返回解压缩后的数据大小
 }
 
 void dataWrite::SetFilename(string name)

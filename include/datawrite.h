@@ -29,6 +29,7 @@ static uint64_t curOffset = 0;
 class dataWrite
 {
 private:
+    z_stream infstream;
     int chunkNum = 0;
     int containerSize = 0;
     string filename;
@@ -119,6 +120,7 @@ public:
     Chunk_t Get_Chunk_MetaInfo(int id);
     void PrintMetrics();
     static void chunkprint(const Chunk_t chunk);
+    int inflateDecompress(const char *source, char *dest, int compressedSize, int maxDecompressedSize);
     dataWrite();
     ~dataWrite();
 };

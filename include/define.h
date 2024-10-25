@@ -20,6 +20,7 @@
 #include "tarType.h"
 #include <openssl/evp.h>
 #include <openssl/crypto.h>
+#include "zlib.h"
 
 #define FINESSE_SF_NUM 3
 #define ODESS_SF_NUM 3
