@@ -64,7 +64,7 @@ void Finesse::ProcessTrace()
                 {
                     int tmpChunkLz4CompressSize = 0;
                     startTime = std::chrono::high_resolution_clock::now();
-                    tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
+                    tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
                     endTime = std::chrono::high_resolution_clock::now();
                     lz4CompressionTime += (endTime - startTime);
                     if (tmpChunkLz4CompressSize > 0)

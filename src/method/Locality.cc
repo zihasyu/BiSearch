@@ -99,7 +99,7 @@ void LocalDedup::ProcessTrace()
                             deltachunk = nullptr;
                         }
                         int tmpChunkLz4CompressSize = 0;
-                        tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
+                        tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
                         if (tmpChunkLz4CompressSize > 0)
                         {
                             tmpChunk.deltaFlag = NO_DELTA;
@@ -136,7 +136,7 @@ void LocalDedup::ProcessTrace()
                 {
                     // do lz4compress
                     int tmpChunkLz4CompressSize = 0;
-                    tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
+                    tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
                     if (tmpChunkLz4CompressSize > 0)
                     {
                         tmpChunk.deltaFlag = NO_DELTA;
