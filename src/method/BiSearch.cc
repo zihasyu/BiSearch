@@ -82,16 +82,21 @@ void BiSearch::ProcessTrace()
                 tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
                 bool SameName = 0;
                 if (Version > 0)
-                    SameName = dataWrite_->chunklist[plchunk.chunkId + DedupGap].name == tmpChunk.name;
+                {
+                    SameName = (nameTable.count(tmpChunk.name) > 0) ? true : false;
+                    if(SameName)
+                        plchunk.chunkId = nameTable[tmpChunk.name];
+                }
+                    // SameName = dataWrite_->chunklist[plchunk.chunkId + DedupGap].name == tmpChunk.name;
                 // unique chunk & locality try & in locality windows
-                if (plchunk.chunkId + DedupGap < tmpChunk.chunkID - 1 && Version > 0 && localFlag == true && SameName)
+                if (Version > 0 && SameName)
                 {
                     // cout << " tmpChunk.NameExist is " << tmpChunk.NameExist << " tmpChunk.HeaderFlag is " << tmpChunk.HeaderFlag << endl;
                     SetTime(startLocalityMatch);
                     uint8_t *deltachunk;
                     uint64_t tmpdeltachunksize = 0;
                     Chunk_t tmpbaseChunkinfo;
-                    Chunk_t tmpLocalChunkInfo = dataWrite_->Get_Chunk_MetaInfo(plchunk.chunkId + DedupGap);
+                    Chunk_t tmpLocalChunkInfo = dataWrite_->Get_Chunk_MetaInfo(plchunk.chunkId);
                     SetTime(endLocalityMatch);
                     LocalityMatchTime += (endLocalityMatch - startLocalityMatch);
                     // the chunk who locality find is delta chunk, then we need to find its basechunk as tmpchunk's base chunk
@@ -104,8 +109,8 @@ void BiSearch::ProcessTrace()
                     // the chunk who locality find is basechunk, then turn again
                     else
                     {
-                        tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(plchunk.chunkId + DedupGap);
-                        tmpChunk.basechunkID = plchunk.chunkId + DedupGap;
+                        tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(plchunk.chunkId);
+                        tmpChunk.basechunkID = plchunk.chunkId;
                     }
                     SetTime(endIOGet);
                     IOGetTime += endIOGet - startIOGet;
@@ -241,6 +246,7 @@ void BiSearch::ProcessTrace()
                                 dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                             SetTime(endIOWrite);
                             IOWriteTime += endIOWrite - startIOWrite;
+                            nameTable[tmpChunk.name] = tmpChunk.chunkID;
                         }
                         // unique chunk & in locality windows & odess hits
                         else
@@ -313,6 +319,7 @@ void BiSearch::ProcessTrace()
                                         dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                                     SetTime(endIOWrite);
                                     IOWriteTime += endIOWrite - startIOWrite;
+                                    nameTable[tmpChunk.name] = tmpChunk.chunkID;
                                 }
                                 else
                                 {
@@ -395,6 +402,7 @@ void BiSearch::ProcessTrace()
                             dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                         SetTime(endIOWrite);
                         IOWriteTime += endIOWrite - startIOWrite;
+                        nameTable[tmpChunk.name] = tmpChunk.chunkID;
                     }
                     else
                     // odess try & not in locality windows &odess hits
@@ -451,6 +459,7 @@ void BiSearch::ProcessTrace()
                                     dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
                                 SetTime(endIOWrite);
                                 IOWriteTime += endIOWrite - startIOWrite;
+                                nameTable[tmpChunk.name] = tmpChunk.chunkID;
                             }
                             else
                             {
@@ -492,7 +501,7 @@ void BiSearch::ProcessTrace()
                 if (tmpChunk.HeaderFlag == 0)
                     plchunk.chunkId = findRes;
                 plchunk.chunkType = DUP;
-                DedupGap = 0;
+                // DedupGap = 0;
                 // lz4LogicalSize += tmpChunk.chunkSize;
                 DedupReduct += tmpChunk.chunkSize;
             }
@@ -597,12 +606,15 @@ void BiSearch::Version_log(double time, double chunktime)
     cout << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
     cout << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
     cout << "-----------------OVERHEAD--------------------------" << endl;
-    cout << "Index Overhead: " << (double)(uniquechunkNum * 40 + uniquechunkNum * 64 + uniquechunkNum * 8 + basechunkNum * 48) / 1024 / 1024 << "MiB" << endl;
+    size_t sizeInBytes = nameTable.size() * (sizeof(uint64_t) + sizeof(uint32_t));
+    double sizeInMiB = static_cast<double>(sizeInBytes) / (1024 * 1024);
+    cout << "Index Overhead: " << (double)(uniquechunkNum * 40 + uniquechunkNum * 64 + uniquechunkNum * 8 + basechunkNum * 48 + static_cast<double>(sizeInBytes)) / 1024 / 1024 << "MiB" << endl;
     cout << "FP Index Overhead: " << (double)uniquechunkNum * 40 / 1024 / 1024 << "MiB" << endl; //(32B→8B)
     cout << "ID Index Overhead: " << (double)uniquechunkNum * (8 + 64) / 1024 / 1024 << "MiB" << endl;
     cout << "SF Index Overhead: " << (double)basechunkNum * 48 / 1024 / 1024 << "MiB" << endl; //(8B+8B)*3
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
+    cout << "nameTable size: " << sizeInMiB << " MiB" << std::endl;
     cout << "-----------------REDUCT----------------------------" << endl;
     cout << "dedup reduct size : " << (double)DedupReduct / 1024 / 1024 << "MiB" << endl;
     cout << "delta reduct size : " << (double)DeltaReduct / 1024 / 1024 << "MiB" << endl;

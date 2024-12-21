@@ -44,7 +44,7 @@ cmake ..
 make -j4
 cd ..
 cd ./bin
-rm *.txt
+# rm *.txt
 mkdir -p Containers
 mkdir -p restoreFile
 mkdir -p mTarFile

@@ -143,6 +143,8 @@ int main(int argc, char **argv)
         {
             it->join();
         }
+        // chunkerObj->WriteBoundariesToFile();
+        // chunkerObj->ClearBoundaries();
         for (auto it : thTmp)
         {
             delete it;

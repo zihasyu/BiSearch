@@ -16,7 +16,7 @@ enum ChunkTypeNum
     TAR_MultiHeader,
     MTAR
 };
-
+const int BigChunkSize = 16384;
 class Chunker
 {
 private:
@@ -60,6 +60,11 @@ private:
     char name[101];
     char LongName[513];
     const uint64_t prime = 1099511628211;
+
+    // 记录边界
+    std::vector<std::tuple<uint64_t, uint32_t, char>> boundaries_; // offset, size, type(H/D/B)
+    uint64_t current_offset_;
+    std::string input_file_path_;
 
 public:
     Chunker(int chunkType_);
@@ -115,5 +120,9 @@ public:
     const char *FindLongNameBegin(const char *src);
     uint16_t hashNameToUint16(const char *name);
     uint64_t hashNameToUint64(const char *name);
+
+    // 记录边界
+    void WriteBoundariesToFile();
+    void ClearBoundaries() { boundaries_.clear(); }
 };
 #endif

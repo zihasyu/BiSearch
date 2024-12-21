@@ -27,7 +27,7 @@ void Chunker::LoadChunkFile(string path)
     {
         inputFile.close();
     }
-
+    input_file_path_ = path; // 保存输入文件路径
     inputFile.open(path, ios_base::in | ios::binary);
     if (!inputFile.is_open())
     {
@@ -247,7 +247,8 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
         }
         if (*(src + 156) == REGTYPE)
         {
-            if (Next_Chunk_Size <= CONTAINER_MAX_SIZE)
+            // edit: CONTAINER_MAX_SIZE
+            if (Next_Chunk_Size <= BigChunkSize)
             {
                 Next_Chunk_Type = FILE_CHUNK;
                 FindName((char *)src);
@@ -277,7 +278,8 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             }
             // cout << "AREGTYPE ChunkSize is " << Next_Chunk_Size << endl;
             Next_Chunk_Size = 0;
-            if (Next_Chunk_Size <= CONTAINER_MAX_SIZE)
+            // edit: CONTAINER_MAX_SIZE
+            if (Next_Chunk_Size <= BigChunkSize)
             {
                 Next_Chunk_Type = FILE_CHUNK;
                 FindName((char *)src);
@@ -428,6 +430,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
 
             if (localType == FILE_HEADER)
             {
+                boundaries_.push_back({current_offset_ + cpSum, cp, 'H'});
                 memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
                 HeaderCp += cp;
                 // blockTypeMask = blockTypeMask;
@@ -446,6 +449,9 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 chunk.chunkSize = cp;
                 chunk.NameExist = NameExist;
                 chunk.name = hashNameToUint64(name);
+
+                // 记录data边界
+                boundaries_.push_back({current_offset_ + cpSum, cp, 'D'});
                 // input MQ
                 if (!outputMQ_->Push(chunk))
                 {
@@ -494,6 +500,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
     {
         // cout << " Next_Chunk_Type is " << Next_Chunk_Type << endl;
         //  不以header为开头只可能是bigchunk，这里想要的处理的bigchunk开头时
+        boundaries_.push_back({current_offset_, len, 'B'});
         while (Next_Chunk_Type != FILE_HEADER && cpSum < CONTAINER_MAX_SIZE - MAX_CHUNK_SIZE)
         // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
         // 当前是D下一个块也是D时，应该是大块，也是可以断的。
@@ -769,4 +776,24 @@ uint64_t Chunker::hashNameToUint64(const char *name)
         hash = hash * prime + name[i];
     }
     return hash;
+}
+
+void Chunker::WriteBoundariesToFile()
+{
+    // 获取文件名
+    std::string filename = input_file_path_.substr(input_file_path_.find_last_of("/\\") + 1);
+    std::string output_path = filename + ".boundaries";
+
+    std::ofstream out_file(output_path);
+    if (!out_file)
+    {
+        tool::Logging(myName_.c_str(), "Failed to open output file: %s\n", output_path.c_str());
+        return;
+    }
+
+    for (const auto &[offset, size, type] : boundaries_)
+    {
+        out_file << type << " " << offset << " " << size << "\n";
+    }
+    out_file.close();
 }

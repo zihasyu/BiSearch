@@ -30,6 +30,7 @@ private:
 
     uint64_t costSum = 0;
     vector<char> chunkingbuffer;
+    unordered_map<uint64_t, uint32_t> nameTable;
     uint64_t bugCount = 0;
     z_stream defstream;
     long errorCount = 0;
