@@ -1,0 +1,30 @@
+{
+    "sourceFile": "test_method.sh",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1733294503932,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1733294812306,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,17 +1,20 @@\n cd bin\n-method=5\n+method=0\n chunking=6\n \n name=LKT\n num=84\n ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n+\n name=ThunderbirdTar\n num=240\n ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n+\n name=WEB\n num=102\n ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n+\n name=chromium\n num=107\n ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n \n"
+                },
+                {
+                    "date": 1733294845935,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,16 +4,19 @@\n \n name=LKT\n num=84\n ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n+mv cp_values.txt cp_values_LKT.txt\n \n name=ThunderbirdTar\n num=240\n ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n+mv cp_values.txt cp_values_ThunderbirdTar.txt\n \n name=WEB\n num=102\n ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n+mv cp_values.txt cp_values_WEB.txt\n \n name=chromium\n num=107\n ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n"
+                },
+                {
+                    "date": 1733294851166,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,11 +19,11 @@\n \n name=chromium\n num=107\n ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n+mv cp_values.txt cp_values_chromium.txt\n \n \n-\n # name=cassandra\n # num=97\n # ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n \n"
+                }
+            ],
+            "date": 1733294503932,
+            "name": "Commit-0",
+            "content": "cd bin\nmethod=5\nchunking=6\n\nname=LKT\nnum=84\n./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\nname=ThunderbirdTar\nnum=240\n./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\nname=WEB\nnum=102\n./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\nname=chromium\nnum=107\n./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n\n\n\n# name=cassandra\n# num=97\n# ./BiSearch -i /mnt/dataset2/$name -c $chunking -m $method -n $num  >C\"${chunking}M${method}_${name}\".txt\n\n"
+        }
+    ]
+}

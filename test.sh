@@ -1,8 +1,8 @@
 cd bin
 
-path=/mnt/dataset2/LKT
+path=/mnt/dataset2/linux
 name=_LKT
-num=84
+num=270
 # # ./BiSearch -i $path -c 1 -m 0 -n $num  >Dedup$name.txt
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches

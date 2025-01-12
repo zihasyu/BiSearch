@@ -560,6 +560,7 @@ void BiSearch::Version_log(double time)
     preLogicalchunkiSize = logicalchunkSize;
     preuniquechunkSize = uniquechunkSize;
     preSFTime = SFTime;
+    return ;
 }
 void BiSearch::Version_log(double time, double chunktime)
 {
@@ -614,6 +615,8 @@ void BiSearch::Version_log(double time, double chunktime)
     preLogicalchunkiSize = logicalchunkSize;
     preuniquechunkSize = uniquechunkSize;
     preSFTime = SFTime;
+
+    return ;
 }
 void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio)
 {

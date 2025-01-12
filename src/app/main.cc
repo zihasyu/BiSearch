@@ -129,6 +129,10 @@ int main(int argc, char **argv)
     {
         chunkerObj->MTar(readfileList, backupNum);
     }
+    if (chunkingType == RAW || chunkingType == RAW_GEAR)
+    {
+        chunkerObj->Motivation(readfileList, backupNum);
+    }
     for (auto i = 0; i < backupNum; i++)
     {
         auto startTmp = std::chrono::high_resolution_clock::now();

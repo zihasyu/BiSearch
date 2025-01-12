@@ -14,7 +14,9 @@ enum ChunkTypeNum
     GEARCDC,
     TAR,
     TAR_MultiHeader,
-    MTAR
+    MTAR,
+    RAW,
+    RAW_GEAR
 };
 
 class Chunker
@@ -91,6 +93,7 @@ public:
     uint64_t CutPointTarFast(const uint8_t *src, const uint64_t len);
     uint64_t CutPointTarHeader(const uint8_t *src, const uint64_t len);
     void MTar(vector<string> &readfileList, uint32_t backupNum);
+    void Motivation(vector<string> &readfileList, uint32_t backupNum);
 
     // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it
     std::chrono::time_point<std::chrono::high_resolution_clock> startChunk, endChunk;

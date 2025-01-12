@@ -1,19 +1,67 @@
 cd bin
-# path=/mnt/dataset2/LKT
-# name=_LKT
-# num=84
 
-# ./BiSearch -i $path -c 1 -m 1 -n $num  >Ntransform$name.txt
-# ./BiSearch -i $path -c 1 -m 2 -n $num  >Finesse$name.txt
-# ./BiSearch -i $path -c 1 -m 3 -n $num  >Odess$name.txt
-# ./BiSearch -i $path -c 1 -m 6 -n $num  >Locality$name.txt
+path=/mnt/dataset2/linux
+name=_linux
+num=270
+rm -r mTarFile
+mkdir mTarFile
 
-path=/mnt/dataset2/cassandra
-name=_cassandra
-num=97
 
-./BiSearch -i $path -c 1 -m 1 -n $num  >Ntransform$name.txt
-./BiSearch -i $path -c 1 -m 2 -n $num  >Finesse$name.txt
-./BiSearch -i $path -c 1 -m 3 -n $num  >Odess$name.txt
+./BiSearch -i $path -c 6 -m 0 -n $num  >Mo_Dedup$name.txt
+rm -r mTarFile
+mkdir mTarFile
 
-./BiSearch -i $path -c 1 -m 6 -n $num  >Locality$name.txt
+./BiSearch -i $path -c 7 -m 3 -n $num  >Mo_Odess$name.txt
+rm -r mTarFile
+mkdir mTarFile
+
+./BiSearch -i $path -c 6 -m 4 -n $num  >Mo_Palantir$name.txt
+rm -r mTarFile
+mkdir mTarFile
+
+path=/mnt/dataset2/chromium
+name=_chromium
+num=107
+./BiSearch -i $path -c 6 -m 0 -n $num  >Mo_Dedup$name.txt
+rm -r mTarFile
+mkdir mTarFile
+
+./BiSearch -i $path -c 7 -m 3 -n $num  >Mo_Odess$name.txt
+rm -r mTarFile
+mkdir mTarFile
+
+./BiSearch -i $path -c 6 -m 4 -n $num  >Mo_Palantir$name.txt
+rm -r mTarFile
+mkdir mTarFile
+
+path=/mnt/dataset2/WEB
+name=_WEB
+num=102
+
+./BiSearch -i $path -c 6 -m 0 -n $num  >Mo_Dedup$name.txt
+rm -r mTarFile
+mkdir mTarFile
+
+./BiSearch -i $path -c 7 -m 3 -n $num  >Mo_Odess$name.txt
+rm -r mTarFile
+mkdir mTarFile
+
+./BiSearch -i $path -c 6 -m 4 -n $num  >Mo_Palantir$name.txt
+rm -r mTarFile
+mkdir mTarFile
+
+path=/mnt/dataset2/ThunderbirdTar
+name=_Thunderbird
+num=240
+
+./BiSearch -i $path -c 6 -m 0 -n $num  >Mo_Dedup$name.txt
+rm -r mTarFile
+mkdir mTarFile
+
+./BiSearch -i $path -c 7 -m 3 -n $num  >Mo_Odess$name.txt
+rm -r mTarFile
+mkdir mTarFile
+
+./BiSearch -i $path -c 6 -m 4 -n $num  >Mo_Palantir$name.txt
+rm -r mTarFile
+mkdir mTarFile

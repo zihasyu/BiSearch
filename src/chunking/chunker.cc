@@ -50,7 +50,7 @@ void Chunker::ChunkerInit()
         break;
     }
     case MTAR:
-
+    case RAW:
     case FASTCDC: // FastCDC chunking
     {
         readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
@@ -61,6 +61,7 @@ void Chunker::ChunkerInit()
         maskL = GenerateFastCDCMask(bits - 1);
         break;
     }
+    case RAW_GEAR:
     case GEARCDC: // Gear chunking
     {
         readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
@@ -647,7 +648,119 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
     Next_Chunk_Type = FILE_HEADER;
     return;
 }
+void Chunker::Motivation(vector<string> &readfileList, uint32_t backupNum)
+{
 
+    for (int i = 0; i < backupNum; i++)
+    {
+        string name;
+        size_t pos = readfileList[i].find_last_of('/');
+        if (pos != std::string::npos)
+        {
+            name = readfileList[i].substr(pos + 1);
+        }
+        else
+        {
+            name = readfileList[i];
+        }
+        string writePath = "./mTarFile/" + name + ".mo";
+        cout << "write path is " << writePath << endl;
+        // stream set
+        ifstream inFile(readfileList[i]);
+        ofstream outFile(writePath);
+        // 新增的部分：创建一个文件来保存 cp 值
+        ofstream cpFile("./cp_values.txt", ios::app); // 使用 append 模式
+        // data chunk rewrite
+        bool end = false;
+        uint64_t totalOffset = 0;
+        while (!end)
+        {
+            memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
+            inFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE);
+            end = inFile.eof();
+            size_t len = inFile.gcount();
+            if (len == 0)
+            {
+                break;
+            }
+            localOffset = 0;
+            while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
+            {
+                // cout << " len is " << len << " localOffset is " << localOffset << endl;
+                // compute cutPoint
+                localType = Next_Chunk_Type;
+                uint32_t cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
+                if (cp == 0)
+                {
+                    continue;
+                }
+                if (localType != FILE_HEADER)
+                {
+                    outFile.write((char *)readFileBuffer + localOffset, cp);
+                    // cpFile << cp << endl;
+                }
+                localOffset += cp;
+            }
+            totalOffset += localOffset;
+            inFile.seekg(totalOffset, ios_base::beg);
+        }
+        // reset
+        localType = FILE_HEADER;
+        Next_Chunk_Type = FILE_HEADER;
+        ifstream inHeaderFile(readfileList[i]);
+        // header chunk rewrite
+        inHeaderFile.seekg(0, ios_base::beg);
+        end = false;
+        totalOffset = 0;
+        // while (!end)
+        // {
+        //     memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
+        //     inHeaderFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE);
+        //     end = inHeaderFile.eof();
+        //     size_t len = inHeaderFile.gcount();
+        //     if (len == 0)
+        //     {
+        //         break;
+        //     }
+        //     localOffset = 0;
+        //     while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
+        //     {
+        //         // cout << " len is " << len << " localOffset is " << localOffset << endl;
+        //         // compute cutPoint
+        //         localType = Next_Chunk_Type;
+        //         uint32_t cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
+        //         if (cp == 0)
+        //         {
+        //             continue;
+        //         }
+        //         if (localType == FILE_HEADER)
+        //         {
+        //             outFile.write((char *)readFileBuffer + localOffset, cp);
+        //         }
+
+        //         localOffset += cp;
+        //     }
+        //     totalOffset += localOffset;
+        //     inHeaderFile.seekg(totalOffset, ios_base::beg);
+        // }
+
+        // reset
+        localType = FILE_HEADER;
+        Next_Chunk_Type = FILE_HEADER;
+        inFile.close();
+        inHeaderFile.close();
+        outFile.close();
+        // mtar overwrite the readfileList
+        // 关闭 cp 文件
+        cpFile.close();
+        readfileList[i] = writePath;
+    }
+    // reset
+    chunkType = FASTCDC;
+    localType = FILE_HEADER;
+    Next_Chunk_Type = FILE_HEADER;
+    return;
+}
 // 查找文件名是否已经存在于哈希表中
 bool Chunker::FindName(const char *src)
 {
