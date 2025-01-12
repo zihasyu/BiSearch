@@ -653,6 +653,7 @@ void Chunker::Motivation(vector<string> &readfileList, uint32_t backupNum)
 
     for (int i = 0; i < backupNum; i++)
     {
+        auto startTmp = std::chrono::high_resolution_clock::now();
         string name;
         size_t pos = readfileList[i].find_last_of('/');
         if (pos != std::string::npos)
@@ -754,6 +755,9 @@ void Chunker::Motivation(vector<string> &readfileList, uint32_t backupNum)
         // 关闭 cp 文件
         cpFile.close();
         readfileList[i] = writePath;
+        auto endTmp = std::chrono::high_resolution_clock::now();
+        auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
+        cout << "Version " << i << " RAW Conversion Time is " << TimeTmp << " s " << endl;
     }
     // reset
     chunkType = FASTCDC;
