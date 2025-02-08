@@ -435,21 +435,348 @@ void dataWrite::restoreFile(string fileName)
     return;
 }
 
-int dataWrite::Get_Chunk_Num()
-{
-    return chunkNum;
-}
+// in-memory version
+// void dataWrite::MTar2Tar(string fileName)
+// {
+//     // Setup paths
+//     string name = fileName.substr(fileName.find_last_of('/') + 1); // 提取文件名
+//     string mTarPath = "./mTarFile/" + name ;                 // 保留 .m 后缀
 
-int dataWrite::Get_Container_Num(Chunk_t chunk)
+//     // 生成 tarPath，去掉 .m 后缀
+//     string tarPath = "./mtarRestore/" + name.substr(0, name.size() - 2);
+
+//     std::ifstream mTarFile(mTarPath, std::ios::binary);
+//     if (!mTarFile.is_open())
+//     {
+//         std::cerr << "无法打开MTar文件: " << mTarPath << std::endl;
+//         return;
+//     }
+
+//     // 读取 data blocks 聚合体的长度（使用 uint64_t 类型）
+//     uint64_t dataBlocksSize;
+//     mTarFile.read(reinterpret_cast<char *>(&dataBlocksSize), sizeof(dataBlocksSize));
+//     if (!mTarFile.good())
+//     {
+//         std::cerr << "读取 data blocks 聚合体长度失败" << std::endl;
+//         mTarFile.close();
+//         return;
+//     }
+
+//     // 读取 data blocks 聚合体
+//     std::vector<char> dataBlocks(dataBlocksSize, 0);
+//     mTarFile.read(dataBlocks.data(), dataBlocksSize);
+//     if (!mTarFile.good())
+//     {
+//         std::cerr << "读取 data blocks 聚合体失败" << std::endl;
+//         mTarFile.close();
+//         return;
+//     }
+
+//     // 读取 header blocks 聚合体
+//     mTarFile.seekg(0, std::ios::end);
+//     uint64_t fileSize = static_cast<uint64_t>(mTarFile.tellg());                    // 获取文件总大小
+//     uint64_t headerBlocksSize = fileSize - sizeof(dataBlocksSize) - dataBlocksSize; // 计算 header blocks 聚合体长度
+//     std::vector<char> headerBlocks(headerBlocksSize, 0);
+//     mTarFile.seekg(sizeof(dataBlocksSize) + dataBlocksSize, std::ios::beg); // 定位到 header blocks 聚合体的起始位置
+//     mTarFile.read(headerBlocks.data(), headerBlocksSize);
+//     if (!mTarFile.good())
+//     {
+//         std::cerr << "读取 header blocks 聚合体失败" << std::endl;
+//         mTarFile.close();
+//         return;
+//     }
+//     mTarFile.close();
+
+//     // 写入新的 Tar 文件
+//     std::ofstream tarFile(tarPath, std::ios::binary);
+//     if (!tarFile.is_open())
+//     {
+//         std::cerr << "无法创建 Tar 文件: " << tarPath << std::endl;
+//         return;
+//     }
+
+//     // Add buffer for long filename
+//     char longFilename[512] = {0};
+//     bool hasLongFilename = false;
+//     // 遍历 header blocks 聚合体
+//     size_t dataOffset = 0;
+//     // cout << "headerBlocksSize is " << headerBlocksSize << endl;
+//     for (size_t i = 0; i < headerBlocksSize; i += 512)
+//     {
+//         // 检查是否还有足够的 header block
+//         if (i + 512 > headerBlocksSize)
+//         {
+//             cout << "wrong" << endl;
+//             break;
+//         }
+
+//         // 写入 header block
+//         tarFile.write(&headerBlocks[i], 512);
+//         // 检查文件类型
+//         char fileType = headerBlocks[i + 156];
+//         // printf("fileType hex: %02x, char: %c\n", (unsigned char)fileType, fileType);
+//         // cout << "file type is " << fileType << " and i is " << i << endl;
+//         // Handle long filename header
+//         if (fileType == GNUTYPE_LONGNAME || fileType == 'x')
+//         {
+//             // Parse size of long filename
+//             cout << "long filename" << endl;
+//             char sizeStr[12];
+//             memcpy(sizeStr, &headerBlocks[i + 124], 12);
+//             sizeStr[11] = '\0';
+
+//             uint64_t nameSize = 0;
+//             for (int j = 0; j < 11; ++j)
+//             {
+//                 if (sizeStr[j] == ' ')
+//                     break;
+//                 nameSize = nameSize * 8 + (sizeStr[j] - '0');
+//             }
+
+//             // Read long filename from data blocks
+//             if (nameSize > 0 && nameSize < 512)
+//             {
+//                 memcpy(longFilename, &dataBlocks[dataOffset], nameSize);
+//                 longFilename[nameSize] = '\0';
+//                 hasLongFilename = true;
+
+//                 // Move data offset past filename block
+//                 size_t nameBlocksNeeded = (nameSize + 511) / 512;
+//                 tarFile.write(&dataBlocks[dataOffset], nameBlocksNeeded * 512);
+//                 dataOffset += nameBlocksNeeded * 512;
+//             }
+//             continue;
+//         }
+
+//         // 只处理常规文件的数据块 || fileType == AREGTYPE
+//         if (fileType == REGTYPE)
+//         {
+//             // Parse file size
+//             char sizeStr[12];
+//             memcpy(sizeStr, &headerBlocks[i + 124], 12);
+//             sizeStr[11] = '\0';
+
+//             uint64_t fileSize = 0;
+//             for (int j = 0; j < 11; ++j)
+//             {
+//                 if (sizeStr[j] == ' ')
+//                     break;
+//                 cout << "sizeStr[j] is " << sizeStr[j] << endl;
+//                 fileSize = fileSize * 8 + (sizeStr[j] - '0');
+//             }
+
+//             // Check if enough data remains
+//             if (dataOffset + fileSize > dataBlocksSize)
+//             {
+//                 std::cerr << "数据不足，文件可能损坏" << std::endl;
+//                 break;
+//             }
+
+//             // Write exact file data
+//             tarFile.write(&dataBlocks[dataOffset], fileSize);
+
+//             // Add padding to maintain 512-byte alignment
+//             uint64_t padding = (512 - (fileSize % 512)) % 512;
+//             if (padding > 0)
+//             {
+//                 char padBuffer[512] = {0};
+//                 tarFile.write(padBuffer, padding);
+//             }
+
+//             dataOffset += (fileSize + padding);
+//         }
+//         // 对于目录、符号链接等其他类型，不需要处理数据块
+//     }
+
+//     // // 写入 Tar 文件结束标志（两个零填充块）
+//     // std::vector<char> zeroBlock(1024, 0);
+//     // tarFile.write(zeroBlock.data(), 1024);
+
+//     tarFile.close();
+//     std::cout << "成功将 MTar 文件恢复为 Tar 文件: " << tarPath << std::endl;
+// }
+
+// persistent version
+void dataWrite::MTar2Tar(string fileName)
 {
-    if (containerSize + chunk.saveSize > CONTAINER_MAX_SIZE)
+    // 设置路径
+    std::string name = fileName.substr(fileName.find_last_of('/') + 1); // 提取文件名
+    std::string mTarPath = "./restoreFile/" + name;                     // 保留 .m 后缀
+
+    // 生成 tarPath，去掉 .m 后缀
+    std::string tarPath = "./mtarRestore/" + name.substr(0, name.size() - 2);
+
+    std::ifstream mTarFile(mTarPath, std::ios::binary);
+    if (!mTarFile.is_open())
     {
-        return containerNum + 1;
+        std::cerr << "无法打开MTar文件: " << mTarPath << std::endl;
+        return;
     }
-    else
+
+    // 读取 data blocks 聚合体的长度（使用 uint64_t 类型）
+    uint64_t dataBlocksSize = 0;
+    mTarFile.read(reinterpret_cast<char *>(&dataBlocksSize), sizeof(dataBlocksSize));
+    if (!mTarFile.good())
     {
-        return containerNum;
+        std::cerr << "读取 data blocks 聚合体长度失败" << std::endl;
+        mTarFile.close();
+        return;
     }
+    // cerr << "dataBlocksSize is " << dataBlocksSize << endl;
+    //  记录数据块的起始位置
+    std::streampos dataBlocksStart = mTarFile.tellg();
+
+    // 获取文件总大小
+    mTarFile.seekg(0, std::ios::end);
+    uint64_t fileSize = static_cast<uint64_t>(mTarFile.tellg());
+    uint64_t headerBlocksSize = fileSize - sizeof(dataBlocksSize) - dataBlocksSize; // 计算 header blocks 聚合体长度
+
+    // 记录头块的起始位置
+    std::streampos headerBlocksStart = dataBlocksStart + static_cast<std::streamoff>(dataBlocksSize);
+
+    // 准备写入新的 Tar 文件
+    std::ofstream tarFile(tarPath, std::ios::binary);
+    if (!tarFile.is_open())
+    {
+        std::cerr << "无法创建 Tar 文件: " << tarPath << std::endl;
+        mTarFile.close();
+        return;
+    }
+
+    // 写入 Tar 文件需要处理的数据
+    // 首先，需要读取所有 header blocks 并按需处理
+
+    // 重置文件读取位置至 headerBlocksStart
+    mTarFile.seekg(headerBlocksStart, std::ios::beg);
+
+    // Add buffer for long filename
+    char longFilename[512] = {0};
+    bool hasLongFilename = false;
+
+    // 维护一个全局的数据偏移量
+    uint64_t dataOffset = 0;
+
+    // 读取并处理 header blocks
+    for (uint64_t i = 0; i < headerBlocksSize; i += 512)
+    {
+        // 读取一个 header block
+        mTarFile.seekg(headerBlocksStart + static_cast<std::streamoff>(i), std::ios::beg);
+        char headerBlock[512];
+        mTarFile.read(headerBlock, 512);
+        if (!mTarFile.good())
+        {
+            std::cerr << "读取 header block 失败" << std::endl;
+            break;
+        }
+
+        // 写入 header block 到 Tar 文件
+        tarFile.write(headerBlock, 512);
+
+        // 检查文件类型
+        char fileType = headerBlock[156];
+        // cerr << "fileType is " << fileType << endl;
+        // Handle long filename header
+        if (fileType == GNUTYPE_LONGNAME || fileType == 'x') // GNUTYPE_LONGNAME 可能是 'L'
+        {
+            // 解析长文件名的大小
+            // cout << "long name " << endl;
+            char sizeStr[12];
+            memcpy(sizeStr, &headerBlock[124], 12);
+            sizeStr[11] = '\0';
+
+            uint64_t nameSize = 0;
+            for (int j = 0; j < 11; ++j)
+            {
+                if (sizeStr[j] == ' ')
+                    break;
+                nameSize = nameSize * 8 + (sizeStr[j] - '0');
+            }
+
+            if (nameSize > 0 && nameSize < 512)
+            {
+                // 计算需要读取的块数
+                size_t nameBlocksNeeded = (nameSize + 511) / 512;
+                char tmp[nameBlocksNeeded * 512];
+                std::streampos dataPos = dataBlocksStart + static_cast<std::streamoff>(dataOffset);
+                mTarFile.seekg(dataPos, std::ios::beg);
+                mTarFile.read(tmp, nameBlocksNeeded * 512);
+
+                tarFile.write(tmp, nameBlocksNeeded * 512);
+                dataOffset += nameBlocksNeeded * 512;
+            }
+            continue;
+        }
+
+        // 只处理常规文件的数据块 || fileType == '0' 或其它表示常规文件的类型
+        if (fileType == REGTYPE) // REGTYPE 可能为 '0' 或 '\0'
+        {
+            // 解析文件大小
+            char sizeStr[12];
+            memcpy(sizeStr, &headerBlock[124], 12);
+            sizeStr[11] = '\0';
+
+            uint64_t fileSize_ = 0;
+            for (int j = 0; j < 11; ++j)
+            {
+                if (sizeStr[j] == ' ')
+                    break;
+                fileSize_ = fileSize_ * 8 + (sizeStr[j] - '0');
+            }
+
+            if (fileSize_ > 0)
+            {
+                // 计算总数据块的偏移量
+                // dataBlocksStart 是数据块区域的起始位置
+                // dataOffset 是当前文件的数据偏移量（以字节为单位）
+
+                std::streampos dataPos = dataBlocksStart + static_cast<std::streamoff>(dataOffset);
+                mTarFile.seekg(dataPos, std::ios::beg);
+                if (!mTarFile.good())
+                {
+                    std::cerr << "定位数据块失败" << std::endl;
+                    break;
+                }
+
+                // 读取并写入文件数据
+                uint64_t bytesRemaining = fileSize_;
+                const size_t bufferSize = 4096;
+                std::vector<char> buffer(std::min(bufferSize, static_cast<size_t>(bytesRemaining)), 0);
+
+                while (bytesRemaining > 0)
+                {
+                    size_t bytesToRead = static_cast<size_t>(std::min<uint64_t>(buffer.size(), bytesRemaining));
+                    mTarFile.read(buffer.data(), bytesToRead);
+                    if (!mTarFile.good())
+                    {
+                        std::cerr << "读取文件数据失败" << std::endl;
+                        break;
+                    }
+
+                    tarFile.write(buffer.data(), bytesToRead);
+                    bytesRemaining -= bytesToRead;
+                }
+
+                // 跳过数据块的填充部分
+                uint64_t padding = (512 - (fileSize_ % 512)) % 512;
+                if (padding > 0)
+                {
+                    char padBuffer[512] = {0};
+                    // Write padding to tar file
+                    tarFile.write(padBuffer, padding);
+                }
+
+                // 更新数据偏移量
+                dataOffset += fileSize_ + padding;
+                // cerr << "dataOffset is " << dataOffset << endl;
+            }
+        }
+        // 对于目录、符号链接等其他类型，不需要处理数据块
+    }
+    // 关闭文件
+    mTarFile.close();
+    tarFile.close();
+
+    std::cout << "成功将 MTar 文件恢复为 Tar 文件: " << tarPath << std::endl;
 }
 
 Chunk_t dataWrite::Get_Chunk_Info(int id)

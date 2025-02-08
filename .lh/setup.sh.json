@@ -1,0 +1,30 @@
+{
+    "sourceFile": "setup.sh",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1736154138962,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1736154148623,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -65,8 +65,8 @@\n #     rm -rf mTarFile/*\n #     echo \"Done!\"\n # fi\n if [ -d \"mtarRestore\" ]; then\n-    echo \"clean the Containers directory\"\n-    rm -rf restoreFile/*\n+    echo \"clean the mtarRestore directory\"\n+    rm -rf mtarRestore/*\n     echo \"Done!\"\n fi\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1736154155449,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -55,9 +55,9 @@\n     echo \"Done!\"\n fi\n \n if [ -d \"restoreFile\" ]; then\n-    echo \"clean the Containers directory\"\n+    echo \"clean the restoreFile directory\"\n     rm -rf restoreFile/*\n     echo \"Done!\"\n fi\n # if [ -d \"mTarFile\" ]; then\n"
+                },
+                {
+                    "date": 1736154188649,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -68,5 +68,11 @@\n if [ -d \"mtarRestore\" ]; then\n     echo \"clean the mtarRestore directory\"\n     rm -rf mtarRestore/*\n     echo \"Done!\"\n+fi\n+\n+if [ ! -d \"mtarRestore\" ]; then\n+    echo \"build the mtarRestore directory\"\n+    mkdir -p mtarRestore\n+    echo \"Done!\"\n fi\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1736154138962,
+            "name": "Commit-0",
+            "content": "# # 获取脚本所在的绝对路径\n# SCRIPT_DIR=$(dirname \"$(realpath \"$0\")\")\n\n# # 完全删除并重新创建 build 目录\n# if [ -d \"$SCRIPT_DIR/build\" ]; then\n#     echo \"Cleaning the build directory\"\n#     rm -rf \"$SCRIPT_DIR/build\"\n# fi\n# echo \"Creating the build directory\"\n# mkdir -p \"$SCRIPT_DIR/build\"\n\n# # 进入 build 目录，运行 cmake 和 make\n# cd \"$SCRIPT_DIR/build\"\n# cmake ..\n# make -j4\n\n# # 清理 ./bin 目录下的 .txt 文件，并确保 Containers 和 restoreFile 目录存在\n# cd \"$SCRIPT_DIR/bin\"\n# rm -f *.txt\n# mkdir -p Containers restoreFile\n\n# # 如果 \"./bin/Containers\" 目录存在，则清理其内容\n# if [ -d \"Containers\" ]; then\n#     echo \"Cleaning the Containers directory\"\n#     rm -rf Containers/*\n#     echo \"Done!\"\n# fi\n\nif [ -d \"build\" ]; then\n    echo \"clean the build directory\"\n    rm -rf build/*\n    echo \"Done!\"\nfi\n\nif [ ! -d \"build\" ]; then\n    echo \"build the build directory\"\n    mkdir -p build\n    echo \"Done!\"\nfi\n\n\ncd ./build\ncmake ..\nmake -j4\ncd ..\ncd ./bin\n# rm *.txt\nmkdir -p Containers\nmkdir -p restoreFile\nmkdir -p mTarFile\n# Check if \"./bin/Containers\" directory exists and clear its content\nif [ -d \"Containers\" ]; then\n    echo \"clean the Containers directory\"\n    rm -rf Containers/*\n    echo \"Done!\"\nfi\n\nif [ -d \"restoreFile\" ]; then\n    echo \"clean the Containers directory\"\n    rm -rf restoreFile/*\n    echo \"Done!\"\nfi\n# if [ -d \"mTarFile\" ]; then\n#     echo \"clean the Containers directory\"\n#     rm -rf mTarFile/*\n#     echo \"Done!\"\n# fi\nif [ -d \"mtarRestore\" ]; then\n    echo \"clean the Containers directory\"\n    rm -rf restoreFile/*\n    echo \"Done!\"\nfi"
+        }
+    ]
+}

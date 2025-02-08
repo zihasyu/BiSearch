@@ -6,6 +6,14 @@ Chunker::Chunker(int chunkType_)
     FixedChunkSize = 8192;
     // specifiy chunk type
     chunkType = chunkType_;
+    if (chunkType == MTAROdess)
+    {
+        chunkType = GEARCDC;
+    }
+    else if (chunkType == MTARPalantir)
+    {
+        chunkType = FASTCDC;
+    }
     // init chunker
     name[100] = '\0';
     LongName[512] = '\0';
@@ -27,7 +35,7 @@ void Chunker::LoadChunkFile(string path)
     {
         inputFile.close();
     }
-    input_file_path_ = path; // 保存输入文件路径
+    // input_file_path_ = path; // 保存输入文件路径
     inputFile.open(path, ios_base::in | ios::binary);
     if (!inputFile.is_open())
     {
@@ -430,7 +438,9 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
 
             if (localType == FILE_HEADER)
             {
-                boundaries_.push_back({current_offset_ + cpSum, cp, 'H'});
+                // ignore timestamp
+                // uint8_t zero[12] = {0};
+                // boundaries_.push_back({current_offset_ + cpSum, cp, 'H'});
                 memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
                 HeaderCp += cp;
                 // blockTypeMask = blockTypeMask;
@@ -451,7 +461,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 chunk.name = hashNameToUint64(name);
 
                 // 记录data边界
-                boundaries_.push_back({current_offset_ + cpSum, cp, 'D'});
+                // boundaries_.push_back({current_offset_ + cpSum, cp, 'D'});
                 // input MQ
                 if (!outputMQ_->Push(chunk))
                 {
@@ -487,6 +497,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
         chunk.chunkSize = HeaderCp;
         chunk.HeaderFlag = true;
         chunk.NameExist = true;
+        chunk.name = 0;
         // reset
         HeaderCp = 0;
         // input chunk MQ
@@ -500,7 +511,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
     {
         // cout << " Next_Chunk_Type is " << Next_Chunk_Type << endl;
         //  不以header为开头只可能是bigchunk，这里想要的处理的bigchunk开头时
-        boundaries_.push_back({current_offset_, len, 'B'});
+        // boundaries_.push_back({current_offset_, len, 'B'});
         while (Next_Chunk_Type != FILE_HEADER && cpSum < CONTAINER_MAX_SIZE - MAX_CHUNK_SIZE)
         // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
         // 当前是D下一个块也是D时，应该是大块，也是可以断的。
@@ -565,6 +576,12 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
         ifstream inFile(readfileList[i]);
         ofstream outFile(writePath);
 
+        // 预留data_size空间
+        uint64_t dataSize = 0;
+        outFile.write((char *)&dataSize, sizeof(dataSize));
+
+        // 记录data blocks起始位置
+        std::streampos dataStart = outFile.tellp();
         // data chunk rewrite
         bool end = false;
         uint64_t totalOffset = 0;
@@ -599,6 +616,11 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
             totalOffset += localOffset;
             inFile.seekg(totalOffset, ios_base::beg);
         }
+
+        // 记录data blocks结束位置并计算大小
+        std::streampos dataEnd = outFile.tellp();
+        dataSize = dataEnd - dataStart;
+
         // reset
         localType = FILE_HEADER;
         Next_Chunk_Type = FILE_HEADER;
@@ -639,6 +661,10 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
             inHeaderFile.seekg(totalOffset, ios_base::beg);
         }
 
+        // 回写data_size
+        outFile.seekp(0);
+        outFile.write((char *)&dataSize, sizeof(dataSize));
+        cout << "offset is " << dataSize << endl;
         // reset
         localType = FILE_HEADER;
         Next_Chunk_Type = FILE_HEADER;
@@ -778,22 +804,28 @@ uint64_t Chunker::hashNameToUint64(const char *name)
     return hash;
 }
 
-void Chunker::WriteBoundariesToFile()
-{
-    // 获取文件名
-    std::string filename = input_file_path_.substr(input_file_path_.find_last_of("/\\") + 1);
-    std::string output_path = filename + ".boundaries";
+// void Chunker::WriteBoundariesToFile()
+// {
+//     // 获取文件名
+//     std::string filename = input_file_path_.substr(input_file_path_.find_last_of("/\\") + 1);
+//     std::string output_path = filename + ".boundaries";
 
-    std::ofstream out_file(output_path);
-    if (!out_file)
-    {
-        tool::Logging(myName_.c_str(), "Failed to open output file: %s\n", output_path.c_str());
-        return;
-    }
+//     std::ofstream out_file(output_path);
+//     if (!out_file)
+//     {
+//         tool::Logging(myName_.c_str(), "Failed to open output file: %s\n", output_path.c_str());
+//         return;
+//     }
 
-    for (const auto &[offset, size, type] : boundaries_)
-    {
-        out_file << type << " " << offset << " " << size << "\n";
-    }
-    out_file.close();
-}
+//     for (const auto &[offset, size, type] : boundaries_)
+//     {
+//         out_file << type << " " << offset << " " << size << "\n";
+//     }
+//     out_file.close();
+// }
+
+// void Chunker::SetHeaderChunkSize(uint64_t size)
+// {
+//     MultiHeaderSize = size;
+//     return;
+// }

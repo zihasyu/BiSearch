@@ -124,8 +124,9 @@ int main(int argc, char **argv)
     //     chunkerObj->SetOutputMaskMQ(MaskMQ);
     //     absMethodObj->SetInputMaskMQ(MaskMQ);
     // }
+
     auto startsum = std::chrono::high_resolution_clock::now();
-    if (chunkingType == MTAR)
+    if (chunkingType == MTAR || chunkingType == MTAROdess || chunkingType == MTARPalantir)
     {
         chunkerObj->MTar(readfileList, backupNum);
     }
@@ -137,6 +138,10 @@ int main(int argc, char **argv)
         absMethodObj->SetFilename(readfileList[i]);
         absMethodObj->dataWrite_->SetFilename(readfileList[i]);
         // thread running
+        // if (chunkingType == TAR_MultiHeader)
+        // {
+        //     chunkerObj->SetHeaderChunkSize(uint64_t(ratio));
+        // }
         thTmp[0] = new boost::thread(attrs, boost::bind(&Chunker::Chunking, chunkerObj));
         thTmp[1] = new boost::thread(attrs, boost::bind(&AbsMethod::ProcessTrace, absMethodObj));
         for (auto it : thTmp)
@@ -171,19 +176,43 @@ int main(int argc, char **argv)
     else
         absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, chunkerObj->ChunkTime.count());
 
-    //  restore backup if you need, but it's not necessary
-    // if (chunkingType != TAR_MultiHeader)
-    //     for (auto i = 0; i < backupNum; i++)
-    //     {
-    //         absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-    //         absMethodObj->dataWrite_->restoreFile(readfileList[i]);
-    //     }
-    // else
-    //     for (auto i = 0; i < backupNum; i++)
-    //     {
-    //         absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-    //         absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
-    //     }
+    // {
+    //     auto startTotal = std::chrono::steady_clock::now();
+
+    //     if (chunkingType != TAR_MultiHeader)
+    //         for (auto i = 0; i < backupNum; i++)
+    //         {
+    //             auto startIter = std::chrono::steady_clock::now();
+    //             absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+    //             absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+    //             if (chunkingType == MTAR || chunkingType == MTAROdess || chunkingType == MTARPalantir)
+    //             {
+    //                 absMethodObj->dataWrite_->MTar2Tar(readfileList[i]);
+    //             }
+    //             auto endIter = std::chrono::steady_clock::now();
+    //             std::cout << "Iteration " << i << " time used: "
+    //                       << std::chrono::duration_cast<std::chrono::milliseconds>(endIter - startIter).count() / 1000.0
+    //                       << " s" << std::endl;
+    //         }
+    //     else
+    //         for (auto i = 0; i < backupNum; i++)
+    //         {
+    //             auto startIter = std::chrono::steady_clock::now();
+    //             absMethodObj->dataWrite_->SetFilename(readfileList[i]);
+    //             absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
+    //             auto endIter = std::chrono::steady_clock::now();
+    //             std::cout << "Iteration " << i << " time used: "
+    //                       << std::chrono::duration_cast<std::chrono::milliseconds>(endIter - startIter).count() / 1000.0
+    //                       << " s" << std::endl;
+    //         }
+
+    //     auto endTotal = std::chrono::steady_clock::now();
+    //     std::cout << "Total time used: "
+    //               << std::chrono::duration_cast<std::chrono::milliseconds>(endTotal - startTotal).count() / 1000.0
+    //               << " s" << std::endl;
+    // }
+    // ...existing code...
+    // ...existing code...
 
     string fileName = "C" + to_string(chunkingType) + "_M" + to_string(compressionMethod);
     // absMethodObj->dataWrite_->Save_to_File_unique(fileName);

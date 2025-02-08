@@ -14,9 +14,11 @@ enum ChunkTypeNum
     GEARCDC,
     TAR,
     TAR_MultiHeader,
-    MTAR
+    MTAR,
+    MTAROdess,
+    MTARPalantir
 };
-const int BigChunkSize = 16384;
+const int BigChunkSize = CONTAINER_MAX_SIZE;
 class Chunker
 {
 private:
@@ -37,6 +39,7 @@ private:
     uint64_t HeaderCp = 0;
     // fixed Size Chunking
     uint64_t FixedChunkSize;
+    // uint64_t MultiHeaderSize;
 
     // IO stream
     ifstream inputFile;
@@ -62,9 +65,9 @@ private:
     const uint64_t prime = 1099511628211;
 
     // 记录边界
-    std::vector<std::tuple<uint64_t, uint32_t, char>> boundaries_; // offset, size, type(H/D/B)
-    uint64_t current_offset_;
-    std::string input_file_path_;
+    // std::vector<std::tuple<uint64_t, uint32_t, char>> boundaries_; // offset, size, type(H/D/B)
+    // uint64_t current_offset_;
+    // std::string input_file_path_;
 
 public:
     Chunker(int chunkType_);
@@ -96,7 +99,6 @@ public:
     uint64_t CutPointTarFast(const uint8_t *src, const uint64_t len);
     uint64_t CutPointTarHeader(const uint8_t *src, const uint64_t len);
     void MTar(vector<string> &readfileList, uint32_t backupNum);
-
     // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it
     std::chrono::time_point<std::chrono::high_resolution_clock> startChunk, endChunk;
     std::chrono::duration<double> ChunkTime;
@@ -120,9 +122,10 @@ public:
     const char *FindLongNameBegin(const char *src);
     uint16_t hashNameToUint16(const char *name);
     uint64_t hashNameToUint64(const char *name);
+    // void SetHeaderChunkSize(uint64_t size);
 
     // 记录边界
-    void WriteBoundariesToFile();
-    void ClearBoundaries() { boundaries_.clear(); }
+    // void WriteBoundariesToFile();
+    // void ClearBoundaries() { boundaries_.clear(); }
 };
 #endif

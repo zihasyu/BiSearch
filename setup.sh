@@ -56,7 +56,7 @@ if [ -d "Containers" ]; then
 fi
 
 if [ -d "restoreFile" ]; then
-    echo "clean the Containers directory"
+    echo "clean the restoreFile directory"
     rm -rf restoreFile/*
     echo "Done!"
 fi
@@ -65,3 +65,14 @@ fi
 #     rm -rf mTarFile/*
 #     echo "Done!"
 # fi
+if [ -d "mtarRestore" ]; then
+    echo "clean the mtarRestore directory"
+    rm -rf mtarRestore/*
+    echo "Done!"
+fi
+
+if [ ! -d "mtarRestore" ]; then
+    echo "build the mtarRestore directory"
+    mkdir -p mtarRestore
+    echo "Done!"
+fi

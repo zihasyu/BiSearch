@@ -99,6 +99,7 @@ public:
     bool Recipe_Header_Insert(uint64_t chunkID);
     void restoreFile(string fileName);
     void restoreHeaderFile(string fileName);
+    void MTar2Tar(string fileName);
 
     void Save_to_File(string methodname);
     void Save_to_File_unique(string methodname);
