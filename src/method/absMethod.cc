@@ -247,7 +247,7 @@ bool AbsMethod::SF_Insert(const char *key, size_t keySize, int chunkid)
 uint8_t *AbsMethod::xd3_encode(const uint8_t *targetChunkbuffer, size_t targetChunkbuffer_size, const uint8_t *baseChunkBuffer, size_t baseChunkBuffer_size, size_t *deltaChunkBuffer_size, uint8_t *tmpbuffer)
 {
     size_t deltachunkSize;
-    int ret = xd3_encode_memory(targetChunkbuffer, targetChunkbuffer_size, baseChunkBuffer, baseChunkBuffer_size, tmpbuffer, &deltachunkSize, CONTAINER_MAX_SIZE * 2, 0);
+    int ret = xd3_encode_memory(targetChunkbuffer, targetChunkbuffer_size, baseChunkBuffer, baseChunkBuffer_size, tmpbuffer, &deltachunkSize, 5 * 1024 * 1024 * 2, 0);
     if (ret != 0)
     {
         cout << "delta error" << endl;

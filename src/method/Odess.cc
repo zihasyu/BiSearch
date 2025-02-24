@@ -3,10 +3,10 @@
 Odess::Odess()
 {
     // cout << " Chunk_t is " << sizeof(Chunk_t) << " Chunk_t_ori is " << sizeof(Chunk_t_odess) << " <super_feature_t, unordered_set<string>> is " << sizeof(super_feature_t);
-    lz4ChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
+    lz4ChunkBuffer = (uint8_t *)malloc(500 * 1024 * 1024 * sizeof(uint8_t));
     mdCtx = EVP_MD_CTX_new();
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
-    deltaMaxChunkBuffer = (uint8_t *)malloc(2 * CONTAINER_MAX_SIZE * sizeof(uint8_t));
+    deltaMaxChunkBuffer = (uint8_t *)malloc(2 * 500 * 1024 * 1024 * sizeof(uint8_t));
     SFindex = new unordered_map<string, vector<int>>[FINESSE_SF_NUM];
 }
 

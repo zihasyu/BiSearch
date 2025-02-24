@@ -16,7 +16,9 @@ enum ChunkTypeNum
     TAR_MultiHeader,
     MTAR,
     MTAROdess,
-    MTARPalantir
+    MTARPalantir,
+    RAW_FastCDC,
+    RAW_FileLevel
 };
 const int BigChunkSize = CONTAINER_MAX_SIZE;
 class Chunker
@@ -24,14 +26,14 @@ class Chunker
 private:
     /* data */
     string myName_ = "Chunker";
-    int chunkType;
+
     // chunk size settings for FastCDC
     // uint64_t avgChunkSize_;
     // uint64_t minChunkSize_;
     // uint64_t maxChunkSize_;
-    uint64_t minChunkSize = 4096;
+    uint64_t minChunkSize = INT_MAX;
     uint64_t avgChunkSize = 8192;
-    uint64_t maxChunkSize = 16384;
+    uint64_t maxChunkSize = 0;
     uint64_t normalSize;
     uint32_t bits;
     uint32_t maskS;
@@ -70,6 +72,7 @@ private:
     // std::string input_file_path_;
 
 public:
+    int chunkType;
     Chunker(int chunkType_);
     ~Chunker();
     // util method
@@ -122,6 +125,11 @@ public:
     const char *FindLongNameBegin(const char *src);
     uint16_t hashNameToUint16(const char *name);
     uint64_t hashNameToUint64(const char *name);
+    void Motivation(vector<string> &readfileList, uint32_t backupNum);
+    uint64_t CutPointTarNonBig(const uint8_t *src, const uint64_t len);
+    uint64_t CutPointFileLevel(const uint8_t *src, const uint64_t len);
+    uint64_t FileNum = 0;
+    uint64_t FileSize = 0;
     // void SetHeaderChunkSize(uint64_t size);
 
     // 记录边界
