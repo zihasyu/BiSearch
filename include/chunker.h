@@ -68,7 +68,9 @@ private:
     // std::vector<std::tuple<uint64_t, uint32_t, char>> boundaries_; // offset, size, type(H/D/B)
     // uint64_t current_offset_;
     // std::string input_file_path_;
-
+    std::ofstream outputFile1; // 第一个文件输出流
+    std::ofstream outputFile2; // 第二个文件输出流
+    std::ofstream outputFile3; // 第三个文件输出流
 public:
     Chunker(int chunkType_);
     ~Chunker();

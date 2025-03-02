@@ -1,218 +1,30 @@
 cd bin
+run_BiPal(){
+  local path=$1
+  local name=$2
+  local num=$3
+./BiSearch -i $path -c 1 -m 0 -n 2  > FastCDC_$name.txt
+mv SkipCp.txt SkipCp_$name.txt
+mv AcceptCp.txt AcceptCp_$name.txt
+mv ForceCp.txt ForceCp_$name.txt
+}
+# run_raw /mnt/dataset2/ThunderbirdTar _Thunderbird 240
+# run_raw /mnt/dataset2/automake_tarballs _automake 100
+# run_raw /mnt/dataset2/bash_tarballs _bash 44
+# run_raw /mnt/dataset2/coreutils_tarballs _coreutils 28
+# run_raw /mnt/dataset2/fdisk_tarballs _fdisk 22
+# run_raw /mnt/dataset2/glibc_tarballs _glibc 100
+# run_raw /mnt/dataset2/smalltalk_tarballs _smalltalk 40
+# run_method /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
 
-path=/mnt/dataset2/linux
-name=_LKT
-num=270
-# ./BiSearch -i $path -c 1 -m 0 -n $num  >Dedup$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 1 -m 1 -n $num  >Ntransform$name.txt
-# sudo rm Containers/*
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo rm mtarRestore/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 1 -m 2 -n $num  >Finesse$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 2 -m 3 -n $num  >Odess$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 1 -m 4 -n $num  >Palantir$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# # ./BiSearch -i $path -c 1 -m 5 -n $num  >BiSearch$name.txt
-# # sudo rm Containers/*
-# # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# # ./BiSearch -i $path -c 5 -m 2 -n $num  >FinesseMTar$name.txt
-# # sudo rm Containers/*
-# # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 6 -m 3 -n $num  >OdessMTar$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo rm mtarRestore/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 7 -m 4 -n $num  >PalantirMTar$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo rm mtarRestore/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-./BiSearch -i $path -c 4 -m 5 -n $num  >BiSearchMultiTar$name.txt
-sudo rm Containers/*
-sudo rm restoreFile/*
-sudo echo 3 > /proc/sys/vm/drop_caches
-
-
-path=/mnt/dataset2/chromium 
-name=_chromium
-num=107
-# ./BiSearch -i $path -c 1 -m 0 -n $num  >Dedup$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# # # ./BiSearch -i $path -c 1 -m 1 -n $num  >Ntransform$name.txt
-# # # sudo rm Containers/*
-# # # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# # ./BiSearch -i $path -c 1 -m 2 -n $num  >Finesse$name.txt
-# # sudo rm Containers/*
-# # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 2 -m 3 -n $num  >Odess$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 1 -m 4 -n $num  >Palantir$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# # # ./BiSearch -i $path -c 1 -m 5 -n $num  >BiSearch$name.txt
-# # # sudo rm Containers/*
-# # # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# # ./BiSearch -i $path -c 5 -m 2 -n $num  >FinesseMTar$name.txt
-# # sudo rm Containers/*
-# # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 6 -m 3 -n $num  >OdessMTar$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo rm mtarRestore/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 7 -m 4 -n $num  >PalantirMTar$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo rm mtarRestore/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-./BiSearch -i $path -c 4 -m 5 -n $num -r 8192 > BiSearchMultiTar$name.txt
-sudo rm Containers/*
-sudo rm restoreFile/*
-sudo echo 3 > /proc/sys/vm/drop_caches
-
-
-path=/mnt/dataset2/WEB
-name=_WEB
-num=102
-# ./BiSearch -i $path -c 1 -m 0 -n $num  >Dedup$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# # # ./BiSearch -i $path -c 1 -m 1 -n $num  >Ntransform$name.txt
-# # # sudo rm Containers/*
-# # # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# # ./BiSearch -i $path -c 1 -m 2 -n $num  >Finesse$name.txt
-# # sudo rm Containers/*
-# # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 2 -m 3 -n $num  >Odess$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 1 -m 4 -n $num  >Palantir$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# # # ./BiSearch -i $path -c 1 -m 5 -n $num  >BiSearch$name.txt
-# # # sudo rm Containers/*
-# # # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# # ./BiSearch -i $path -c 5 -m 2 -n $num  >FinesseMTar$name.txt
-# # sudo rm Containers/*
-# # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 6 -m 3 -n $num  >OdessMTar$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo rm mtarRestore/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 7 -m 4 -n $num  >PalantirMTar$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo rm mtarRestore/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-./BiSearch -i $path -c 4 -m 5 -n $num -r 8192 > BiSearchMultiTar$name.txt
-sudo rm Containers/*
-sudo rm restoreFile/*
-sudo echo 3 > /proc/sys/vm/drop_caches
-
-path=/mnt/dataset2/ThunderbirdTar
-name=_Thunderbird
-num=240
-# ./BiSearch -i $path -c 1 -m 0 -n $num  >Dedup$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# # # ./BiSearch -i $path -c 1 -m 1 -n $num  >Ntransform$name.txt
-# # # sudo rm Containers/*
-# # # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# # ./BiSearch -i $path -c 1 -m 2 -n $num  >Finesse$name.txt
-# # sudo rm Containers/*
-# # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 2 -m 3 -n $num  >Odess$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 1 -m 4 -n $num  >Palantir$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# # # ./BiSearch -i $path -c 1 -m 5 -n $num  >BiSearch$name.txt
-# # # sudo rm Containers/*
-# # # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# # ./BiSearch -i $path -c 5 -m 2 -n $num  >FinesseMTar$name.txt
-# # sudo rm Containers/*
-# # sudo rm Containers/*
-# # sudo rm restoreFile/*
-# # sudo rm mtarRestore/*
-# # sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 6 -m 3 -n $num  >OdessMTar$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo rm mtarRestore/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-# ./BiSearch -i $path -c 7 -m 4 -n $num  >PalantirMTar$name.txt
-# sudo rm Containers/*
-# sudo rm restoreFile/*
-# sudo rm mtarRestore/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
-./BiSearch -i $path -c 4 -m 5 -n $num -r 8192 > BiSearchMultiTar$name.txt
-sudo rm Containers/*
-sudo rm restoreFile/*
-sudo echo 3 > /proc/sys/vm/drop_caches
+run_BiPal /mnt/dataset2/automake_tarballs _automake 100
+run_BiPal /mnt/dataset2/bash_tarballs _bash 44
+run_BiPal /mnt/dataset2/coreutils_tarballs _coreutils 28
+run_BiPal /mnt/dataset2/fdisk_tarballs _fdisk 22
+run_BiPal /mnt/dataset2/glibc_tarballs _glibc 100
+run_BiPal /mnt/dataset2/smalltalk_tarballs _smalltalk 40
+run_BiPal /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
+run_BiPal /mnt/dataset2/ThunderbirdTar _Thunderbird 240
+run_BiPal /mnt/dataset2/chromium _chromium 107
+run_BiPal /mnt/dataset2/linux _linux 270
+run_BiPal /mnt/dataset2/WEB _WEB 102

@@ -48,6 +48,26 @@ void Chunker::LoadChunkFile(string path)
 
 void Chunker::ChunkerInit()
 {
+    outputFile1.open("SkipCp.txt"); // 初始化第一个文件输出流
+    if (!outputFile1.is_open())
+    {
+        tool::Logging(myName_.c_str(), "Failed to open output1.txt\n");
+        exit(EXIT_FAILURE);
+    }
+
+    outputFile2.open("AcceptCp.txt"); // 初始化第二个文件输出流
+    if (!outputFile2.is_open())
+    {
+        tool::Logging(myName_.c_str(), "Failed to open output2.txt\n");
+        exit(EXIT_FAILURE);
+    }
+    outputFile3.open("ForceCp.txt"); // 初始化第三个文件输出流
+    if (!outputFile3.is_open())
+    {
+        tool::Logging(myName_.c_str(), "Failed to open output2.txt\n");
+        exit(EXIT_FAILURE);
+    }
+    //
     switch (chunkType)
     {
     case FIXED_SIZE:
@@ -184,7 +204,9 @@ void Chunker::Chunking()
         inputFile.seekg(totalOffset, ios_base::beg);
     }
     // cout << "chunking done." << endl;
-
+    outputFile1 << "Version Finish" << endl; // 第一个文件输出流
+    outputFile2 << "Version Finish" << endl; // 第二个文件输出流
+    outputFile3 << "Version Finish" << endl; // 第三个文件输出流
     outputMQ_->done_ = true;
     tool::Logging(myName_.c_str(), "chunking done.\n");
 
@@ -201,8 +223,34 @@ void Chunker::Chunking()
 uint64_t Chunker::CutPointFastCDC(const uint8_t *src, const uint64_t len)
 {
     uint64_t n;
-    uint32_t fp = 0;
+    uint32_t fp1 = 0;
     uint64_t i;
+    i = min(len, static_cast<uint64_t>(minChunkSize)); // i=min(len,4KiB)
+    n = min(normalSize, len);                          // n=min(len,8KiB)
+
+    for (int j = 0; j < n; j++)
+    {
+        fp1 = (fp1 >> 1) + GEAR[src[j]];
+        if (!(fp1 & maskS))
+        {
+            outputFile1 << fp1 << " " << static_cast<int>(static_cast<uint8_t>(src[j])) << "\n";
+        }
+        // if (!(fp1 & maskL))
+        // {
+        //     outputFile1 << fp1 << " " << src[j] << "\n";
+        // }
+    }
+    // i = min(len, static_cast<uint64_t>(minChunkSize));
+    // n = min(normalSize, len);
+    // for (; i < n; i++)
+    // {
+    //     fp = (fp >> 1) + GEAR[src[i]];
+    //     if (!(fp & maskS))
+    //     {
+    //         return (i + 1);
+    //     }
+    // }
+    uint32_t fp = 0;
     i = min(len, static_cast<uint64_t>(minChunkSize));
     n = min(normalSize, len);
     for (; i < n; i++)
@@ -210,6 +258,7 @@ uint64_t Chunker::CutPointFastCDC(const uint8_t *src, const uint64_t len)
         fp = (fp >> 1) + GEAR[src[i]];
         if (!(fp & maskS))
         {
+            outputFile2 << fp << " " << static_cast<int>(static_cast<uint8_t>(src[i])) << "\n";
             return (i + 1);
         }
     }
@@ -220,9 +269,11 @@ uint64_t Chunker::CutPointFastCDC(const uint8_t *src, const uint64_t len)
         fp = (fp >> 1) + GEAR[src[i]];
         if (!(fp & maskL))
         {
+            outputFile2 << fp << " " << static_cast<int>(static_cast<uint8_t>(src[i])) << "\n";
             return (i + 1);
         }
     }
+    outputFile3 << fp << " " << static_cast<int>(static_cast<uint8_t>(src[i])) << "\n";
     return i;
 };
 uint32_t Chunker::CutPointGear(const uint8_t *src, const uint64_t len)
