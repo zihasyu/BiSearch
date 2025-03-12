@@ -61,6 +61,17 @@ void Chunker::ChunkerInit()
         maskL = GenerateFastCDCMask(bits - 1);
         break;
     }
+    case RAW_FASTCDC_NOSKIP:
+    case FASTCDC_NOSKIP: // FastCDC chunking
+    {
+        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
+        chunkBuffer = (uint8_t *)malloc(MAX_CHUNK_SIZE);
+        normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
+        bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
+        maskS = GenerateFastCDCMask(bits + 1);
+        maskL = GenerateFastCDCMask(bits - 1);
+        break;
+    }
     case RAW_GEAR:
     case GEARCDC: // Gear chunking
     {
@@ -129,6 +140,11 @@ void Chunker::Chunking()
                 break;
             }
             case FASTCDC:
+            {
+                cp = CutPointFastCDC(readFileBuffer + localOffset, len - localOffset);
+                break;
+            }
+            case FASTCDC_NOSKIP:
             {
                 cp = CutPointFastCDC(readFileBuffer + localOffset, len - localOffset);
                 break;
@@ -218,6 +234,35 @@ uint64_t Chunker::CutPointFastCDC(const uint8_t *src, const uint64_t len)
     }
     return i;
 };
+
+uint64_t Chunker::CutPointFastCDC_NoSkip(const uint8_t *src, const uint64_t len)
+{
+    uint64_t n;
+    uint32_t fp = 0;
+    uint64_t i;
+    i = 0;
+    n = min(normalSize, len);
+    for (; i < n; i++)
+    {
+        fp = (fp >> 1) + GEAR[src[i]];
+        if (!(fp & maskS))
+        {
+            return (i + 1);
+        }
+    }
+
+    n = min(static_cast<uint64_t>(maxChunkSize), len);
+    for (; i < n; i++)
+    {
+        fp = (fp >> 1) + GEAR[src[i]];
+        if (!(fp & maskL))
+        {
+            return (i + 1);
+        }
+    }
+    return i;
+};
+
 uint32_t Chunker::CutPointGear(const uint8_t *src, const uint64_t len)
 {
     uint32_t fp = 0;

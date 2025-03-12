@@ -16,7 +16,9 @@ enum ChunkTypeNum
     TAR_MultiHeader,
     MTAR,
     RAW,
-    RAW_GEAR
+    RAW_FASTCDC_NOSKIP,
+    RAW_GEAR,
+    FASTCDC_NOSKIP
 };
 
 class Chunker
@@ -89,6 +91,7 @@ public:
     // Chunking Methods
     uint32_t CutPointFixSized(const uint8_t *src, const uint64_t len);
     uint64_t CutPointFastCDC(const uint8_t *src, const uint64_t len);
+    uint64_t CutPointFastCDC_NoSkip(const uint8_t *src, const uint64_t len);
     uint32_t CutPointGear(const uint8_t *src, const uint64_t len);
     uint64_t CutPointTarFast(const uint8_t *src, const uint64_t len);
     uint64_t CutPointTarHeader(const uint8_t *src, const uint64_t len);
