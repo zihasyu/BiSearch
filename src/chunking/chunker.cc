@@ -805,7 +805,7 @@ void Chunker::Motivation(vector<string> &readfileList, uint32_t backupNum)
         cout << "Version " << i << " RAW Conversion Time is " << TimeTmp << " s " << endl;
     }
     // reset
-    chunkType = FASTCDC;
+
     localType = FILE_HEADER;
     Next_Chunk_Type = FILE_HEADER;
     return;

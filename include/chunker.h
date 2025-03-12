@@ -26,7 +26,7 @@ class Chunker
 private:
     /* data */
     string myName_ = "Chunker";
-    int chunkType;
+
     // chunk size settings for FastCDC
     // uint64_t avgChunkSize_;
     // uint64_t minChunkSize_;
@@ -66,6 +66,7 @@ private:
     const uint64_t prime = 1099511628211;
 
 public:
+    int chunkType;
     Chunker(int chunkType_);
     ~Chunker();
     // util method

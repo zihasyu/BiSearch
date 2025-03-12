@@ -124,9 +124,15 @@ int main(int argc, char **argv)
     //     chunkerObj->SetOutputMaskMQ(MaskMQ);
     //     absMethodObj->SetInputMaskMQ(MaskMQ);
     // }
-    if (chunkingType == RAW || chunkingType == RAW_FASTCDC_NOSKIP)
+    if (chunkingType == RAW)
     {
         chunkerObj->Motivation(readfileList, backupNum);
+        chunkerObj->chunkType = FASTCDC;
+    }
+    if (chunkingType == RAW_FASTCDC_NOSKIP)
+    {
+        chunkerObj->Motivation(readfileList, backupNum);
+        chunkerObj->chunkType = FASTCDC_NOSKIP;
     }
     auto startsum = std::chrono::high_resolution_clock::now();
     if (chunkingType == MTAR)
