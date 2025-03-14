@@ -376,4 +376,10 @@ enum FILE_TYPE_OPTION
     BIG_CHUNK
 };
 
+struct DedupFile
+{
+    uint64_t start;
+    uint64_t end;
+};
+
 #endif

@@ -16,7 +16,8 @@ enum ChunkTypeNum
     TAR_MultiHeader,
     MTAR,
     RAW,
-    RAW_GEAR
+    RAW_GEAR,
+    RAW_CASE
 };
 
 class Chunker
@@ -62,6 +63,9 @@ private:
     char name[101];
     char LongName[513];
     const uint64_t prime = 1099511628211;
+    uint8_t *lz4ChunkBuffer;
+    uint8_t *hashBuf;
+    EVP_MD_CTX *mdCtx;
 
 public:
     Chunker(int chunkType_);
@@ -118,5 +122,13 @@ public:
     const char *FindLongNameBegin(const char *src);
     uint16_t hashNameToUint16(const char *name);
     uint64_t hashNameToUint64(const char *name);
+    void Motivation_FindCase(vector<string> &readfileList, uint32_t backupNum);
+    void GenerateHash(EVP_MD_CTX *mdCtx, uint8_t *dataBuffer, const int dataSize, uint8_t *hash);
+    unordered_map<string, uint64_t> FPindex; //(fp,chunkid)
+    bool FP_Insert(string fp, uint64_t NameHash);
+    int FP_Find(string fp);
+
+    vector<std::vector<DedupFile>> dedupSegments;
+    std::unordered_map<uint64_t, int> hashNameCount;
 };
 #endif

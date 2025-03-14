@@ -4,6 +4,9 @@ AbsMethod::AbsMethod()
 {
     mdCtx = EVP_MD_CTX_new();
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
+
+    dedupSegments = vector<std::vector<DedupFile>>();
+    hashNameCount = unordered_map<uint64_t, int>();
 }
 
 AbsMethod::~AbsMethod()
@@ -304,6 +307,9 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "-----------------out----------------------------" << endl;
+        out << "casecount: " << casecount << endl;
+        out << "name type: " << hashNameCount.size() << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -345,6 +351,9 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "-----------------out----------------------------" << endl;
+        out << "casecount: " << casecount << endl;
+        out << "name type: " << hashNameCount.size() << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();

@@ -128,12 +128,22 @@ int main(int argc, char **argv)
     {
         chunkerObj->Motivation(readfileList, backupNum);
     }
+    if (chunkingType == RAW_CASE)
+    {
+        chunkerObj->Motivation_FindCase(readfileList, backupNum);
+    }
     auto startsum = std::chrono::high_resolution_clock::now();
     if (chunkingType == MTAR)
     {
         chunkerObj->MTar(readfileList, backupNum);
     }
-
+    // push the dedupSegments
+    absMethodObj->dedupSegments = chunkerObj->dedupSegments;
+    absMethodObj->hashNameCount = chunkerObj->hashNameCount;
+    cout << "dedupSegments size is " << absMethodObj->dedupSegments.size() << endl;
+    cout << "hashNameCount size is " << absMethodObj->hashNameCount.size() << endl;
+    cout << "chunkerObj->dedupSegments size is " << chunkerObj->dedupSegments.size() << endl;
+    cout << "chunkerObj->hashNameCount size is " << chunkerObj->hashNameCount.size() << endl;
     for (auto i = 0; i < backupNum; i++)
     {
         auto startTmp = std::chrono::high_resolution_clock::now();

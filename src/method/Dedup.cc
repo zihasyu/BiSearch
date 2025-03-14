@@ -16,6 +16,8 @@ Dedup::~Dedup()
 
 void Dedup::ProcessTrace()
 {
+    uint64_t cpSum = 0;
+    size_t segmentIndex = 0; // 初始化段索引
     while (true)
     {
         string hashStr;
@@ -40,6 +42,14 @@ void Dedup::ProcessTrace()
             if (findRes == -1)
             {
                 // Unique chunk found
+                while (segmentIndex < dedupSegments[ads_Version].size() && dedupSegments[ads_Version][segmentIndex].end <= cpSum)
+                {
+                    ++segmentIndex; // 移动到下一个段
+                }
+                if (segmentIndex < dedupSegments[ads_Version].size() && cpSum + tmpChunk.chunkSize > dedupSegments[ads_Version][segmentIndex].start)
+                {
+                    casecount++;
+                }
                 tmpChunk.chunkID = uniquechunkNum;
                 tmpChunk.deltaFlag = NO_DELTA;
                 int lz4Size = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
@@ -78,6 +88,7 @@ void Dedup::ProcessTrace()
                 tmpChunk = dataWrite_->Get_Chunk_MetaInfo(findRes);
                 DedupReduct += tmpChunk.chunkSize;
             }
+            cpSum += tmpChunk.chunkSize;
             if (tmpChunk.HeaderFlag == 0)
                 dataWrite_->Recipe_Insert(tmpChunk.chunkID);
             else
@@ -89,6 +100,7 @@ void Dedup::ProcessTrace()
     cout << "logicalchunkSize is " << logicalchunkSize << endl;
     cout << "uniquechunkSize is " << uniquechunkSize << endl;
     cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    cout << "casecount is " << casecount << endl;
     recieveQueue->done_ = false;
     return;
 }

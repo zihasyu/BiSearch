@@ -11,6 +11,12 @@ Chunker::Chunker(int chunkType_)
     LongName[512] = '\0';
     ChunkerInit();
     // in different chunking method, the chunkBuffer is different
+    lz4ChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
+    mdCtx = EVP_MD_CTX_new();
+    hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
+
+    dedupSegments = vector<std::vector<DedupFile>>();
+    hashNameCount = unordered_map<uint64_t, int>();
 }
 Chunker::~Chunker()
 {
@@ -19,6 +25,9 @@ Chunker::~Chunker()
 
     if (chunkType == TAR_MultiHeader)
         free(headerBuffer);
+    free(lz4ChunkBuffer);
+    EVP_MD_CTX_free(mdCtx);
+    free(hashBuf);
 }
 
 void Chunker::LoadChunkFile(string path)
@@ -51,6 +60,7 @@ void Chunker::ChunkerInit()
     }
     case MTAR:
     case RAW:
+    case RAW_CASE:
     case FASTCDC: // FastCDC chunking
     {
         readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
@@ -543,17 +553,17 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
 
     for (int i = 0; i < backupNum; i++)
     {
-        string name;
+        string backupName;
         size_t pos = readfileList[i].find_last_of('/');
         if (pos != std::string::npos)
         {
-            name = readfileList[i].substr(pos + 1);
+            backupName = readfileList[i].substr(pos + 1);
         }
         else
         {
-            name = readfileList[i];
+            backupName = readfileList[i];
         }
-        string writePath = "./mTarFile/" + name + ".m";
+        string writePath = "./mTarFile/" + backupName + ".m";
         cout << "write path is " << writePath << endl;
         // stream set
         ifstream inFile(readfileList[i]);
@@ -669,8 +679,6 @@ void Chunker::Motivation(vector<string> &readfileList, uint32_t backupNum)
         // stream set
         ifstream inFile(readfileList[i]);
         ofstream outFile(writePath);
-        // 新增的部分：创建一个文件来保存 cp 值
-        ofstream cpFile("./cp_values.txt", ios::app); // 使用 append 模式
         // data chunk rewrite
         bool end = false;
         uint64_t totalOffset = 0;
@@ -698,7 +706,6 @@ void Chunker::Motivation(vector<string> &readfileList, uint32_t backupNum)
                 if (localType != FILE_HEADER)
                 {
                     outFile.write((char *)readFileBuffer + localOffset, cp);
-                    // cpFile << cp << endl;
                 }
                 localOffset += cp;
             }
@@ -752,8 +759,7 @@ void Chunker::Motivation(vector<string> &readfileList, uint32_t backupNum)
         inHeaderFile.close();
         outFile.close();
         // mtar overwrite the readfileList
-        // 关闭 cp 文件
-        cpFile.close();
+
         readfileList[i] = writePath;
         auto endTmp = std::chrono::high_resolution_clock::now();
         auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
@@ -781,6 +787,7 @@ bool Chunker::FindName(const char *src)
     {
         relativePath = src; // 如果没有找到'/'，则使用原始src
     }
+    std::fill(std::begin(name), std::end(name), '\0');
     std::copy(relativePath, src + 100, name);
     // cout << "name is " << name << endl;
     //  查找文件名是否存在于哈希表中
@@ -886,4 +893,155 @@ uint64_t Chunker::hashNameToUint64(const char *name)
         hash = hash * prime + name[i];
     }
     return hash;
+}
+
+void Chunker::Motivation_FindCase(vector<string> &readfileList, uint32_t backupNum)
+{
+    for (int i = 0; i < backupNum; i++)
+    {
+        dedupSegments.push_back(vector<DedupFile>());
+        auto startTmp = std::chrono::high_resolution_clock::now();
+        string backupName;
+        size_t pos = readfileList[i].find_last_of('/');
+        if (pos != std::string::npos)
+        {
+            backupName = readfileList[i].substr(pos + 1);
+        }
+        else
+        {
+            backupName = readfileList[i];
+        }
+        string writePath = "./mTarFile/" + backupName + ".mo";
+        cout << "write path is " << writePath << endl;
+        // stream set
+        ifstream inFile(readfileList[i]);
+        ofstream outFile(writePath);
+        // data chunk rewrite
+        bool end = false;
+        uint64_t totalOffset = 0;
+        uint64_t cpSum = 0;
+        string hashStr;
+        hashStr.assign(CHUNK_HASH_SIZE, 0);
+        while (!end)
+        {
+            memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
+            inFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE);
+            end = inFile.eof();
+            size_t len = inFile.gcount();
+            if (len == 0)
+            {
+                break;
+            }
+            localOffset = 0;
+            while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
+            {
+                localType = Next_Chunk_Type;
+                uint32_t cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
+                if (cp == 0)
+                {
+                    continue;
+                }
+                if (localType != FILE_HEADER)
+                {
+                    GenerateHash(mdCtx, readFileBuffer + localOffset, cp, hashBuf);
+                    hashStr.assign((char *)hashBuf, CHUNK_HASH_SIZE);
+                    if (FP_Find(hashStr) == -1)
+                    {
+                        // unique file
+                        uint64_t nameHash = hashNameToUint64(name);
+                        FP_Insert(hashStr, hashNameToUint64(name));
+                        hashNameCount[nameHash]++;
+                    }
+                    else
+                    {
+                        //  dedup file
+                        DedupFile segment = {cpSum, cpSum + cp};
+                        dedupSegments[i].push_back(segment);
+                    }
+                    cpSum += cp;
+                    outFile.write((char *)readFileBuffer + localOffset, cp);
+                }
+                localOffset += cp;
+            }
+            totalOffset += localOffset;
+            inFile.seekg(totalOffset, ios_base::beg);
+        }
+        // reset
+        localType = FILE_HEADER;
+        Next_Chunk_Type = FILE_HEADER;
+        end = false;
+        totalOffset = 0;
+
+        // reset
+        localType = FILE_HEADER;
+        Next_Chunk_Type = FILE_HEADER;
+        inFile.close();
+
+        outFile.close();
+        // mtar overwrite the readfileList
+
+        readfileList[i] = writePath;
+        auto endTmp = std::chrono::high_resolution_clock::now();
+        auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
+        cout << "Version " << i << " RAW Conversion Time is " << TimeTmp << " s " << endl;
+    }
+    // reset
+    chunkType = FASTCDC;
+    localType = FILE_HEADER;
+    Next_Chunk_Type = FILE_HEADER;
+    return;
+}
+
+void Chunker::GenerateHash(EVP_MD_CTX *mdCtx, uint8_t *dataBuffer, const int dataSize, uint8_t *hash)
+{
+    int expectedHashSize = 0;
+
+    if (!EVP_DigestInit_ex(mdCtx, EVP_sha256(), NULL))
+    {
+        fprintf(stderr, "CryptoTool: Hash init error.\n");
+        exit(EXIT_FAILURE);
+    }
+    expectedHashSize = 32;
+
+    if (!EVP_DigestUpdate(mdCtx, dataBuffer, dataSize))
+    {
+        fprintf(stderr, "CryptoTool: Hash error.\n");
+        exit(EXIT_FAILURE);
+    }
+    uint32_t hashSize;
+    if (!EVP_DigestFinal_ex(mdCtx, hash, &hashSize))
+    {
+        fprintf(stderr, "CryptoTool: Hash error.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (hashSize != expectedHashSize)
+    {
+        fprintf(stderr, "CryptoTool: Hash size error.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    EVP_MD_CTX_reset(mdCtx);
+    return;
+}
+
+int Chunker::FP_Find(string fp)
+{
+    auto it = FPindex.find(fp);
+    // cout << FPindex.size() << endl;
+    if (it != FPindex.end())
+    {
+        // cout << "find fp" << endl;
+        return it->second;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+bool Chunker::FP_Insert(string fp, uint64_t NameHash)
+{
+    FPindex[fp] = NameHash;
+    return true;
 }

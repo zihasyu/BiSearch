@@ -127,5 +127,9 @@ public:
     virtual void Version_log(double time);
     virtual void Version_log(double time, double chunktime);
     void SetTime(std::chrono::time_point<std::chrono::high_resolution_clock> &atime);
+    int casecount = 0; // 初始化 casecount
+
+    vector<std::vector<DedupFile>> dedupSegments;
+    std::unordered_map<uint64_t, int> hashNameCount;
 };
 #endif
