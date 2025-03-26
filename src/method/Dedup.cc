@@ -45,9 +45,14 @@ void Dedup::ProcessTrace()
                 while (segmentIndex < dedupSegments[ads_Version].size() && dedupSegments[ads_Version][segmentIndex].end <= cpSum)
                 {
                     ++segmentIndex; // 移动到下一个段
-                }
+                } // 执行完while后，segmentIndex指向第一个文件end大于当前chunk的开始位置
                 if (segmentIndex < dedupSegments[ads_Version].size() && cpSum + tmpChunk.chunkSize > dedupSegments[ads_Version][segmentIndex].start)
                 {
+                    // 外层if的条件是当前chunk的尾部在重复File的头部之后
+                    if (cpSum > dedupSegments[ads_Version][segmentIndex].start) // 该chunk完全由重复文件组成
+                        casecount_3++;
+                    if (cpSum <= dedupSegments[ads_Version][segmentIndex].start) // 该chunk含有重复文件的一部分
+                        casecount_2++;
                     casecount++;
                 }
                 tmpChunk.chunkID = uniquechunkNum;
@@ -101,6 +106,8 @@ void Dedup::ProcessTrace()
     cout << "uniquechunkSize is " << uniquechunkSize << endl;
     cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
     cout << "casecount is " << casecount << endl;
+    cout << "casecount_2 is " << casecount_2 << endl;
+    cout << "casecount_3 is " << casecount_3 << endl;
     recieveQueue->done_ = false;
     return;
 }

@@ -309,7 +309,11 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "local reduct size : " << LocalReduct << endl;
         out << "-----------------out----------------------------" << endl;
         out << "casecount: " << casecount << endl;
-        out << "name type: " << hashNameCount.size() << endl;
+        out << "case percentage: " << (double)casecount / (double)uniquechunkNum << endl;
+        out << "casecount_2: " << casecount_2 << endl;
+        out << "case_2 percentage: " << (double)casecount_2 / (double)uniquechunkNum << endl;
+        out << "casecount_3: " << casecount_3 << endl;
+        out << "case_3 percentage: " << (double)casecount_3 / (double)uniquechunkNum << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -353,7 +357,11 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "local reduct size : " << LocalReduct << endl;
         out << "-----------------out----------------------------" << endl;
         out << "casecount: " << casecount << endl;
-        out << "name type: " << hashNameCount.size() << endl;
+        out << "case percentage: " << (double)casecount / (double)uniquechunkNum << endl;
+        out << "casecount_2: " << casecount_2 << endl;
+        out << "case_2 percentage: " << (double)casecount_2 / (double)uniquechunkNum << endl;
+        out << "casecount_3: " << casecount_3 << endl;
+        out << "case_3 percentage: " << (double)casecount_3 / (double)uniquechunkNum << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();
