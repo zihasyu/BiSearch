@@ -125,7 +125,8 @@ void Chunker::Chunking()
             break;
         }
         localOffset = 0;
-        while (((len - localOffset) >= CONTAINER_MAX_SIZE * 16) || (end && (localOffset < len)))
+        while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
+        // while (((len - localOffset) >= CONTAINER_MAX_SIZE * 16) || (end && (localOffset < len)))如果是-c 4，一定要用这行，但这里是motivation
         {
             // cout << " len is " << len << " localOffset is " << localOffset << endl;
             Chunk_t chunk;

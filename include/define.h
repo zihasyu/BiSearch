@@ -26,7 +26,7 @@
 #define CHUNK_HASH_SIZE 32
 #define READ_FILE_SIZE 1024 * 1024 * 1024
 #define CONTAINER_MAX_SIZE 512 * 1024 * 1024
-#define CONTAINER_CACHE_SIZE 64
+#define CONTAINER_CACHE_SIZE 1
 #define MASK_GEAR 0x1fff
 #define MASK_GEAR_BIG 0x1fff
 #define MultiHeaderSize 8192

@@ -41,10 +41,10 @@ run_RAW(){
   local name=$2
   local num=$3
 ./BiSearch -i $path -c 8 -m 0 -n $num  >Dedup_Skip$name.txt
-sudo rm -r mTarFile
-sudo mkdir mTarFile
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
+rm -r mTarFile
+mkdir mTarFile
+rm Containers/*
+echo 3 > /proc/sys/vm/drop_caches
 }
 datasets=(
 
