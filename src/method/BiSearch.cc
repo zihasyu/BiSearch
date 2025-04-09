@@ -26,16 +26,26 @@ bool BiSearch::estimateGain(uint64_t chunkSize, uint64_t deltaSize)
     // lz4 cost
     double avgLz4CompressionRatio = (double)lz4LogicalSize / (double)lz4UniqueSize;
     double CostSelf = chunkSize - (chunkSize / avgLz4CompressionRatio);
-
     double newDeltaNum = deltachunkNum / basechunkNum;
-    // double deltaGain = DeltaReduct / deltachunkNum;
     double deltaGain = DCESum / deltachunkNum;
 
     double futureDeltaCost = deltaGain * newDeltaNum;
-    if (avgLz4CompressionRatio + futureDeltaCost / β > (chunkSize / deltaSize))
-        return false;
+    if (IsFalseFilter)
+    {
+        if (avgLz4CompressionRatio + futureDeltaCost / β > (chunkSize / deltaSize))
+            return false;
+        else
+            return true;
+    }
     else
-        return true;
+    // When the filter is turned off
+    {
+        if (AcceptThreshold > (chunkSize / deltaSize))
+            return false;
+        else
+            return true;
+        // If AcceptThreshold is 0, all are accepted.
+    }
 }
 
 void BiSearch::ProcessTrace()

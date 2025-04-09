@@ -100,6 +100,9 @@ public:
     uint64_t LocalityReduct = 0;
     uint64_t FeatureReduct = 0;
 
+    // evaluation for false filter
+    bool IsFalseFilter = true;
+    int AcceptThreshold = 0;
     AbsMethod();
     ~AbsMethod();
     void SetFilename(string name);
@@ -119,8 +122,8 @@ public:
     int SF_Find(const char *key, size_t keySize);
     bool SF_Insert(const char *key, size_t keySize, int chunkid);
     uint8_t *xd3_encode(const uint8_t *targetChunkbuffer, size_t targetChunkbuffer_size, const uint8_t *baseChunkBuffer, size_t baseChunkBuffer_size, size_t *deltaChunkBuffer_size, uint8_t *tmpbuffer);
-    virtual void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio);
-    virtual void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double chunktime);
+    virtual void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, bool IsFalseFilter, int AcceptThreshold);
+    virtual void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double chunktime, bool IsFalseFilter, int AcceptThreshold);
     void StatsDelta(Chunk_t &tmpChunk);
     void StatsDeltaFeature(Chunk_t &tmpChunk);
     void StatsDeltaLocality(Chunk_t &tmpChunk);

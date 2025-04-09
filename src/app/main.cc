@@ -21,17 +21,18 @@ int main(int argc, char **argv)
     uint32_t chunkingType;
     uint32_t compressionMethod;
     uint32_t backupNum;
-    double ratio = 8;
+    double ratio = 10;
     string dirName;
     string myName = "BiSearchSystem";
-
+    bool IsFalseFilter = true;
+    int AcceptThreshold = 0;
     vector<string> readfileList;
 
-    const char optString[] = "i:m:c:n:r:";
-    if (argc != sizeof(optString) && argc != sizeof(optString) - 2)
+    const char optString[] = "i:m:c:n:r:a:b:";
+    if (argc != sizeof(optString) && argc != sizeof(optString) - 2 && argc != sizeof(optString) - 4 && argc != sizeof(optString) - 6)
     {
         cout << "argc is " << argc << endl;
-        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio>" << endl;
+        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio> -a <False Filter Fixed parameters> -b <-b 0 is a fixed parameter, the default -b1 is a dynamic parameter...>" << endl;
         return 0;
     }
 
@@ -55,6 +56,12 @@ int main(int argc, char **argv)
             break;
         case 'r':
             ratio = atoi(optarg);
+            break;
+        case 'a':
+            IsFalseFilter = atoi(optarg);
+            break;
+        case 'b':
+            AcceptThreshold = atoi(optarg);
             break;
         default:
             break;
@@ -95,7 +102,7 @@ int main(int argc, char **argv)
     }
     case BiSEARCH:
     {
-        absMethodObj = new BiSearch(ratio);
+        absMethodObj = new BiSearch(ratio); // Ratio is used to debug false filter, which is not used now.
         break;
     }
     case LOCALITY:
@@ -116,6 +123,8 @@ int main(int argc, char **argv)
     chunkerObj->SetOutputMQ(chunkerMQ);
     absMethodObj->SetInputMQ(chunkerMQ);
     absMethodObj->dataWrite_ = new dataWrite();
+    absMethodObj->AcceptThreshold = AcceptThreshold;
+    absMethodObj->IsFalseFilter = IsFalseFilter;
 
     // new design
     // if (chunkingType == TAR_MultiHeader)
@@ -172,9 +181,9 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
     if (compressionMethod != 5)
-        absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio);
+        absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, AcceptThreshold, IsFalseFilter);
     else
-        absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, chunkerObj->ChunkTime.count());
+        absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, chunkerObj->ChunkTime.count(), AcceptThreshold, IsFalseFilter);
 
     // {
     //     auto startTotal = std::chrono::steady_clock::now();
