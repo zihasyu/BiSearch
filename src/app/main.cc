@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     string dirName;
     string myName = "BiSearchSystem";
     bool IsFalseFilter = true;
-    int AcceptThreshold = 0;
+    double AcceptThreshold = 0;
     vector<string> readfileList;
 
     const char optString[] = "i:m:c:n:r:a:b:";
