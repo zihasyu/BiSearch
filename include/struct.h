@@ -65,4 +65,17 @@ typedef uint64_t Recipe_t;
 
 typedef uint64_t Recipe_Header_t;
 
+typedef struct
+{
+    std::string dirName;
+    int chunkingType;
+    int compressionMethod;
+    int backupNum;
+    double ratio;
+    double AcceptThreshold;
+    bool IsFalseFilter;
+
+    bool TurnOnNameHash;
+} CommandLine_t;
+
 #endif

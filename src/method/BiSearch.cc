@@ -105,6 +105,7 @@ void BiSearch::ProcessTrace()
                     SameName = (nameTable.count(tmpChunk.name) > 0) ? true : false;
                     if (SameName)
                         plchunk.chunkId = nameTable[tmpChunk.name];
+                    SameName = SameName && TurnOnNameHash;
                 }
                 // SameName = dataWrite_->chunklist[plchunk.chunkId + DedupGap].name == tmpChunk.name;
                 // unique chunk & locality try & in locality windows

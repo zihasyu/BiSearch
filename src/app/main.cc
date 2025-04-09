@@ -17,22 +17,23 @@ void signalHandler(int signum)
 int main(int argc, char **argv)
 {
     signal(SIGINT, signalHandler);
-
-    uint32_t chunkingType;
-    uint32_t compressionMethod;
-    uint32_t backupNum;
-    double ratio = 10;
-    string dirName;
+    CommandLine_t CmdLine;
+    // uint32_t chunkingType;
+    // uint32_t compressionMethod;
+    // uint32_t backupNum;
+    // string dirName;
     string myName = "BiSearchSystem";
-    bool IsFalseFilter = true;
-    double AcceptThreshold = 0;
+    CmdLine.ratio = 10;
+    CmdLine.IsFalseFilter = true;
+    CmdLine.AcceptThreshold = 0;
+    CmdLine.TurnOnNameHash = true;
     vector<string> readfileList;
 
-    const char optString[] = "i:m:c:n:r:a:b:";
-    if (argc != sizeof(optString) && argc != sizeof(optString) - 2 && argc != sizeof(optString) - 4 && argc != sizeof(optString) - 6)
+    const char optString[] = "i:m:c:n:r:a:b:t:";
+    if (argc != sizeof(optString) && argc != sizeof(optString) - 2 && argc != sizeof(optString) - 4 && argc != sizeof(optString) - 6 && argc != sizeof(optString) - 8 && argc != sizeof(optString) - 10)
     {
         cout << "argc is " << argc << endl;
-        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio> -a <False Filter Fixed parameters> -b <-b 0 is a fixed parameter, the default -b1 is a dynamic parameter...>" << endl;
+        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio> -a <False Filter Fixed parameters> -b <0 = fixed parameter> -t <0 = No meta-guided>" << endl;
         return 0;
     }
 
@@ -43,25 +44,28 @@ int main(int argc, char **argv)
         switch (option)
         {
         case 'i':
-            dirName.assign(optarg);
+            CmdLine.dirName.assign(optarg);
             break;
         case 'c':
-            chunkingType = atoi(optarg);
+            CmdLine.chunkingType = atoi(optarg);
             break;
         case 'm':
-            compressionMethod = atoi(optarg);
+            CmdLine.compressionMethod = atoi(optarg);
             break;
         case 'n':
-            backupNum = atoi(optarg);
+            CmdLine.backupNum = atoi(optarg);
             break;
         case 'r':
-            ratio = atoi(optarg);
+            CmdLine.ratio = atoi(optarg);
             break;
         case 'a':
-            AcceptThreshold = atoi(optarg);
+            CmdLine.AcceptThreshold = atoi(optarg);
             break;
         case 'b':
-            IsFalseFilter = atoi(optarg);
+            CmdLine.IsFalseFilter = atoi(optarg);
+            break;
+        case 't':
+            CmdLine.TurnOnNameHash = atoi(optarg);
             break;
         default:
             break;
@@ -69,11 +73,11 @@ int main(int argc, char **argv)
     }
 
     AbsMethod *absMethodObj;
-    Chunker *chunkerObj = new Chunker(chunkingType);
+    Chunker *chunkerObj = new Chunker(CmdLine.chunkingType);
 
     MessageQueue<Chunk_t> *chunkerMQ = new MessageQueue<Chunk_t>(CHUNK_QUEUE_SIZE);
 
-    switch (compressionMethod)
+    switch (CmdLine.compressionMethod)
     {
     case DEDUP:
     {
@@ -102,7 +106,7 @@ int main(int argc, char **argv)
     }
     case BiSEARCH:
     {
-        absMethodObj = new BiSearch(ratio); // Ratio is used to debug false filter, which is not used now.
+        absMethodObj = new BiSearch(CmdLine.ratio); // Ratio is used to debug false filter, which is not used now.
         break;
     }
     case LOCALITY:
@@ -114,7 +118,7 @@ int main(int argc, char **argv)
         break;
     }
 
-    tool::traverse_dir(dirName, readfileList, nofilter);
+    tool::traverse_dir(CmdLine.dirName, readfileList, nofilter);
     sort(readfileList.begin(), readfileList.end(), AbsMethod::compareNat);
 
     boost::thread *thTmp[2] = {nullptr};
@@ -123,8 +127,9 @@ int main(int argc, char **argv)
     chunkerObj->SetOutputMQ(chunkerMQ);
     absMethodObj->SetInputMQ(chunkerMQ);
     absMethodObj->dataWrite_ = new dataWrite();
-    absMethodObj->AcceptThreshold = AcceptThreshold;
-    absMethodObj->IsFalseFilter = IsFalseFilter;
+    absMethodObj->AcceptThreshold = CmdLine.AcceptThreshold;
+    absMethodObj->IsFalseFilter = CmdLine.IsFalseFilter;
+    absMethodObj->TurnOnNameHash = CmdLine.TurnOnNameHash;
 
     // new design
     // if (chunkingType == TAR_MultiHeader)
@@ -135,11 +140,11 @@ int main(int argc, char **argv)
     // }
 
     auto startsum = std::chrono::high_resolution_clock::now();
-    if (chunkingType == MTAR || chunkingType == MTAROdess || chunkingType == MTARPalantir)
+    if (CmdLine.chunkingType == MTAR || CmdLine.chunkingType == MTAROdess || CmdLine.chunkingType == MTARPalantir)
     {
-        chunkerObj->MTar(readfileList, backupNum);
+        chunkerObj->MTar(readfileList, CmdLine.backupNum);
     }
-    for (auto i = 0; i < backupNum; i++)
+    for (auto i = 0; i < CmdLine.backupNum; i++)
     {
         auto startTmp = std::chrono::high_resolution_clock::now();
         // set backup name
@@ -165,7 +170,7 @@ int main(int argc, char **argv)
         }
         auto endTmp = std::chrono::high_resolution_clock::now();
         auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
-        if (compressionMethod != 5)
+        if (CmdLine.compressionMethod != 5)
             absMethodObj->Version_log(TimeTmp);
         else
             absMethodObj->Version_log(TimeTmp, chunkerObj->ChunkTime.count());
@@ -180,10 +185,14 @@ int main(int argc, char **argv)
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);
     tool::Logging(myName.c_str(), "Total compressed size is %lu\n", absMethodObj->uniquechunkSize);
     tool::Logging(myName.c_str(), "Compression ratio is %.4f\n", (double)absMethodObj->logicalchunkSize / (double)absMethodObj->uniquechunkSize);
-    if (compressionMethod != 5)
-        absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, AcceptThreshold, IsFalseFilter);
+    // if (compressionMethod != 5)
+    //     absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, AcceptThreshold, IsFalseFilter);
+    // else
+    //     absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, chunkerObj->ChunkTime.count(), AcceptThreshold, IsFalseFilter);
+    if (CmdLine.compressionMethod != 5)
+        absMethodObj->PrintChunkInfo(sumTimeInSeconds, CmdLine);
     else
-        absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, chunkerObj->ChunkTime.count(), AcceptThreshold, IsFalseFilter);
+        absMethodObj->PrintChunkInfo(sumTimeInSeconds, CmdLine, chunkerObj->ChunkTime.count());
 
     // {
     //     auto startTotal = std::chrono::steady_clock::now();
@@ -223,7 +232,7 @@ int main(int argc, char **argv)
     // ...existing code...
     // ...existing code...
 
-    string fileName = "C" + to_string(chunkingType) + "_M" + to_string(compressionMethod);
+    string fileName = "C" + to_string(CmdLine.chunkingType) + "_M" + to_string(CmdLine.compressionMethod);
     // absMethodObj->dataWrite_->Save_to_File_unique(fileName);
     delete absMethodObj->dataWrite_;
     delete chunkerObj;

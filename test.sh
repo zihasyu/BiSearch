@@ -27,13 +27,13 @@ run_method(){
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Odess$name.txt
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
+# ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Odess$name.txt
+# sudo rm Containers/*
+# sudo echo 3 > /proc/sys/vm/drop_caches
 
 ./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
+# sudo rm Containers/*
+# sudo echo 3 > /proc/sys/vm/drop_caches
 }
 
 run_method /mnt/dataset2/Android _Android 36
