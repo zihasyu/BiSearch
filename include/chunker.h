@@ -61,6 +61,7 @@ private:
     bool IsLongNameChunk = 0;
     std::unordered_set<std::string> nameHashSet;
     char name[101];
+    char path[101];
     char LongName[513];
     const uint64_t prime = 1099511628211;
 
@@ -122,6 +123,7 @@ public:
     const char *FindLongNameBegin(const char *src);
     uint16_t hashNameToUint16(const char *name);
     uint64_t hashNameToUint64(const char *name);
+    bool ExtractPath(const char *full);
     // void SetHeaderChunkSize(uint64_t size);
 
     // 记录边界

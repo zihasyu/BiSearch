@@ -260,6 +260,7 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             {
                 Next_Chunk_Type = FILE_CHUNK;
                 FindName((char *)src);
+                ExtractPath((char *)src);
             }
             else
             {
@@ -291,6 +292,7 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             {
                 Next_Chunk_Type = FILE_CHUNK;
                 FindName((char *)src);
+                ExtractPath((char *)src);
             }
             else
             {
@@ -312,6 +314,7 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             Next_Chunk_Type = FILE_CHUNK;
             IsLongNameChunk = true;
             FindName((char *)src);
+            ExtractPath((char *)src);
         }
         /*use to debug*/
         // cout<<"Next_Chunk_Flag: " <<int(*(src + 156));
@@ -497,7 +500,8 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
         chunk.chunkSize = HeaderCp;
         chunk.HeaderFlag = true;
         chunk.NameExist = true;
-        chunk.name = 0;
+        chunk.name = hashNameToUint64(path);
+        cout << "path is " << path << " namehash is " << chunk.name << endl;
         // reset
         HeaderCp = 0;
         // input chunk MQ
@@ -698,24 +702,85 @@ bool Chunker::FindName(const char *src)
         relativePath = src; // 如果没有找到'/'，则使用原始src
     }
     std::copy(relativePath, src + 100, name);
-    // cout << "name is " << name << endl;
-    //  查找文件名是否存在于哈希表中
-    //  if (nameHashSet.find(std::string(name)) != nameHashSet.end())
-    //  {
-    //      // cout << "do exist name is " << name << endl;
-    //      NameExist = 1;
-    //      return 1; // 文件名已存在
-    //  }
-    //  else
-    //  {
-    //      // cout << "not exist name is " << name << endl;
-    //      NameExist = 0;
-    //      nameHashSet.insert(std::string(name));
-    //      return 0; // 文件名不存在
-    //  }
+
     return 1;
 }
+bool Chunker::ExtractPath(const char *full)
+{
+    // 假定 full 为 "版本号/目录.../filename"
+    // 并且成员变量 path 已经足够大（例如：char path[512];）
 
+    // 找到第一个 '/'，版本号部分忽略
+    const char *firstSlash = std::strchr(full, '/');
+    if (!firstSlash)
+    {
+        // path[0] = '\0';
+        return false;
+    }
+    // 从第一个 '/' 开始
+    const char *remainder = firstSlash;
+
+    // 找到最后一个 '/'（即分隔目录和文件名的 '/')
+    const char *lastSlash = std::strrchr(remainder, '/');
+    if (!lastSlash)
+    {
+        // 不可能发生，因为 firstSlash 一定存在
+        std::strcpy(path, remainder);
+        return true;
+    }
+
+    // 统计从 remainder 到 lastSlash 之间的 '/' 个数
+    int slashCount = 0;
+    const char *p = remainder;
+    while (p < lastSlash)
+    {
+        if (*p == '/')
+            ++slashCount;
+        ++p;
+    }
+
+    if (slashCount == 1)
+    {
+        // 仅剩1个 '/'，舍弃最后一个 '/' 后的内容
+        size_t len = lastSlash - remainder;
+        std::strncpy(path, remainder, len);
+        path[len] = '\0';
+    }
+    else if (slashCount > 2)
+    {
+        // 剩余 '/' 大于2，则舍弃倒数第二个 '/' 之后的内容
+        const char *secondLast = nullptr;
+        p = lastSlash - 1;
+        while (p >= remainder)
+        {
+            if (*p == '/')
+            {
+                secondLast = p;
+                break;
+            }
+            p--;
+        }
+        if (secondLast)
+        {
+            size_t len = secondLast - remainder;
+            std::strncpy(path, remainder, len);
+            path[len] = '\0';
+        }
+        else
+        {
+            std::strcpy(path, remainder);
+        }
+    }
+    else
+    {
+        // 其他情况默认舍弃最后一个 '/' 后的内容
+        size_t len = lastSlash - remainder;
+        std::strncpy(path, remainder, len);
+        path[len] = '\0';
+    }
+
+    return true;
+}
 bool Chunker::FindLongName(const char *src)
 {
     // 提取文件名
