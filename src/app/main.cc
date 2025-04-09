@@ -58,10 +58,10 @@ int main(int argc, char **argv)
             ratio = atoi(optarg);
             break;
         case 'a':
-            IsFalseFilter = atoi(optarg);
+            AcceptThreshold = atoi(optarg);
             break;
         case 'b':
-            AcceptThreshold = atoi(optarg);
+            IsFalseFilter = atoi(optarg);
             break;
         default:
             break;

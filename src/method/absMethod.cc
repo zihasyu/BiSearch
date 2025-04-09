@@ -261,7 +261,7 @@ uint8_t *AbsMethod::xd3_encode(const uint8_t *targetChunkbuffer, size_t targetCh
     return deltaChunkBuffer;
 }
 
-void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, bool IsFalseFilter, double AcceptThreshold)
+void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio,  double AcceptThreshold ,bool IsFalseFilter)
 {
     ofstream out;
     string fileName = "./chunkInfoLog.txt";
@@ -418,7 +418,7 @@ void AbsMethod::Version_log(double time)
     preSFTime = SFTime;
 }
 
-void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double chunktime, bool IsFalseFilter, double AcceptThreshold)
+void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double chunktime,double AcceptThreshold , bool IsFalseFilter)
 {
     ofstream out;
     string fileName = "./chunkInfoLog.txt";

@@ -4,7 +4,7 @@ run_loop_once(){
   local name=$2
   local num=$3
   local loop=$4
-  ./BiSearch -i $path -c 4 -m 5 -n $num  -a loop -b $loop >SA_BiSearch${name}_${loop}.txt
+  ./BiSearch -i $path -c 4 -m 5 -n $num  -a $loop -b 0 >SA_BiSearch${name}_${loop}.txt
     rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 }
