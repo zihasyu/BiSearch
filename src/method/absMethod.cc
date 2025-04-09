@@ -269,7 +269,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     {
         out.open(fileName, ios::out);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << IsFalseFilter << " -b " << AcceptThreshold << endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << AcceptThreshold << " -b " << IsFalseFilter << endl;
         out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
@@ -310,9 +310,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     {
         out.open(fileName, ios::app);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << IsFalseFilter << " -b " << AcceptThreshold << endl;
-        out << "-----------------CHUNK NUM-----------------------" << endl;
-        out << "logical chunk num: " << logicalchunkNum << endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << AcceptThreshold << " -b " << IsFalseFilter << endl;        out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
         out << "delta chunk num: " << deltachunkNum << endl;
@@ -426,8 +424,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     {
         out.open(fileName, ios::out);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << IsFalseFilter << " -b " << AcceptThreshold << endl;
-        out << "-----------------CHUNK NUM-----------------------" << endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << AcceptThreshold << " -b " << IsFalseFilter << endl;        out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
@@ -475,8 +472,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     {
         out.open(fileName, ios::app);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << IsFalseFilter << " -b " << AcceptThreshold << endl;
-        out << "-----------------CHUNK NUM-----------------------" << endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << AcceptThreshold << " -b " << IsFalseFilter << endl;        out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
