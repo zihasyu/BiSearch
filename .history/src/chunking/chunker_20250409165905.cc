@@ -501,7 +501,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
         chunk.HeaderFlag = true;
         chunk.NameExist = true;
         chunk.name = hashNameToUint64(path);
-        // cout << "path is " << path << " namehash is " << chunk.name << endl;
+        cout << "path is " << path << " namehash is " << chunk.name << endl;
         // reset
         HeaderCp = 0;
         // input chunk MQ
