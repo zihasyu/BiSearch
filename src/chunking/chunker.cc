@@ -53,7 +53,7 @@ void Chunker::ChunkerInit()
     case FIXED_SIZE:
     {
         // fixed size chunking]
-        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
+        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
         chunkBuffer = (uint8_t *)malloc(FixedChunkSize);
         break;
     }
@@ -61,7 +61,7 @@ void Chunker::ChunkerInit()
 
     case FASTCDC: // FastCDC chunking
     {
-        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
+        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
         chunkBuffer = (uint8_t *)malloc(MAX_CHUNK_SIZE);
         normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
         bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
@@ -71,13 +71,14 @@ void Chunker::ChunkerInit()
     }
     case GEARCDC: // Gear chunking
     {
-        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
+        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
         chunkBuffer = (uint8_t *)malloc(MAX_CHUNK_SIZE);
         break;
     }
     case TAR:
     {
-        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
+
+        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
         chunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE); // 4MB
         normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
         bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
@@ -87,8 +88,8 @@ void Chunker::ChunkerInit()
     }
     case TAR_MultiHeader:
     {
-        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
-        headerBuffer = (uint8_t *)malloc(512 * 32);
+        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+        headerBuffer = (uint8_t *)malloc(512 * (MULTI_HEADER_CHUNK + 1));
         chunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE); // 4MB
         // dataBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * 16); // 64MB
         normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
@@ -113,8 +114,8 @@ void Chunker::Chunking()
 
     while (!end)
     {
-        memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
-        inputFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE);
+        memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+        inputFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
         end = inputFile.eof();
         size_t len = inputFile.gcount();
         if (len == 0)
@@ -122,7 +123,7 @@ void Chunker::Chunking()
             break;
         }
         localOffset = 0;
-        while (((len - localOffset) >= CONTAINER_MAX_SIZE * 16) || (end && (localOffset < len)))
+        while (((len - localOffset) >= CONTAINER_MAX_SIZE * MULTI_HEADER_CHUNK) || (end && (localOffset < len)))
         {
             // cout << " len is " << len << " localOffset is " << localOffset << endl;
             Chunk_t chunk;
@@ -429,7 +430,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
     uint64_t loopTime = 1;
     if (Next_Chunk_Type == FILE_HEADER)
     {
-        while ((HeaderCp < MultiHeaderSize || (localType == FILE_HEADER && Next_Chunk_Type == FILE_CHUNK)) && Next_Chunk_Type != BIG_CHUNK)
+        while ((HeaderCp < MULTI_HEADER_CHUNK * 512 || (localType == FILE_HEADER && Next_Chunk_Type == FILE_CHUNK)) && Next_Chunk_Type != BIG_CHUNK)
         // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
         // 当前是D下一个块也是D时，应该是大块，也是可以断的。
         // 当前是D下一个块是H时，是正常的HD组合，也可以断。
@@ -635,8 +636,8 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
         totalOffset = 0;
         while (!end)
         {
-            memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
-            inHeaderFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE);
+            memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+            inHeaderFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
             end = inHeaderFile.eof();
             size_t len = inHeaderFile.gcount();
             if (len == 0)
@@ -868,29 +869,3 @@ uint64_t Chunker::hashNameToUint64(const char *name)
     }
     return hash;
 }
-
-// void Chunker::WriteBoundariesToFile()
-// {
-//     // 获取文件名
-//     std::string filename = input_file_path_.substr(input_file_path_.find_last_of("/\\") + 1);
-//     std::string output_path = filename + ".boundaries";
-
-//     std::ofstream out_file(output_path);
-//     if (!out_file)
-//     {
-//         tool::Logging(myName_.c_str(), "Failed to open output file: %s\n", output_path.c_str());
-//         return;
-//     }
-
-//     for (const auto &[offset, size, type] : boundaries_)
-//     {
-//         out_file << type << " " << offset << " " << size << "\n";
-//     }
-//     out_file.close();
-// }
-
-// void Chunker::SetHeaderChunkSize(uint64_t size)
-// {
-//     MultiHeaderSize = size;
-//     return;
-// }

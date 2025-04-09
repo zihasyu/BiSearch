@@ -27,13 +27,15 @@ int main(int argc, char **argv)
     CmdLine.IsFalseFilter = true;
     CmdLine.AcceptThreshold = 0;
     CmdLine.TurnOnNameHash = true;
+    CmdLine.MultiHeaderChunk = 16;
+
     vector<string> readfileList;
 
-    const char optString[] = "i:m:c:n:r:a:b:t:";
-    if (argc != sizeof(optString) && argc != sizeof(optString) - 2 && argc != sizeof(optString) - 4 && argc != sizeof(optString) - 6 && argc != sizeof(optString) - 8 && argc != sizeof(optString) - 10)
+    const char optString[] = "i:m:c:n:r:a:b:t:H:";
+    if (argc != sizeof(optString) && argc != sizeof(optString) - 2 && argc != sizeof(optString) - 4 && argc != sizeof(optString) - 6 && argc != sizeof(optString) - 8 && argc != sizeof(optString) - 10 && argc != sizeof(optString) - 12)
     {
         cout << "argc is " << argc << endl;
-        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio> -a <False Filter Fixed parameters> -b <0 = fixed parameter> -t <0 = No meta-guided>" << endl;
+        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio> -a <False Filter Fixed parameters> -b <0 = fixed parameter> -t <0 = No meta-guided> -H <Multi Header num>" << endl;
         return 0;
     }
 
@@ -66,6 +68,9 @@ int main(int argc, char **argv)
             break;
         case 't':
             CmdLine.TurnOnNameHash = atoi(optarg);
+            break;
+        case 'H':
+            CmdLine.MultiHeaderChunk = atoi(optarg);
             break;
         default:
             break;
@@ -130,6 +135,7 @@ int main(int argc, char **argv)
     absMethodObj->AcceptThreshold = CmdLine.AcceptThreshold;
     absMethodObj->IsFalseFilter = CmdLine.IsFalseFilter;
     absMethodObj->TurnOnNameHash = CmdLine.TurnOnNameHash;
+    chunkerObj->MULTI_HEADER_CHUNK = CmdLine.MultiHeaderChunk;
 
     // new design
     // if (chunkingType == TAR_MultiHeader)
@@ -193,44 +199,6 @@ int main(int argc, char **argv)
         absMethodObj->PrintChunkInfo(sumTimeInSeconds, CmdLine);
     else
         absMethodObj->PrintChunkInfo(sumTimeInSeconds, CmdLine, chunkerObj->ChunkTime.count());
-
-    // {
-    //     auto startTotal = std::chrono::steady_clock::now();
-
-    //     if (chunkingType != TAR_MultiHeader)
-    //         for (auto i = 0; i < backupNum; i++)
-    //         {
-    //             auto startIter = std::chrono::steady_clock::now();
-    //             absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-    //             absMethodObj->dataWrite_->restoreFile(readfileList[i]);
-    //             if (chunkingType == MTAR || chunkingType == MTAROdess || chunkingType == MTARPalantir)
-    //             {
-    //                 absMethodObj->dataWrite_->MTar2Tar(readfileList[i]);
-    //             }
-    //             auto endIter = std::chrono::steady_clock::now();
-    //             std::cout << "Iteration " << i << " time used: "
-    //                       << std::chrono::duration_cast<std::chrono::milliseconds>(endIter - startIter).count() / 1000.0
-    //                       << " s" << std::endl;
-    //         }
-    //     else
-    //         for (auto i = 0; i < backupNum; i++)
-    //         {
-    //             auto startIter = std::chrono::steady_clock::now();
-    //             absMethodObj->dataWrite_->SetFilename(readfileList[i]);
-    //             absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
-    //             auto endIter = std::chrono::steady_clock::now();
-    //             std::cout << "Iteration " << i << " time used: "
-    //                       << std::chrono::duration_cast<std::chrono::milliseconds>(endIter - startIter).count() / 1000.0
-    //                       << " s" << std::endl;
-    //         }
-
-    //     auto endTotal = std::chrono::steady_clock::now();
-    //     std::cout << "Total time used: "
-    //               << std::chrono::duration_cast<std::chrono::milliseconds>(endTotal - startTotal).count() / 1000.0
-    //               << " s" << std::endl;
-    // }
-    // ...existing code...
-    // ...existing code...
 
     string fileName = "C" + to_string(CmdLine.chunkingType) + "_M" + to_string(CmdLine.compressionMethod);
     // absMethodObj->dataWrite_->Save_to_File_unique(fileName);

@@ -124,6 +124,7 @@ public:
     uint16_t hashNameToUint16(const char *name);
     uint64_t hashNameToUint64(const char *name);
     bool ExtractPath(const char *full);
+    int MULTI_HEADER_CHUNK = 16;
     // void SetHeaderChunkSize(uint64_t size);
 
     // 记录边界

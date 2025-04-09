@@ -357,7 +357,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     {
         out.open(fileName, ios::out);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << endl;
+        out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << endl;
         out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
@@ -398,7 +398,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     {
         out.open(fileName, ios::app);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << endl;
+        out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
@@ -446,7 +446,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
     {
         out.open(fileName, ios::out);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << endl;
+        out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << endl;
         out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
@@ -495,7 +495,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
     {
         out.open(fileName, ios::app);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << endl;
+        out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << endl;
         out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;

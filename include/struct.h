@@ -74,8 +74,8 @@ typedef struct
     double ratio;
     double AcceptThreshold;
     bool IsFalseFilter;
-
     bool TurnOnNameHash;
+    int MultiHeaderChunk = 16; // num
 } CommandLine_t;
 
 #endif
