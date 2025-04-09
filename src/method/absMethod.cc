@@ -310,7 +310,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     {
         out.open(fileName, ios::app);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << IsFalseFilter << " -b " << AcceptThreshold << endl;
         out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
@@ -475,7 +475,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
     {
         out.open(fileName, ios::app);
         out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << endl;
+        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << IsFalseFilter << " -b " << AcceptThreshold << endl;
         out << "-----------------CHUNK NUM-----------------------" << endl;
         out << "logical chunk num: " << logicalchunkNum << endl;
         out << "unique chunk num: " << uniquechunkNum << endl;
