@@ -36,7 +36,7 @@ for f in files:
     
     # 使用version序号作为x轴
     x_values = list(range(0, len(ratios) ))
-    x_values = [i*100/ len(ratios) for i in x_values]
+    x_values = [i*100/ (len(ratios)-1) for i in x_values]
     # version_count = len(ratios)
     # x_values = [i / version_count for i in range(1, version_count + 1)]
     

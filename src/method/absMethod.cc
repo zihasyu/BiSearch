@@ -6,6 +6,7 @@ AbsMethod::AbsMethod()
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
 
     dedupSegments = vector<std::vector<DedupFile>>();
+    AllFileSegments = vector<std::vector<DedupFile>>();
     hashNameCount = unordered_map<uint64_t, int>();
 }
 

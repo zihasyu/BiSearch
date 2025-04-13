@@ -116,7 +116,7 @@ int main(int argc, char **argv)
     chunkerObj->SetOutputMQ(chunkerMQ);
     absMethodObj->SetInputMQ(chunkerMQ);
     absMethodObj->dataWrite_ = new dataWrite();
-
+    absMethodObj->FinishVersionNum = backupNum;
     // new design
     // if (chunkingType == TAR_MultiHeader)
     // {
@@ -139,6 +139,7 @@ int main(int argc, char **argv)
     }
     // push the dedupSegments
     absMethodObj->dedupSegments = chunkerObj->dedupSegments;
+    absMethodObj->AllFileSegments = chunkerObj->AllFileSegments;
     absMethodObj->hashNameCount = chunkerObj->hashNameCount;
     cout << "dedupSegments size is " << absMethodObj->dedupSegments.size() << endl;
     cout << "hashNameCount size is " << absMethodObj->hashNameCount.size() << endl;

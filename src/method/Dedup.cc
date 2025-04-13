@@ -18,6 +18,11 @@ void Dedup::ProcessTrace()
 {
     uint64_t cpSum = 0;
     size_t segmentIndex = 0; // 初始化段索引
+    size_t AllFileSegmentIndex = 0;
+    double TmpRedundantSize = 0;
+    double TmpSumChunkSize = 0;
+    std::ofstream FinalVersion;
+    FinalVersion.open("FinalVersion.txt", std::ios::out | std::ios::app);
     while (true)
     {
         string hashStr;
@@ -33,6 +38,7 @@ void Dedup::ProcessTrace()
             break;
         }
         Chunk_t tmpChunk;
+
         if (recieveQueue->Pop(tmpChunk))
         {
             GenerateHash(mdCtx, tmpChunk.chunkPtr, tmpChunk.chunkSize, hashBuf);
@@ -50,11 +56,38 @@ void Dedup::ProcessTrace()
                 {
                     // 外层if的条件是当前chunk的尾部在重复File的头部之后
                     if (cpSum > dedupSegments[ads_Version][segmentIndex].start) // 该chunk完全由重复文件组成
+                    {
+                        TmpRedundantSize += tmpChunk.chunkSize;
+                        TmpSumChunkSize += tmpChunk.chunkSize;
                         casecount_3++;
+                        if (ads_Version == FinishVersionNum - 1) // 因为ads_Version在全做完才加1
+                        {
+                            FinalVersion << 1 << " " << tmpChunk.chunkSize << endl;
+                        }
+                    }
                     if (cpSum <= dedupSegments[ads_Version][segmentIndex].start) // 该chunk含有重复文件的一部分
+                    {
+                        TmpRedundantSize += cpSum + tmpChunk.chunkSize - dedupSegments[ads_Version][segmentIndex].start;
+                        TmpSumChunkSize += tmpChunk.chunkSize;
                         casecount_2++;
+                        if (ads_Version == FinishVersionNum - 1) // 因为ads_Version在全做完才加1
+                        {
+                            FinalVersion << (double)(cpSum + tmpChunk.chunkSize - dedupSegments[ads_Version][segmentIndex].start) / (double)tmpChunk.chunkSize << " " << tmpChunk.chunkSize << endl;
+                        }
+                    }
                     casecount++;
                 }
+                else
+                {
+                    if (ads_Version == FinishVersionNum - 1) // 因为ads_Version在全做完才加1
+                    {
+                        FinalVersion << 0 << " " << tmpChunk.chunkSize << endl;
+                    }
+                }
+                while (AllFileSegmentIndex < AllFileSegments[ads_Version].size() && AllFileSegments[ads_Version][AllFileSegmentIndex].end <= cpSum)
+                {
+                    ++AllFileSegmentIndex; // 移动到下一个段
+                } // 执行完while后，AllFileSegmentIndex指向第一个文件end大于当前chunk的开始位置
                 tmpChunk.chunkID = uniquechunkNum;
                 tmpChunk.deltaFlag = NO_DELTA;
                 int lz4Size = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
@@ -106,8 +139,7 @@ void Dedup::ProcessTrace()
     cout << "uniquechunkSize is " << uniquechunkSize << endl;
     cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
     cout << "casecount is " << casecount << endl;
-    cout << "casecount_2 is " << casecount_2 << endl;
-    cout << "casecount_3 is " << casecount_3 << endl;
+    cout << "TmpRedundantSize / TmpSumChunkSize For This Version is " << TmpRedundantSize / TmpSumChunkSize << endl;
     recieveQueue->done_ = false;
     return;
 }

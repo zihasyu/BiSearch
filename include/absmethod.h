@@ -21,6 +21,7 @@ class AbsMethod
 protected:
 public:
     int ads_Version = 0;
+    int FinishVersionNum = 0;
     // util
     string filename;
     dataWrite *dataWrite_;
@@ -132,6 +133,7 @@ public:
     int casecount = 0;
 
     vector<std::vector<DedupFile>> dedupSegments;
+    vector<std::vector<DedupFile>> AllFileSegments;
     std::unordered_map<uint64_t, int> hashNameCount;
 };
 #endif

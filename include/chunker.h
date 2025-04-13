@@ -129,6 +129,7 @@ public:
     int FP_Find(string fp);
 
     vector<std::vector<DedupFile>> dedupSegments;
+    vector<std::vector<DedupFile>> AllFileSegments;
     std::unordered_map<uint64_t, int> hashNameCount;
 };
 #endif

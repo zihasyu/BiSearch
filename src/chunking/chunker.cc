@@ -16,6 +16,7 @@ Chunker::Chunker(int chunkType_)
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
 
     dedupSegments = vector<std::vector<DedupFile>>();
+    AllFileSegments = vector<std::vector<DedupFile>>();
     hashNameCount = unordered_map<uint64_t, int>();
 }
 Chunker::~Chunker()
@@ -901,6 +902,7 @@ void Chunker::Motivation_FindCase(vector<string> &readfileList, uint32_t backupN
     for (int i = 0; i < backupNum; i++)
     {
         dedupSegments.push_back(vector<DedupFile>());
+        AllFileSegments.push_back(vector<DedupFile>());
         auto startTmp = std::chrono::high_resolution_clock::now();
         string backupName;
         size_t pos = readfileList[i].find_last_of('/');
@@ -952,12 +954,14 @@ void Chunker::Motivation_FindCase(vector<string> &readfileList, uint32_t backupN
                         uint64_t nameHash = hashNameToUint64(name);
                         FP_Insert(hashStr, hashNameToUint64(name));
                         hashNameCount[nameHash]++;
+                        AllFileSegments[i].push_back({cpSum, cpSum + cp});
                     }
                     else
                     {
                         //  dedup file
                         DedupFile segment = {cpSum, cpSum + cp};
                         dedupSegments[i].push_back(segment);
+                        AllFileSegments[i].push_back({cpSum, cpSum + cp});
                     }
                     cpSum += cp;
                     outFile.write((char *)readFileBuffer + localOffset, cp);
