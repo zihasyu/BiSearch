@@ -7,19 +7,29 @@ run_method(){
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-# ./BiSearch -i $path -c 1 -m 3 -n $num  >Odess$name.txt
-# sudo rm Containers/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
+./BiSearch -i $path -c 1 -m 2 -n $num  >FinesseFastCDC$name.txt
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
+
+./BiSearch -i $path -c 1 -m 3 -n $num  >OdessFastCDC$name.txt
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
 
 # ./BiSearch -i $path -c 1 -m 4 -n $num  >Palantir$name.txt
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-# ./BiSearch -i $path -c 5 -m 3 -n $num  >OdessMTar$name.txt
-# sudo rm -r mTarFile
-# sudo mkdir mTarFile
-# sudo rm Containers/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
+./BiSearch -i $path -c 5 -m 2 -n $num  >FinesseMTar$name.txt
+sudo rm -r mTarFile
+sudo mkdir mTarFile
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
+
+./BiSearch -i $path -c 5 -m 3 -n $num  >OdessMTar$name.txt
+sudo rm -r mTarFile
+sudo mkdir mTarFile
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
 
 # ./BiSearch -i $path -c 5 -m 4 -n $num  >PalantirMTar$name.txt
 # sudo rm -r mTarFile
