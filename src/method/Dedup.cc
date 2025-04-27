@@ -137,9 +137,10 @@ void Dedup::ProcessTrace()
     }
     cout << "logicalchunkSize is " << logicalchunkSize << endl;
     cout << "uniquechunkSize is " << uniquechunkSize << endl;
-    cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    // cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
     cout << "casecount is " << casecount << endl;
     cout << "TmpRedundantSize / TmpSumChunkSize For This Version is " << TmpRedundantSize / TmpSumChunkSize << endl;
+    cout << "OffsetChunk percentage " << (double)casecount_3 / (double)uniquechunkNum << endl;
     recieveQueue->done_ = false;
     return;
 }

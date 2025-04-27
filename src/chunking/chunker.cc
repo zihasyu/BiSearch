@@ -974,21 +974,55 @@ void Chunker::Motivation_FindCase(vector<string> &readfileList, uint32_t backupN
         // reset
         localType = FILE_HEADER;
         Next_Chunk_Type = FILE_HEADER;
+        ifstream inHeaderFile(readfileList[i]);
+        // header chunk rewrite
+        inHeaderFile.seekg(0, ios_base::beg);
         end = false;
         totalOffset = 0;
+        while (!end)
+        {
+            memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
+            inHeaderFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE);
+            end = inHeaderFile.eof();
+            size_t len = inHeaderFile.gcount();
+            if (len == 0)
+            {
+                break;
+            }
+            localOffset = 0;
+            while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
+            {
+                // cout << " len is " << len << " localOffset is " << localOffset << endl;
+                // compute cutPoint
+                localType = Next_Chunk_Type;
+                uint32_t cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
+                if (cp == 0)
+                {
+                    continue;
+                }
+                if (localType == FILE_HEADER)
+                {
+                    outFile.write((char *)readFileBuffer + localOffset, cp);
+                }
+
+                localOffset += cp;
+            }
+            totalOffset += localOffset;
+            inHeaderFile.seekg(totalOffset, ios_base::beg);
+        }
 
         // reset
         localType = FILE_HEADER;
         Next_Chunk_Type = FILE_HEADER;
         inFile.close();
-
+        inHeaderFile.close();
         outFile.close();
         // mtar overwrite the readfileList
 
         readfileList[i] = writePath;
         auto endTmp = std::chrono::high_resolution_clock::now();
         auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
-        cout << "Version " << i << " RAW Conversion Time is " << TimeTmp << " s " << endl;
+        cout << "Version " << i << " MTar Conversion Time is " << TimeTmp << " s " << endl;
     }
     // reset
     chunkType = FASTCDC;
