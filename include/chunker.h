@@ -71,6 +71,8 @@ private:
     // std::string input_file_path_;
 
 public:
+    vector<double> MTarTime;
+    int a;
     Chunker(int chunkType_);
     ~Chunker();
     // util method
@@ -103,6 +105,7 @@ public:
     // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it
     std::chrono::time_point<std::chrono::high_resolution_clock> startChunk, endChunk;
     std::chrono::duration<double> ChunkTime;
+
     void SetTime(std::chrono::time_point<std::chrono::high_resolution_clock> &atime)
     {
         atime = std::chrono::high_resolution_clock::now();

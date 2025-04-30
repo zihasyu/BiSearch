@@ -565,6 +565,7 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
 
     for (int i = 0; i < backupNum; i++)
     {
+        auto startTmp = std::chrono::high_resolution_clock::now();
         string name;
         size_t pos = readfileList[i].find_last_of('/');
         if (pos != std::string::npos)
@@ -678,6 +679,9 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
         outFile.close();
         // mtar overwrite the readfileList
         readfileList[i] = writePath;
+        auto endTmp = std::chrono::high_resolution_clock::now();
+        auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
+        MTarTime.push_back(TimeTmp);
     }
     // reset
     chunkType = FASTCDC;
@@ -869,3 +873,29 @@ uint64_t Chunker::hashNameToUint64(const char *name)
     }
     return hash;
 }
+
+// void Chunker::WriteBoundariesToFile()
+// {
+//     // 获取文件名
+//     std::string filename = input_file_path_.substr(input_file_path_.find_last_of("/\\") + 1);
+//     std::string output_path = filename + ".boundaries";
+
+//     std::ofstream out_file(output_path);
+//     if (!out_file)
+//     {
+//         tool::Logging(myName_.c_str(), "Failed to open output file: %s\n", output_path.c_str());
+//         return;
+//     }
+
+//     for (const auto &[offset, size, type] : boundaries_)
+//     {
+//         out_file << type << " " << offset << " " << size << "\n";
+//     }
+//     out_file.close();
+// }
+
+// void Chunker::SetHeaderChunkSize(uint64_t size)
+// {
+//     MultiHeaderSize = size;
+//     return;
+// }

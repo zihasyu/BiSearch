@@ -146,6 +146,7 @@ int main(int argc, char **argv)
     // }
 
     auto startsum = std::chrono::high_resolution_clock::now();
+    double MTarTime = 0;
     if (CmdLine.chunkingType == MTAR || CmdLine.chunkingType == MTAROdess || CmdLine.chunkingType == MTARPalantir)
     {
         chunkerObj->MTar(readfileList, CmdLine.backupNum);
@@ -177,7 +178,16 @@ int main(int argc, char **argv)
         auto endTmp = std::chrono::high_resolution_clock::now();
         auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
         if (CmdLine.compressionMethod != 5)
-            absMethodObj->Version_log(TimeTmp);
+
+        {
+            if (CmdLine.chunkingType == MTAR)
+            {
+                absMethodObj->Version_log(TimeTmp + chunkerObj->MTarTime[i]);
+                MTarTime += chunkerObj->MTarTime[i];
+            }
+            else
+                absMethodObj->Version_log(TimeTmp);
+        }
         else
             absMethodObj->Version_log(TimeTmp, chunkerObj->ChunkTime.count());
     }
@@ -186,6 +196,8 @@ int main(int argc, char **argv)
     auto sumTime = (endsum - startsum);
     auto sumTimeInSeconds = std::chrono::duration_cast<std::chrono::seconds>(endsum - startsum).count();
     std::cout << "Time taken by for loop: " << sumTimeInSeconds << " s " << std::endl;
+    if (CmdLine.chunkingType == MTAR)
+        sumTimeInSeconds += MTarTime;
     tool::Logging(myName.c_str(), "logical Chunk Num is %d\n", absMethodObj->logicalchunkNum);
     tool::Logging(myName.c_str(), "unique Chunk Num is %d\n", absMethodObj->uniquechunkNum);
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);

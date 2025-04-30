@@ -341,6 +341,9 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
+        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
+        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
+        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
@@ -389,6 +392,9 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
+        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
+        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
+        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
@@ -429,6 +435,9 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
+        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
+        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
+        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
@@ -484,11 +493,14 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
-        out << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-        out << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-        out << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
+        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
+        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
+        out << "dedup reduct size : " << DedupReduct << endl;
+        out << "delta reduct size : " << DeltaReduct << endl;
+        out << "local reduct size : " << LocalReduct << endl;
+        out << "Feature reduct size: " << FeatureReduct << endl;
+        out << "Locality reduct size: " << LocalityReduct << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -533,11 +545,14 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
-        out << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-        out << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-        out << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
+        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
+        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
+        out << "dedup reduct size : " << DedupReduct << endl;
+        out << "delta reduct size : " << DeltaReduct << endl;
+        out << "local reduct size : " << LocalReduct << endl;
+        out << "Feature reduct size: " << FeatureReduct << endl;
+        out << "Locality reduct size: " << LocalityReduct << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();
@@ -656,11 +671,14 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
-        out << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-        out << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-        out << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
+        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
+        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
+        out << "dedup reduct size : " << DedupReduct << endl;
+        out << "delta reduct size : " << DeltaReduct << endl;
+        out << "local reduct size : " << LocalReduct << endl;
+        out << "Feature reduct size: " << FeatureReduct << endl;
+        out << "Locality reduct size: " << LocalityReduct << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -705,11 +723,14 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
-        out << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-        out << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-        out << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-        out << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
+        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
+        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
+        out << "dedup reduct size : " << DedupReduct << endl;
+        out << "delta reduct size : " << DeltaReduct << endl;
+        out << "local reduct size : " << LocalReduct << endl;
+        out << "Feature reduct size: " << FeatureReduct << endl;
+        out << "Locality reduct size: " << LocalityReduct << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();
@@ -755,11 +776,14 @@ void AbsMethod::Version_log(double time, double chunktime)
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------REDUCT----------------------------" << endl;
-    cout << "dedup reduct size : " << DedupReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "delta reduct size : " << DeltaReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "local reduct size : " << LocalReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "Feature reduct size: " << FeatureReduct / 1024 / 1024 << "MiB" << endl;
-    cout << "Locality reduct size: " << LocalityReduct / 1024 / 1024 << "MiB" << endl;
+    cout << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
+    cout << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
+    cout << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
+    cout << "dedup reduct size : " << DedupReduct << endl;
+    cout << "delta reduct size : " << DeltaReduct << endl;
+    cout << "local reduct size : " << LocalReduct << endl;
+    cout << "Feature reduct size: " << FeatureReduct << endl;
+    cout << "Locality reduct size: " << LocalityReduct << endl;
     cout << "-----------------END-------------------------------" << endl;
 
     preLogicalchunkiSize = logicalchunkSize;
