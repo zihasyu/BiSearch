@@ -154,7 +154,7 @@ void Chunker::Chunking()
             case TAR_MultiHeader:
             {
                 SetTime(startChunk);
-                size_t cpOffset = CutPointTarHeader(readFileBuffer + localOffset, len - localOffset);
+                size_t cpOffset = CutPointTarHeaderLossy(readFileBuffer + localOffset, len - localOffset);
                 localOffset += cpOffset;
                 SetTime(endChunk);
                 ChunkTime += (endChunk - startChunk);
@@ -374,6 +374,143 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
     }
     }
 };
+uint64_t Chunker::CutPointTarFastLossy(const uint8_t *src, const uint64_t len, bool &IsLossy)
+{
+    switch (Next_Chunk_Type)
+    {
+    case FILE_HEADER:
+    {
+        uint8_t data[12];
+        std::memcpy(data, src + 124, 12);
+
+        Next_Chunk_Size = 0;
+        for (int i = 0; i < 11; i++)
+        {
+            Next_Chunk_Size = Next_Chunk_Size * 8 + data[i] - 48;
+        }
+        if (*(src + 156) == REGTYPE)
+        {
+            IsLossy = true;
+            // edit: CONTAINER_MAX_SIZE
+            if (Next_Chunk_Size <= BigChunkSize)
+            {
+                Next_Chunk_Type = FILE_CHUNK;
+                FindName((char *)src);
+                ExtractPath((char *)src);
+            }
+            else
+            {
+                Next_Chunk_Type = BIG_CHUNK;
+                NameExist = true;
+                Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
+                Big_Chunk_Offset = 0;
+                // Big_Chunk_Allowance = Next_Chunk_Size / CONTAINER_MAX_SIZE;
+                // Big_Chunk_Last_Size = Next_Chunk_Size % CONTAINER_MAX_SIZE;
+                // if (Big_Chunk_Last_Size == 0)
+                // {
+                //     Big_Chunk_Allowance--;
+                //     Big_Chunk_Last_Size = CONTAINER_MAX_SIZE;
+                // }
+                // cout << "REGTYPE BigChunkSize is " << Big_Chunk_Size << endl;
+            }
+        }
+        if (*(src + 156) == AREGTYPE)
+        {
+            IsLossy = true;
+            Next_Chunk_Size = 0;
+            for (int i = 0; i < 11; i++)
+            {
+                Next_Chunk_Size = Next_Chunk_Size * 8 + data[i];
+            }
+            // cout << "AREGTYPE ChunkSize is " << Next_Chunk_Size << endl;
+            Next_Chunk_Size = 0;
+            // edit: CONTAINER_MAX_SIZE
+            if (Next_Chunk_Size <= BigChunkSize)
+            {
+                Next_Chunk_Type = FILE_CHUNK;
+                FindName((char *)src);
+                ExtractPath((char *)src);
+            }
+            else
+            {
+                Next_Chunk_Type = BIG_CHUNK;
+                NameExist = true;
+                Next_Chunk_Size = 0;
+                for (int i = 0; i < 11; i++)
+                {
+                    Next_Chunk_Size = Next_Chunk_Size * 8 + data[i] - 48;
+                    cout << data[i];
+                }
+                Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
+                Big_Chunk_Offset = 0;
+                // cout << "AREGTYPE BigChunkSize is " << Big_Chunk_Size << endl;
+            }
+        }
+        if (*(src + 156) == 'x' || *(src + 156) == GNUTYPE_LONGNAME)
+        {
+            Next_Chunk_Type = FILE_CHUNK;
+            IsLongNameChunk = true;
+            FindName((char *)src);
+            ExtractPath((char *)src);
+        }
+        /*use to debug*/
+        // cout<<"Next_Chunk_Flag: " <<int(*(src + 156));
+        // cout<<"Next_Chunk_Type: " <<Next_Chunk_Type;
+        // cout<<"Next_Chunk_Size: "<<Next_Chunk_Size<<endl;
+        // if(int(*(src + 156)) == 32||int(*(src + 156)) == 0){
+        //     for(int i=0;i<512;i++)
+        //     cout<<src[i]<<" ";
+        //     cout<<endl;
+        // }
+
+        if (len >= 512)
+            return 512;
+        else
+        {
+            // printf("emmmm");
+            return len;
+        }
+        break;
+    }
+    case FILE_CHUNK:
+    {
+        if (IsLongNameChunk)
+        {
+            FindLongName((char *)src);
+            IsLongNameChunk = false;
+        }
+        uint64_t roundedUp = (Next_Chunk_Size + 511) / 512 * 512;
+        Next_Chunk_Type = FILE_HEADER;
+        Next_Chunk_Size = 512;
+        if (roundedUp < len)
+            return roundedUp;
+        else
+            return len;
+        break;
+    }
+    case BIG_CHUNK:
+    {
+        if (Big_Chunk_Size - Big_Chunk_Offset > maxChunkSize)
+        {
+            // Big_Chunk_Allowance--;
+            // cout << " BigChunkSize is " << Big_Chunk_Size << " BigChunkOffset is" << Big_Chunk_Offset << endl;
+            uint64_t cp = CutPointFastCDC(src,
+                                          Big_Chunk_Size - Big_Chunk_Offset);
+            Big_Chunk_Offset += cp;
+            // cout << "offset is " << Big_Chunk_Offset << " cp is " << cp << endl;
+            return cp;
+            // return CONTAINER_MAX_SIZE;
+        }
+        else
+        {
+            Next_Chunk_Type = FILE_HEADER;
+            return Big_Chunk_Size - Big_Chunk_Offset;
+        }
+        break;
+    }
+    }
+};
+
 uint32_t Chunker::GenerateFastCDCMask(uint32_t bits)
 {
     uint32_t tmp;
@@ -438,6 +575,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
         // 附加一条，下一个块是大块内容的时候也不在当前seg里切了
         {
             localType = Next_Chunk_Type;
+
             uint32_t cp = CutPointTarFast(src + cpSum, len - cpSum);
 
             if (localType == FILE_HEADER)
@@ -446,6 +584,153 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 // uint8_t zero[12] = {0};
                 // boundaries_.push_back({current_offset_ + cpSum, cp, 'H'});
                 memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
+                HeaderCp += cp;
+                // blockTypeMask = blockTypeMask;
+            }
+            else
+            {
+                if (cp == 0)
+                {
+                    // cout << "data cp is 0" << endl; // debug
+                    continue;
+                }
+                // data chunking
+                Chunk_t chunk;
+                chunk.chunkPtr = (uint8_t *)malloc(cp);
+                memcpy(chunk.chunkPtr, src + cpSum, cp);
+                chunk.chunkSize = cp;
+                chunk.NameExist = NameExist;
+                chunk.name = hashNameToUint64(name);
+
+                // 记录data边界
+                // boundaries_.push_back({current_offset_ + cpSum, cp, 'D'});
+                // input MQ
+                if (!outputMQ_->Push(chunk))
+                {
+                    tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+                    exit(EXIT_FAILURE);
+                }
+                // mask
+                blockTypeMask = blockTypeMask + loopTime;
+                if (loopTime > UINT32_MAX)
+                {
+                    cout << "loopTime overflow is" << loopTime << endl;
+                }
+            }
+            // local offset
+            cpSum += cp;
+            if (cpSum == len)
+            {
+                Next_Chunk_Type = FILE_HEADER;
+                break; // 同时，这个backup结束了，可能要设计个flag
+            }
+            loopTime *= 2;
+        }
+        // input recipe MQ
+        // if (!MaskoutputMQ_->Push(blockTypeMask))
+        // {
+        //     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+        //     exit(EXIT_FAILURE);
+        // }
+        // multi header
+        Chunk_t chunk;
+        chunk.chunkPtr = (uint8_t *)malloc(HeaderCp);
+        memcpy(chunk.chunkPtr, headerBuffer, HeaderCp);
+        chunk.chunkSize = HeaderCp;
+        chunk.HeaderFlag = true;
+        chunk.NameExist = true;
+        chunk.name = hashNameToUint64(path);
+        // cout << "path is " << path << " namehash is " << chunk.name << endl;
+        // reset
+        HeaderCp = 0;
+        // input chunk MQ
+        if (!outputMQ_->Push(chunk))
+        {
+            tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else
+    {
+        // cout << " Next_Chunk_Type is " << Next_Chunk_Type << endl;
+        //  不以header为开头只可能是bigchunk，这里想要的处理的bigchunk开头时
+        // boundaries_.push_back({current_offset_, len, 'B'});
+        while (Next_Chunk_Type != FILE_HEADER && cpSum < CONTAINER_MAX_SIZE - MAX_CHUNK_SIZE)
+        // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
+        // 当前是D下一个块也是D时，应该是大块，也是可以断的。
+        // 当前是D下一个块是H时，是正常的HD组合，也可以断。
+        // 总结一下就是，当前为H，下一块为D时不可以断
+        {
+            localType = Next_Chunk_Type;
+            uint32_t cp = CutPointTarFast(src + cpSum, len - cpSum);
+            // cout << "big cdc size is " << cp << endl;
+            if (localType == FILE_HEADER)
+            {
+                std::cout << "cut_bug";
+                // memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
+                // HeaderCp += cp;
+                // blockTypeMask = blockTypeMask;
+            }
+            else
+            {
+                Chunk_t chunk;
+                chunk.chunkPtr = (uint8_t *)malloc(cp);
+                memcpy(chunk.chunkPtr, src + cpSum, cp);
+                chunk.chunkSize = cp;
+                chunk.NameExist = true;
+                // chunk.name = name;
+                if (!outputMQ_->Push(chunk))
+                {
+                    tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+                    exit(EXIT_FAILURE);
+                }
+            }
+            cpSum += cp;
+            if (cpSum == len)
+            {
+                break; // 同时，这个backup结束了，可能要设计个flag
+            }
+        }
+    }
+
+    // cout << "HeaderCp is " << HeaderCp << endl;
+    // cout << "DataCp is " << DataCp << endl;
+    return cpSum;
+}
+
+uint64_t Chunker::CutPointTarHeaderLossy(const uint8_t *src, const uint64_t len)
+// 调用CutPointTarFast，因为有NextChunkType的全局变量，所以断在哪里都没关系。但是为了减少recipe压力（一对segment可恢复），满足结尾时下一个type还是header即可。
+{
+    uint64_t blockTypeMask;
+    uint64_t cpSum = 0;
+    uint64_t loopTime = 1;
+    if (Next_Chunk_Type == FILE_HEADER)
+    {
+        while ((HeaderCp < MULTI_HEADER_CHUNK * 512 || (localType == FILE_HEADER && Next_Chunk_Type == FILE_CHUNK)) && Next_Chunk_Type != BIG_CHUNK)
+        // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
+        // 当前是D下一个块也是D时，应该是大块，也是可以断的。
+        // 当前是D下一个块是H时，是正常的HD组合，也可以断。
+        // 总结一下就是，当前为H，下一块为D时不可以断
+        // 附加一条，下一个块是大块内容的时候也不在当前seg里切了
+        {
+            localType = Next_Chunk_Type;
+            bool IsLossy = false;
+            uint32_t cp = CutPointTarFastLossy(src + cpSum, len - cpSum, IsLossy);
+
+            if (localType == FILE_HEADER)
+            {
+                // ignore timestamp
+                // uint8_t zero[12] = {0};
+                // boundaries_.push_back({current_offset_ + cpSum, cp, 'H'});
+                if (IsLossy)
+                {
+                    memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
+                    memset(headerBuffer + HeaderCp + 100, '\0', 24); //(0-100 name, 124-136 size, 156-157 type)
+                    memset(headerBuffer + HeaderCp + 136, '\0', 20);
+                    memset(headerBuffer + HeaderCp + 157, '\0', 355);
+                }
+                else
+                    memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
                 HeaderCp += cp;
                 // blockTypeMask = blockTypeMask;
             }

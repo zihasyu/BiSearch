@@ -3,43 +3,28 @@ run_method(){
   local path=$1
   local name=$2
   local num=$3
-# ./BiSearch -i $path -c 1 -m 0 -n $num  >Dedup$name.txt
+
+# ./BiSearch -i $path -c 1 -m 2 -n $num  >FinesseFastCDC$name.txt
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-./BiSearch -i $path -c 1 -m 2 -n $num  >FinesseFastCDC$name.txt
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
-
-./BiSearch -i $path -c 1 -m 3 -n $num  >OdessFastCDC$name.txt
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
-
-# ./BiSearch -i $path -c 1 -m 4 -n $num  >Palantir$name.txt
+# ./BiSearch -i $path -c 1 -m 3 -n $num  >OdessFastCDC$name.txt
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-./BiSearch -i $path -c 5 -m 2 -n $num  >FinesseMTar$name.txt
-sudo rm -r mTarFile
-sudo mkdir mTarFile
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
 
-./BiSearch -i $path -c 5 -m 3 -n $num  >OdessMTar$name.txt
-sudo rm -r mTarFile
-sudo mkdir mTarFile
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
-
-# ./BiSearch -i $path -c 5 -m 4 -n $num  >PalantirMTar$name.txt
+# ./BiSearch -i $path -c 5 -m 2 -n $num  >FinesseMTar$name.txt
 # sudo rm -r mTarFile
 # sudo mkdir mTarFile
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-# ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Odess$name.txt
+# ./BiSearch -i $path -c 5 -m 3 -n $num  >OdessMTar$name.txt
+# sudo rm -r mTarFile
+# sudo mkdir mTarFile
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
+
 
 ./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
 # sudo rm Containers/*
