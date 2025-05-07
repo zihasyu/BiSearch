@@ -16,7 +16,8 @@ enum ChunkTypeNum
     TAR_MultiHeader,
     MTAR,
     MTAROdess,
-    MTARPalantir
+    MTARPalantir,
+    TAR_MultiHeader_LOSSY
 };
 const int BigChunkSize = CONTAINER_MAX_SIZE;
 class Chunker

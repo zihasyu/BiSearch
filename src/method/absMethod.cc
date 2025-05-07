@@ -501,6 +501,13 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "local reduct size : " << LocalReduct << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
+        out << "-----------------HeaderBreakdown--------------------" << endl;
+        out << "Header OCR: " << (double)headerChunkLogicalSize / (double)headerChunkUniqueSize << endl;
+        out << "File OCR: " << (double)(logicalchunkSize - headerChunkLogicalSize) / (double)(uniquechunkSize - headerChunkUniqueSize) << endl;
+        out << "Header chunk logical num: " << headerChunkLogicalNum << endl;
+        out << "Header chunk unique num: " << headerChunkUniqueNum << endl;
+        out << "Header chunk logical size: " << headerChunkLogicalSize << endl;
+        out << "Header chunk unique size: " << headerChunkUniqueSize << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -553,6 +560,13 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "local reduct size : " << LocalReduct << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
+        out << "-----------------HeaderBreakdown--------------------" << endl;
+        out << "Header OCR: " << (double)headerChunkLogicalSize / (double)headerChunkUniqueSize << endl;
+        out << "File OCR: " << (double)(logicalchunkSize - headerChunkLogicalSize) / (double)(uniquechunkSize - headerChunkUniqueSize) << endl;
+        out << "Header chunk logical num: " << headerChunkLogicalNum << endl;
+        out << "Header chunk unique num: " << headerChunkUniqueNum << endl;
+        out << "Header chunk logical size: " << headerChunkLogicalSize << endl;
+        out << "Header chunk unique size: " << headerChunkUniqueSize << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();

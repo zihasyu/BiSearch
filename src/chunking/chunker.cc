@@ -98,6 +98,18 @@ void Chunker::ChunkerInit()
         maskL = GenerateFastCDCMask(bits - 1);
         break;
     }
+    case TAR_MultiHeader_LOSSY:
+    {
+        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+        headerBuffer = (uint8_t *)malloc(512 * (MULTI_HEADER_CHUNK + 1));
+        chunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE); // 4MB
+        // dataBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * 16); // 64MB
+        normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
+        bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
+        maskS = GenerateFastCDCMask(bits + 1);
+        maskL = GenerateFastCDCMask(bits - 1);
+        break;
+    }
 
     default:
         tool::Logging(myName_.c_str(), "chunk type error.\n");
@@ -152,6 +164,15 @@ void Chunker::Chunking()
                 break;
             }
             case TAR_MultiHeader:
+            {
+                SetTime(startChunk);
+                size_t cpOffset = CutPointTarHeader(readFileBuffer + localOffset, len - localOffset);
+                localOffset += cpOffset;
+                SetTime(endChunk);
+                ChunkTime += (endChunk - startChunk);
+                continue;
+            }
+            case TAR_MultiHeader_LOSSY:
             {
                 SetTime(startChunk);
                 size_t cpOffset = CutPointTarHeaderLossy(readFileBuffer + localOffset, len - localOffset);

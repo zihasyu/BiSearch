@@ -105,6 +105,21 @@ public:
     double AcceptThreshold = 0;
     // evaluation for Metadata-guided
     bool TurnOnNameHash = true;
+
+    // header chunk info
+    uint64_t headerChunkLogicalSize = 0;
+    uint64_t headerChunkUniqueSize = 0;
+    uint64_t headerChunkLogicalNum = 0;
+    uint64_t headerChunkUniqueNum = 0;
+    // header chunk details
+    uint64_t headerDeltaChunkLogicalNum = 0;
+    uint64_t headerDeltaChunkUniqueNum = 0;
+    uint64_t headerBaseChunkLogicalNum = 0;
+    uint64_t headerBaseChunkUniqueNum = 0;
+    uint64_t headerDeltaChunkLogicalSize = 0;
+    uint64_t headerDeltaChunkUniqueSize = 0;
+    uint64_t headerBaseChunkLogicalSize = 0;
+    uint64_t headerBaseChunkUniqueSize = 0;
     AbsMethod();
     ~AbsMethod();
     void SetFilename(string name);
