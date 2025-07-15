@@ -105,6 +105,10 @@ public:
     double AcceptThreshold = 0;
     // evaluation for Metadata-guided
     bool TurnOnNameHash = true;
+    long sameCount = 0;
+    long OnlyFeature = 0;
+    long OnlyMeta = 0;
+    long differentCount = 0;
     AbsMethod();
     ~AbsMethod();
     void SetFilename(string name);

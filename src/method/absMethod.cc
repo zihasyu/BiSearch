@@ -275,7 +275,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
         out << "delta chunk num: " << deltachunkNum << endl;
-        out << "finesse hit:" << finessehit << endl;
+
         out << "-----------------CHUNK SIZE-----------------------" << endl;
         out << "logical chunk size: " << logicalchunkSize << endl;
         out << "unique chunk size: " << uniquechunkSize << endl;
@@ -304,6 +304,11 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "-----------------Design 2 Motivation---------------" << endl;
+        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
+        out << "case 2 SameCount:" << sameCount << endl;
+        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
+        out << "case 4 DifferentCount: " << differentCount << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -315,7 +320,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
         out << "delta chunk num: " << deltachunkNum << endl;
-        out << "finesse hit:" << finessehit << endl;
+
         out << "-----------------CHUNK SIZE-----------------------" << endl;
         out << "logical chunk size: " << logicalchunkSize << endl;
         out << "unique chunk size: " << uniquechunkSize << endl;
@@ -347,6 +352,11 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "-----------------Design 2 Motivation---------------" << endl;
+        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
+        out << "case 2 SameCount:" << sameCount << endl;
+        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
+        out << "case 4 DifferentCount: " << differentCount << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();
@@ -366,7 +376,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
         out << "delta chunk num: " << deltachunkNum << endl;
-        out << "finesse hit:" << finessehit << endl;
+
         out << "-----------------CHUNK SIZE-----------------------" << endl;
         out << "logical chunk size: " << logicalchunkSize << endl;
         out << "unique chunk size: " << uniquechunkSize << endl;
@@ -398,6 +408,11 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "-----------------Design 2 Motivation---------------" << endl;
+        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
+        out << "case 2 SameCount:" << sameCount << endl;
+        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
+        out << "case 4 DifferentCount: " << differentCount << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -409,7 +424,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
         out << "delta chunk num: " << deltachunkNum << endl;
-        out << "finesse hit:" << finessehit << endl;
+
         out << "-----------------CHUNK SIZE-----------------------" << endl;
         out << "logical chunk size: " << logicalchunkSize << endl;
         out << "unique chunk size: " << uniquechunkSize << endl;
@@ -441,6 +456,11 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "-----------------Design 2 Motivation---------------" << endl;
+        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
+        out << "case 2 SameCount:" << sameCount << endl;
+        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
+        out << "case 4 DifferentCount: " << differentCount << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();
@@ -461,7 +481,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
         out << "delta chunk num: " << deltachunkNum << endl;
-        out << "finesse hit:" << finessehit << endl;
+
         out << "-----------------CHUNK SIZE-----------------------" << endl;
         out << "logical chunk size: " << logicalchunkSize << endl;
         out << "unique chunk size: " << uniquechunkSize << endl;
@@ -501,6 +521,11 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "local reduct size : " << LocalReduct << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
+        out << "-----------------Design 2 Motivation---------------" << endl;
+        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
+        out << "case 2 SameCount:" << sameCount << endl;
+        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
+        out << "case 4 DifferentCount: " << differentCount << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -513,7 +538,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
         out << "delta chunk num: " << deltachunkNum << endl;
-        out << "finesse hit:" << finessehit << endl;
+
         out << "-----------------CHUNK SIZE-----------------------" << endl;
         out << "logical chunk size: " << logicalchunkSize << endl;
         out << "unique chunk size: " << uniquechunkSize << endl;
@@ -553,6 +578,11 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "local reduct size : " << LocalReduct << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
+        out << "-----------------Design 2 Motivation---------------" << endl;
+        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
+        out << "case 2 SameCount:" << sameCount << endl;
+        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
+        out << "case 4 DifferentCount: " << differentCount << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();
@@ -639,7 +669,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
         out << "delta chunk num: " << deltachunkNum << endl;
-        out << "finesse hit:" << finessehit << endl;
+
         out << "-----------------CHUNK SIZE-----------------------" << endl;
         out << "logical chunk size: " << logicalchunkSize << endl;
         out << "unique chunk size: " << uniquechunkSize << endl;
@@ -679,6 +709,11 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "local reduct size : " << LocalReduct << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
+        out << "-----------------Design 2 Motivation---------------" << endl;
+        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
+        out << "case 2 SameCount:" << sameCount << endl;
+        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
+        out << "case 4 DifferentCount: " << differentCount << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -691,7 +726,6 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "unique chunk num: " << uniquechunkNum << endl;
         out << "base chunk num: " << basechunkNum << endl;
         out << "delta chunk num: " << deltachunkNum << endl;
-        out << "finesse hit:" << finessehit << endl;
         out << "-----------------CHUNK SIZE-----------------------" << endl;
         out << "logical chunk size: " << logicalchunkSize << endl;
         out << "unique chunk size: " << uniquechunkSize << endl;
@@ -731,6 +765,11 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "local reduct size : " << LocalReduct << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
+        out << "-----------------Design 2 Motivation---------------" << endl;
+        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
+        out << "case 2 SameCount:" << sameCount << endl;
+        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
+        out << "case 4 DifferentCount: " << differentCount << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();
@@ -784,6 +823,11 @@ void AbsMethod::Version_log(double time, double chunktime)
     cout << "local reduct size : " << LocalReduct << endl;
     cout << "Feature reduct size: " << FeatureReduct << endl;
     cout << "Locality reduct size: " << LocalityReduct << endl;
+    cout << "-----------------Design 2 Motivation---------------" << endl;
+    cout << "case 1 OnlyFeature: " << OnlyFeature << endl;
+    cout << "case 2 SameCount:" << sameCount << endl;
+    cout << "case 3 OnlyMeta: " << OnlyMeta << endl;
+    cout << "case 4 DifferentCount: " << differentCount << endl;
     cout << "-----------------END-------------------------------" << endl;
 
     preLogicalchunkiSize = logicalchunkSize;

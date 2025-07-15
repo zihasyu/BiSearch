@@ -49,7 +49,6 @@ private:
     uint64_t bugCount = 0;
     z_stream defstream;
     long errorCount = 0;
-    long sameCount = 0;
     double β = 10;
     int LOCAL_MAX_ERROR = 2;
 

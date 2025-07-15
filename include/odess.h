@@ -25,6 +25,7 @@ private:
 public:
     Odess();
     ~Odess();
+    unordered_map<uint64_t, uint32_t> nameTable;
     void ProcessTrace();
 };
 #endif

@@ -55,7 +55,7 @@ void Odess::ProcessTrace()
                 tmpChunkHash.assign((char *)hashBuf, CHUNK_HASH_SIZE);
                 // Odess get superfeature & get time
                 uint64_t basechunkid = -1;
-                // cout << "tmpChunk.chunkSize: " << tmpChunk.chunkSize << endl;
+                // compute SF
                 if (tmpChunk.chunkSize > 60)
                 {
                     startSF = std::chrono::high_resolution_clock::now();
@@ -67,9 +67,28 @@ void Odess::ProcessTrace()
                     // auto ret = table.GetSimilarRecordsKeys(tmpChunkHash);
                 }
 
+                // design2 motivation: compute NameID for test
+                bool SameName = 0;
+                long NameID = -1;
+                if (ads_Version > 0)
+                {
+                    SameName = (nameTable.count(tmpChunk.name) > 0) ? true : false;
+                    if (SameName)
+                        NameID = nameTable[tmpChunk.name];
+                }
+
                 if (basechunkid != -1)
                 // unique chunk & delta chunk
                 {
+                    if (NameID == basechunkid)
+                        sameCount++; // design2 motivation: case 2
+                    else
+                    {
+                        if (SameName)
+                            differentCount++; // design2 motivation: case 4
+                        else
+                            OnlyFeature++; // design2 motivation: case 1
+                    }
                     auto basechunkInfo = dataWrite_->Get_Chunk_Info(basechunkid);
                     uint8_t *deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkInfo.chunkPtr, basechunkInfo.chunkSize, &tmpChunk.saveSize, deltaMaxChunkBuffer);
                     if (tmpChunk.saveSize == 0)
@@ -123,6 +142,8 @@ void Odess::ProcessTrace()
                 // unique chunk & base chunk
                 else
                 {
+                    if (SameName)
+                        OnlyMeta++; // design2 motivation: case 3
                     int tmpChunkLz4CompressSize = 0;
                     tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
                     if (tmpChunkLz4CompressSize > 0)
@@ -150,6 +171,8 @@ void Odess::ProcessTrace()
                     else
                         // base chunk &lz4 compress
                         dataWrite_->Chunk_Insert(tmpChunk, lz4ChunkBuffer);
+                    // design2 motivation: index
+                    nameTable[tmpChunk.name] = tmpChunk.chunkID;
                 }
                 uniquechunkNum++;
                 uniquechunkSize += tmpChunk.saveSize;

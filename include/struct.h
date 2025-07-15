@@ -33,14 +33,14 @@ typedef struct
 
 typedef struct
 {
-    uint64_t chunkSize;
-    uint64_t saveSize;
-    uint64_t offset;
-    uint64_t containerID;
-    uint8_t *chunkPtr;
-    std::string basechunkFP; // 32B
-    uint8_t deltaFlag = NO_DELTA;
-    bool loadFromDisk = false;
+    uint64_t chunkSize;           // 8 bytes
+    uint64_t saveSize;            // 8 bytes
+    uint64_t offset;              // 8 bytes
+    uint64_t containerID;         // 8 bytes
+    uint8_t *chunkPtr;            // 8 bytes
+    std::string basechunkFP;      // 32bytes
+    uint8_t deltaFlag = NO_DELTA; // 8 bytes
+    bool loadFromDisk = false;    // 1 bytes
     // bool HeaderFlag = false;
     //  bool NameExist = true;
     // offset and containerId
