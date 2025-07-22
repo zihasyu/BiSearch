@@ -38,6 +38,8 @@ public:
     uint64_t bugCount = 0;
     uint64_t finessehit = 0;
     double DCESum = 0;
+    double LZ4RatioSum = 0;
+    double DCESum2 = 0; // DCE ratio 1-
     uint64_t SFnum = 0;
     // SF time statics
     std::chrono::time_point<std::chrono::high_resolution_clock> startSF, endSF;

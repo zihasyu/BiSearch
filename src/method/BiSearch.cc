@@ -647,6 +647,7 @@ void BiSearch::Version_log(double time)
     cout << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
     cout << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
     cout << "DCE: " << DCESum / (double)deltachunkNum << endl;
+    cout << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
     cout << "-----------------Time------------------------------" << endl;
     cout << "Version time: " << time << "s" << endl;
     cout << "Throughput: " << (double)(logicalchunkSize - preLogicalchunkiSize) / time / 1024 / 1024 << "MiB/s" << endl;
@@ -715,6 +716,7 @@ void BiSearch::Version_log(double time, double chunktime)
     cout << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
     cout << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
     cout << "DCE: " << DCESum / (double)deltachunkNum << endl;
+    cout << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
     cout << "-----------------Time------------------------------" << endl;
     cout << "Version time: " << time << "s" << endl;
     cout << "Throughput: " << (double)(logicalchunkSize - preLogicalchunkiSize) / time / 1024 / 1024 << "MiB/s" << endl;
@@ -792,6 +794,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
@@ -855,6 +858,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
@@ -926,6 +930,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
@@ -990,6 +995,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;

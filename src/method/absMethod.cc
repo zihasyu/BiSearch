@@ -286,6 +286,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "total time: " << time << "s" << endl;
@@ -304,6 +305,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "-----------------Design 2 Motivation---------------" << endl;
         out << "case 1 OnlyFeature: " << OnlyFeature << endl;
         out << "case 2 SameCount:" << sameCount << endl;
@@ -331,6 +333,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "total time: " << time << "s" << endl;
@@ -352,6 +355,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "-----------------Design 2 Motivation---------------" << endl;
         out << "case 1 OnlyFeature: " << OnlyFeature << endl;
         out << "case 2 SameCount:" << sameCount << endl;
@@ -387,6 +391,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "total time: " << time << "s" << endl;
@@ -408,6 +413,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "-----------------Design 2 Motivation---------------" << endl;
         out << "case 1 OnlyFeature: " << OnlyFeature << endl;
         out << "case 2 SameCount:" << sameCount << endl;
@@ -435,6 +441,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
         out << "total time: " << time << "s" << endl;
@@ -456,6 +463,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "-----------------Design 2 Motivation---------------" << endl;
         out << "case 1 OnlyFeature: " << OnlyFeature << endl;
         out << "case 2 SameCount:" << sameCount << endl;
@@ -492,6 +500,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
@@ -519,6 +528,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
         out << "-----------------Design 2 Motivation---------------" << endl;
@@ -549,6 +559,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
@@ -576,6 +587,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
         out << "-----------------Design 2 Motivation---------------" << endl;
@@ -594,7 +606,8 @@ void AbsMethod::StatsDelta(Chunk_t &tmpChunk)
     deltachunkSize += tmpChunk.saveSize;
     deltachunkNum++;
     DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
-    DCESum += tmpChunk.chunkSize / tmpChunk.saveSize;
+    DCESum += (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
+    DCESum2 += 1 - (double)tmpChunk.saveSize / (double)tmpChunk.chunkSize;
 }
 void AbsMethod::StatsDeltaFeature(Chunk_t &tmpChunk)
 {
@@ -603,7 +616,8 @@ void AbsMethod::StatsDeltaFeature(Chunk_t &tmpChunk)
     deltachunkNum++;
     DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
     FeatureReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
-    DCESum += tmpChunk.chunkSize / tmpChunk.saveSize;
+    DCESum += (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
+    DCESum2 += 1 - (double)tmpChunk.saveSize / (double)tmpChunk.chunkSize;
 }
 
 void AbsMethod::StatsDeltaLocality(Chunk_t &tmpChunk)
@@ -613,7 +627,8 @@ void AbsMethod::StatsDeltaLocality(Chunk_t &tmpChunk)
     deltachunkNum++;
     DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
     LocalityReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
-    DCESum += tmpChunk.chunkSize / tmpChunk.saveSize;
+    DCESum += (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
+    DCESum2 += 1 - (double)tmpChunk.saveSize / (double)tmpChunk.chunkSize;
     LocalityDeltaTime += LocalityDeltaTmp;
 }
 
@@ -680,6 +695,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
@@ -707,6 +723,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
         out << "-----------------Design 2 Motivation---------------" << endl;
@@ -736,6 +753,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
         out << "-----------------Time------------------------------" << endl;
         out << "total time: " << time << "s" << endl;
         out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
@@ -763,6 +781,7 @@ void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int meth
         out << "dedup reduct size : " << DedupReduct << endl;
         out << "delta reduct size : " << DeltaReduct << endl;
         out << "local reduct size : " << LocalReduct << endl;
+        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
         out << "-----------------Design 2 Motivation---------------" << endl;
@@ -821,6 +840,7 @@ void AbsMethod::Version_log(double time, double chunktime)
     cout << "dedup reduct size : " << DedupReduct << endl;
     cout << "delta reduct size : " << DeltaReduct << endl;
     cout << "local reduct size : " << LocalReduct << endl;
+    cout << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
     cout << "Feature reduct size: " << FeatureReduct << endl;
     cout << "Locality reduct size: " << LocalityReduct << endl;
     cout << "-----------------Design 2 Motivation---------------" << endl;

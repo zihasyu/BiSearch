@@ -165,6 +165,7 @@ void Odess::ProcessTrace()
                     basechunkNum++;
                     basechunkSize += tmpChunk.saveSize;
                     LocalReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+                    LZ4RatioSum += (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
                     if (tmpChunk.deltaFlag == NO_LZ4)
                         // base chunk & Lz4 error
                         dataWrite_->Chunk_Insert(tmpChunk);

@@ -20,12 +20,12 @@ run_method(){
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
 # ./BiSearch -i $path -c 5 -m 2 -n $num  >FinesseMTar$name.txt
-# sudo rm -r mTarFile
-# sudo mkdir mTarFile
-# sudo rm Containers/*
+sudo rm -r mTarFile
+sudo mkdir mTarFile
+sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-# ./BiSearch -i $path -c 5 -m 3 -n $num  >OdessMTar$name.txt
+./BiSearch -i $path -c 5 -m 3 -n $num  >OdessMTar$name.txt
 # sudo rm -r mTarFile
 # sudo mkdir mTarFile
 # sudo rm Containers/*
@@ -38,11 +38,11 @@ run_method(){
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
 # ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Odess$name.txt
-# sudo rm Containers/*
+sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-# ./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
-./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Ode$name.txt
+./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
+# ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Ode$name.txt
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 }
