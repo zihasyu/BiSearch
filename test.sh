@@ -46,6 +46,17 @@ run_RAW(){
   rm Containers/*
   mv FinalVersion.txt FinalVersion$name.txt
 }
+#RAW_SA will implement in the next branch "SCR_SA"
+run_RAW_SA(){
+  local path=$1
+  local name=$2
+  local num=$3
+  ./BiSearch -i $path -c 9 -m 0 -n $num  >Dedup_Skip_SA$name.txt
+  rm -r mTarFile
+  mkdir mTarFile
+  rm Containers/*
+  mv FinalVersion.txt FinalVersion$name.txt
+}
 
 datasets=(
   "/mnt/dataset2/automake_tarballs _automake 100"

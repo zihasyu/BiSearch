@@ -128,7 +128,7 @@ int main(int argc, char **argv)
     {
         chunkerObj->Motivation(readfileList, backupNum);
     }
-    if (chunkingType == RAW_CASE)
+    if (chunkingType == RAW_CASE || RAW_CASE_FINETAR)
     {
         chunkerObj->Motivation_FindCase(readfileList, backupNum);
     }

@@ -17,7 +17,8 @@ enum ChunkTypeNum
     MTAR,
     RAW,
     RAW_GEAR,
-    RAW_CASE
+    RAW_CASE,        // SCR+ODESS
+    RAW_CASE_FINETAR // SCR+FINETAR
 };
 
 class Chunker

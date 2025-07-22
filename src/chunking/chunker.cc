@@ -89,6 +89,7 @@ void Chunker::ChunkerInit()
         maskL = GenerateFastCDCMask(bits - 1);
         break;
     }
+    case RAW_CASE_FINETAR:
     case TAR_MultiHeader:
     {
         readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE);
