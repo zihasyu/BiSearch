@@ -615,7 +615,7 @@ void dataWrite::MTar2Tar(string fileName)
     mTarFile.close();
     tarFile.close();
 
-    std::cout << "MTar to tar path: " << tarPath << std::endl;
+    std::cout << "成功将 MTar 文件恢复为 Tar 文件: " << tarPath << std::endl;
 }
 
 Chunk_t dataWrite::Get_Chunk_Info(int id)
