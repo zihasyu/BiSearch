@@ -261,216 +261,56 @@ uint8_t *AbsMethod::xd3_encode(const uint8_t *targetChunkbuffer, size_t targetCh
     return deltaChunkBuffer;
 }
 
-void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double AcceptThreshold, bool IsFalseFilter)
-{
-    ofstream out;
-    string fileName = "./chunkInfoLog.txt";
-    if (!tool::FileExist(fileName))
-    {
-        out.open(fileName, ios::out);
-        out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << AcceptThreshold << " -b " << IsFalseFilter << endl;
-        out << "-----------------CHUNK NUM-----------------------" << endl;
-        out << "logical chunk num: " << logicalchunkNum << endl;
-        out << "unique chunk num: " << uniquechunkNum << endl;
-        out << "base chunk num: " << basechunkNum << endl;
-        out << "delta chunk num: " << deltachunkNum << endl;
-
-        out << "-----------------CHUNK SIZE-----------------------" << endl;
-        out << "logical chunk size: " << logicalchunkSize << endl;
-        out << "unique chunk size: " << uniquechunkSize << endl;
-        out << "base chunk size: " << basechunkSize << endl;
-        out << "delta chunk size: " << deltachunkSize << endl;
-        out << "-----------------METRICS-------------------------" << endl;
-        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
-        out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
-        out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
-        out << "DCE: " << DCESum / (double)deltachunkNum << endl;
-        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
-        out << "-----------------Time------------------------------" << endl;
-        // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-        out << "total time: " << time << "s" << endl;
-        out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "Reduce data speed: " << (double)(logicalchunkSize - uniquechunkSize) / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "SF generation time: " << SFTime.count() << "s" << endl;
-        out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
-        out << "-----------------OverHead--------------------------" << endl;
-        // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
-        out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
-        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
-        out << "SF number: " << SFnum << endl;
-        out << "-----------------Reduct----------------------------" << endl;
-        out << "dedup reduct size : " << DedupReduct << endl;
-        out << "delta reduct size : " << DeltaReduct << endl;
-        out << "local reduct size : " << LocalReduct << endl;
-        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
-        out << "-----------------Design 2 Motivation---------------" << endl;
-        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
-        out << "case 2 SameCount:" << sameCount << endl;
-        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
-        out << "case 4 DifferentCount: " << differentCount << endl;
-        out << "-----------------END-------------------------------" << endl;
-    }
-    else
-    {
-        out.open(fileName, ios::app);
-        out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << AcceptThreshold << " -b " << IsFalseFilter << endl;
-        out << "logical chunk num: " << logicalchunkNum << endl;
-        out << "unique chunk num: " << uniquechunkNum << endl;
-        out << "base chunk num: " << basechunkNum << endl;
-        out << "delta chunk num: " << deltachunkNum << endl;
-
-        out << "-----------------CHUNK SIZE-----------------------" << endl;
-        out << "logical chunk size: " << logicalchunkSize << endl;
-        out << "unique chunk size: " << uniquechunkSize << endl;
-        out << "base chunk size: " << basechunkSize << endl;
-        out << "delta chunk size: " << deltachunkSize << endl;
-        out << "-----------------METRICS-------------------------" << endl;
-        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
-        out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
-        out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
-        out << "DCE: " << DCESum / (double)deltachunkNum << endl;
-        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
-        out << "-----------------Time------------------------------" << endl;
-        // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-        out << "total time: " << time << "s" << endl;
-        out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "Reduce data speed: " << (double)(logicalchunkSize - uniquechunkSize) / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "SF generation time: " << SFTime.count() << "s" << endl;
-        out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
-        out << "-----------------OverHead--------------------------" << endl;
-        // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
-        out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
-        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
-        out << "SF number: " << SFnum << endl;
-        out << "-----------------Reduct----------------------------" << endl;
-        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
-        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
-        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
-        out << "dedup reduct size : " << DedupReduct << endl;
-        out << "delta reduct size : " << DeltaReduct << endl;
-        out << "local reduct size : " << LocalReduct << endl;
-        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
-        out << "-----------------Design 2 Motivation---------------" << endl;
-        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
-        out << "case 2 SameCount:" << sameCount << endl;
-        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
-        out << "case 4 DifferentCount: " << differentCount << endl;
-        out << "-----------------END-------------------------------" << endl;
-    }
-    out.close();
-    return;
-}
 void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
 {
     ofstream out;
     string fileName = "./chunkInfoLog.txt";
     if (!tool::FileExist(fileName))
-    {
         out.open(fileName, ios::out);
-        out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << endl;
-        out << "-----------------CHUNK NUM-----------------------" << endl;
-        out << "logical chunk num: " << logicalchunkNum << endl;
-        out << "unique chunk num: " << uniquechunkNum << endl;
-        out << "base chunk num: " << basechunkNum << endl;
-        out << "delta chunk num: " << deltachunkNum << endl;
-
-        out << "-----------------CHUNK SIZE-----------------------" << endl;
-        out << "logical chunk size: " << logicalchunkSize << endl;
-        out << "unique chunk size: " << uniquechunkSize << endl;
-        out << "base chunk size: " << basechunkSize << endl;
-        out << "delta chunk size: " << deltachunkSize << endl;
-        out << "-----------------METRICS-------------------------" << endl;
-        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
-        out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
-        out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
-        out << "DCE: " << DCESum / (double)deltachunkNum << endl;
-        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
-        out << "-----------------Time------------------------------" << endl;
-        // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-        out << "total time: " << time << "s" << endl;
-        out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "Reduce data speed: " << (double)(logicalchunkSize - uniquechunkSize) / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "SF generation time: " << SFTime.count() << "s" << endl;
-        out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
-        out << "-----------------OverHead--------------------------" << endl;
-        // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
-        out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
-        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
-        out << "SF number: " << SFnum << endl;
-        out << "-----------------Reduct----------------------------" << endl;
-        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
-        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
-        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
-        out << "dedup reduct size : " << DedupReduct << endl;
-        out << "delta reduct size : " << DeltaReduct << endl;
-        out << "local reduct size : " << LocalReduct << endl;
-        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
-        out << "-----------------Design 2 Motivation---------------" << endl;
-        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
-        out << "case 2 SameCount:" << sameCount << endl;
-        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
-        out << "case 4 DifferentCount: " << differentCount << endl;
-        out << "-----------------END-------------------------------" << endl;
-    }
     else
-    {
         out.open(fileName, ios::app);
-        out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << endl;
-        out << "logical chunk num: " << logicalchunkNum << endl;
-        out << "unique chunk num: " << uniquechunkNum << endl;
-        out << "base chunk num: " << basechunkNum << endl;
-        out << "delta chunk num: " << deltachunkNum << endl;
 
-        out << "-----------------CHUNK SIZE-----------------------" << endl;
-        out << "logical chunk size: " << logicalchunkSize << endl;
-        out << "unique chunk size: " << uniquechunkSize << endl;
-        out << "base chunk size: " << basechunkSize << endl;
-        out << "delta chunk size: " << deltachunkSize << endl;
-        out << "-----------------METRICS-------------------------" << endl;
-        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
-        out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
-        out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
-        out << "DCE: " << DCESum / (double)deltachunkNum << endl;
-        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
-        out << "-----------------Time------------------------------" << endl;
-        // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-        out << "total time: " << time << "s" << endl;
-        out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "Reduce data speed: " << (double)(logicalchunkSize - uniquechunkSize) / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "SF generation time: " << SFTime.count() << "s" << endl;
-        out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
-        out << "-----------------OverHead--------------------------" << endl;
-        // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
-        out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
-        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
-        out << "SF number: " << SFnum << endl;
-        out << "-----------------Reduct----------------------------" << endl;
-        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
-        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
-        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
-        out << "dedup reduct size : " << DedupReduct << endl;
-        out << "delta reduct size : " << DeltaReduct << endl;
-        out << "local reduct size : " << LocalReduct << endl;
-        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
-        out << "-----------------Design 2 Motivation---------------" << endl;
-        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
-        out << "case 2 SameCount:" << sameCount << endl;
-        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
-        out << "case 4 DifferentCount: " << differentCount << endl;
-        out << "-----------------END-------------------------------" << endl;
-    }
+    out << "-----------------INSTRUCTION----------------------" << endl;
+    out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << endl;
+    out << "-----------------CHUNK NUM-----------------------" << endl;
+    out << "logical chunk num: " << logicalchunkNum << endl;
+    out << "unique chunk num: " << uniquechunkNum << endl;
+    out << "base chunk num: " << basechunkNum << endl;
+    out << "delta chunk num: " << deltachunkNum << endl;
+    out << "-----------------CHUNK SIZE-----------------------" << endl;
+    out << "logical chunk size: " << logicalchunkSize << endl;
+    out << "unique chunk size: " << uniquechunkSize << endl;
+    out << "base chunk size: " << basechunkSize << endl;
+    out << "delta chunk size: " << deltachunkSize << endl;
+    out << "-----------------Delta METRICS-------------------------" << endl;
+    out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    out << "OCR(+Recipe): " << (double)logicalchunkSize / (double)(uniquechunkSize + logicalchunkNum * 32) << endl;
+    out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
+    out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
+    out << "DCE: " << DCESum / (double)deltachunkNum << endl;
+    out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
+    out << "-----------------Time------------------------------" << endl;
+    out << "total time: " << time << "s" << endl;
+    out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
+    out << "Reduce data speed: " << (double)(logicalchunkSize - uniquechunkSize) / time / 1024 / 1024 << "MiB/s" << endl;
+    out << "SF generation time: " << SFTime.count() << "s" << endl;
+    out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
+    out << "-----------------OverHead--------------------------" << endl;
+    // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
+    out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
+    out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+    out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
+    out << "Recipe Overhead: " << (double)logicalchunkNum * 32 / 1024 / 1024 << "MiB" << endl;
+    out << "SF number: " << SFnum << endl;
+    out << "-----------------Reduct----------------------------" << endl;
+    out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
+    out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
+    out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
+    out << "dedup reduct size : " << DedupReduct << endl;
+    out << "delta reduct size : " << DeltaReduct << endl;
+    out << "local reduct size : " << LocalReduct << endl;
+    out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
+    out << "-----------------END-------------------------------" << endl;
     out.close();
     return;
 }
@@ -519,7 +359,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
         out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
         out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
-        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
+        out << "Recipe Overhead: " << (double)logicalchunkNum * 32 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
         out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
@@ -531,11 +371,6 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
-        out << "-----------------Design 2 Motivation---------------" << endl;
-        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
-        out << "case 2 SameCount:" << sameCount << endl;
-        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
-        out << "case 4 DifferentCount: " << differentCount << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     else
@@ -578,7 +413,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
         out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
         out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
-        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
+        out << "Recipe Overhead: " << (double)logicalchunkNum * 32 / 1024 / 1024 << "MiB" << endl;
         out << "SF number: " << SFnum << endl;
         out << "-----------------Reduct----------------------------" << endl;
         out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
@@ -590,11 +425,6 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
-        out << "-----------------Design 2 Motivation---------------" << endl;
-        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
-        out << "case 2 SameCount:" << sameCount << endl;
-        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
-        out << "case 4 DifferentCount: " << differentCount << endl;
         out << "-----------------END-------------------------------" << endl;
     }
     out.close();
@@ -662,137 +492,12 @@ void AbsMethod::Version_log(double time)
     cout << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
     cout << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
     cout << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
-    cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
+    cout << "Recipe Overhead: " << (double)logicalchunkNum * 32 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------END-------------------------------" << endl;
 
     preLogicalchunkiSize = logicalchunkSize;
     preSFTime = SFTime;
-}
-
-void AbsMethod::PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double chunktime, double AcceptThreshold, bool IsFalseFilter)
-{
-    ofstream out;
-    string fileName = "./chunkInfoLog.txt";
-    if (!tool::FileExist(fileName))
-    {
-        out.open(fileName, ios::out);
-        out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << AcceptThreshold << " -b " << IsFalseFilter << endl;
-        out << "-----------------CHUNK NUM-----------------------" << endl;
-        out << "logical chunk num: " << logicalchunkNum << endl;
-        out << "unique chunk num: " << uniquechunkNum << endl;
-        out << "base chunk num: " << basechunkNum << endl;
-        out << "delta chunk num: " << deltachunkNum << endl;
-
-        out << "-----------------CHUNK SIZE-----------------------" << endl;
-        out << "logical chunk size: " << logicalchunkSize << endl;
-        out << "unique chunk size: " << uniquechunkSize << endl;
-        out << "base chunk size: " << basechunkSize << endl;
-        out << "delta chunk size: " << deltachunkSize << endl;
-        out << "-----------------METRICS-------------------------" << endl;
-        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
-        out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
-        out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
-        out << "DCE: " << DCESum / (double)deltachunkNum << endl;
-        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
-        out << "-----------------Time------------------------------" << endl;
-        out << "total time: " << time << "s" << endl;
-        out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "Reduce data speed: " << (double)(logicalchunkSize - uniquechunkSize) / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "SF generation time: " << SFTime.count() << "s" << endl;
-        out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
-        out << "Chunk Time: " << chunktime << "s" << endl;
-        out << "Dedup Time: " << DedupTime.count() << "s" << endl;
-        out << "Locality Match Time: " << LocalityMatchTime.count() << "s" << endl;
-        out << "Locality Delta Time: " << LocalityDeltaTime.count() << "s" << endl;
-        out << "Feature Match Time: " << FeatureMatchTime.count() << "s" << endl;
-        out << "Feature Delta Time: " << FeatureDeltaTime.count() << "s" << endl;
-        out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
-        out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
-        out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
-        out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
-        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
-        out << "SF number: " << SFnum << endl;
-        out << "-----------------Reduct----------------------------" << endl;
-        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
-        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
-        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
-        out << "dedup reduct size : " << DedupReduct << endl;
-        out << "delta reduct size : " << DeltaReduct << endl;
-        out << "local reduct size : " << LocalReduct << endl;
-        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
-        out << "Feature reduct size: " << FeatureReduct << endl;
-        out << "Locality reduct size: " << LocalityReduct << endl;
-        out << "-----------------Design 2 Motivation---------------" << endl;
-        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
-        out << "case 2 SameCount:" << sameCount << endl;
-        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
-        out << "case 4 DifferentCount: " << differentCount << endl;
-        out << "-----------------END-------------------------------" << endl;
-    }
-    else
-    {
-        out.open(fileName, ios::app);
-        out << "-----------------INSTRUCTION----------------------" << endl;
-        out << "./BiSearch -i " << inputDirpath << " -c " << chunkingMethod << " -m " << method << " -n " << fileNum << " -r " << ratio << " -a " << AcceptThreshold << " -b " << IsFalseFilter << endl;
-        out << "-----------------CHUNK NUM-----------------------" << endl;
-        out << "logical chunk num: " << logicalchunkNum << endl;
-        out << "unique chunk num: " << uniquechunkNum << endl;
-        out << "base chunk num: " << basechunkNum << endl;
-        out << "delta chunk num: " << deltachunkNum << endl;
-        out << "-----------------CHUNK SIZE-----------------------" << endl;
-        out << "logical chunk size: " << logicalchunkSize << endl;
-        out << "unique chunk size: " << uniquechunkSize << endl;
-        out << "base chunk size: " << basechunkSize << endl;
-        out << "delta chunk size: " << deltachunkSize << endl;
-        out << "-----------------METRICS-------------------------" << endl;
-        out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
-        out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
-        out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
-        out << "DCE: " << DCESum / (double)deltachunkNum << endl;
-        out << "DCE2: " << DCESum2 / (double)deltachunkNum << endl;
-        out << "-----------------Time------------------------------" << endl;
-        out << "total time: " << time << "s" << endl;
-        out << "Throughput: " << (double)logicalchunkSize / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "Reduce data speed: " << (double)(logicalchunkSize - uniquechunkSize) / time / 1024 / 1024 << "MiB/s" << endl;
-        out << "SF generation time: " << SFTime.count() << "s" << endl;
-        out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
-        out << "Chunk Time: " << chunktime << "s" << endl;
-        out << "Dedup Time: " << DedupTime.count() << "s" << endl;
-        out << "Locality Match Time: " << LocalityMatchTime.count() << "s" << endl;
-        out << "Locality Delta Time: " << LocalityDeltaTime.count() << "s" << endl;
-        out << "Feature Match Time: " << FeatureMatchTime.count() << "s" << endl;
-        out << "Feature Delta Time: " << FeatureDeltaTime.count() << "s" << endl;
-        out << "Lz4 Compression Time: " << lz4CompressionTime.count() << "s" << endl;
-        out << "Delta Compression Time: " << deltaCompressionTime.count() << "s" << endl;
-        out << "-----------------OverHead--------------------------" << endl;
-        out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
-        out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
-        out << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
-        out << "SF number: " << SFnum << endl;
-        out << "-----------------Reduct----------------------------" << endl;
-        out << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;
-        out << "Lossless ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct) << endl;
-        out << "Delta ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct - LocalReduct - DeltaReduct) << endl;
-        out << "dedup reduct size : " << DedupReduct << endl;
-        out << "delta reduct size : " << DeltaReduct << endl;
-        out << "local reduct size : " << LocalReduct << endl;
-        out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
-        out << "Feature reduct size: " << FeatureReduct << endl;
-        out << "Locality reduct size: " << LocalityReduct << endl;
-        out << "-----------------Design 2 Motivation---------------" << endl;
-        out << "case 1 OnlyFeature: " << OnlyFeature << endl;
-        out << "case 2 SameCount:" << sameCount << endl;
-        out << "case 3 OnlyMeta: " << OnlyMeta << endl;
-        out << "case 4 DifferentCount: " << differentCount << endl;
-        out << "-----------------END-------------------------------" << endl;
-    }
-    out.close();
-    return;
 }
 
 void AbsMethod::Version_log(double time, double chunktime)
@@ -831,7 +536,7 @@ void AbsMethod::Version_log(double time, double chunktime)
     cout << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
     cout << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
     cout << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
-    cout << "Recipe Overhead: " << (double)logicalchunkNum * 8 / 1024 / 1024 << "MiB" << endl;
+    cout << "Recipe Overhead: " << (double)logicalchunkNum * 32 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------REDUCT----------------------------" << endl;
     cout << "Dedup ratio : " << (double)logicalchunkSize / (double)(logicalchunkSize - DedupReduct) << endl;

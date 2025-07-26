@@ -18,18 +18,24 @@ run_method(){
 # ./BiSearch -i $path -c 1 -m 4 -n $num  >Palantir$name.txt
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
-
-# ./BiSearch -i $path -c 5 -m 2 -n $num  >FinesseMTar$name.txt
+./BiSearch -i $path -c 5 -m 0 -n $num  >LZ4MTar$name.txt
 sudo rm -r mTarFile
 sudo mkdir mTarFile
 sudo rm Containers/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
+sudo echo 3 > /proc/sys/vm/drop_caches
+
+
+./BiSearch -i $path -c 5 -m 2 -n $num  >FinesseMTar$name.txt
+sudo rm -r mTarFile
+sudo mkdir mTarFile
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
 
 ./BiSearch -i $path -c 5 -m 3 -n $num  >OdessMTar$name.txt
-# sudo rm -r mTarFile
-# sudo mkdir mTarFile
-# sudo rm Containers/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
+sudo rm -r mTarFile
+sudo mkdir mTarFile
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
 
 # ./BiSearch -i $path -c 5 -m 4 -n $num  >PalantirMTar$name.txt
 # sudo rm -r mTarFile
@@ -43,11 +49,13 @@ sudo rm Containers/*
 
 ./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
 # ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Ode$name.txt
-# sudo rm Containers/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
 }
 
-
+run_method /mnt/dataset2/react _react 100
+run_method /mnt/dataset2/netty  _netty 100
+run_method /mnt/dataset2/cpython _cpython 100
 run_method /mnt/dataset2/automake_tarballs _automake 100
 # run_method /mnt/dataset2/bash_tarballs _bash 44
 run_method /mnt/dataset2/coreutils_tarballs _coreutils 28
@@ -58,9 +66,7 @@ run_method /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
 # run_method /mnt/dataset2/chromium _chromium 107
 run_method /mnt/dataset2/linux _linux 270
 run_method /mnt/dataset2/WEB _WEB 102
-run_method /mnt/dataset2/react _react 100
-run_method /mnt/dataset2/netty  _netty 100
-run_method /mnt/dataset2/cpython _cpython 100
+
 
 # run_method /mnt/dataset2/Windows Windows 738
 # run_method /mnt/dataset2/Android _Android 36

@@ -195,9 +195,9 @@ int main(int argc, char **argv)
     auto endsum = std::chrono::high_resolution_clock::now();
     auto sumTime = (endsum - startsum);
     auto sumTimeInSeconds = std::chrono::duration_cast<std::chrono::seconds>(endsum - startsum).count();
-    std::cout << "Time taken by for loop: " << sumTimeInSeconds << " s " << std::endl;
     if (CmdLine.chunkingType == MTAR)
         sumTimeInSeconds += MTarTime;
+    std::cout << "Time taken by for loop: " << sumTimeInSeconds << " s " << std::endl;
     tool::Logging(myName.c_str(), "logical Chunk Num is %d\n", absMethodObj->logicalchunkNum);
     tool::Logging(myName.c_str(), "unique Chunk Num is %d\n", absMethodObj->uniquechunkNum);
     tool::Logging(myName.c_str(), "Total logical size is %lu\n", absMethodObj->logicalchunkSize);
@@ -207,12 +207,36 @@ int main(int argc, char **argv)
     //     absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, AcceptThreshold, IsFalseFilter);
     // else
     //     absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, chunkerObj->ChunkTime.count(), AcceptThreshold, IsFalseFilter);
-    if (CmdLine.compressionMethod != 5)
-        absMethodObj->PrintChunkInfo(sumTimeInSeconds, CmdLine);
-    else
-        absMethodObj->PrintChunkInfo(sumTimeInSeconds, CmdLine, chunkerObj->ChunkTime.count());
 
-    string fileName = "C" + to_string(CmdLine.chunkingType) + "_M" + to_string(CmdLine.compressionMethod);
+    absMethodObj->PrintChunkInfo(sumTimeInSeconds, CmdLine);
+
+    double RestoreTimeSum = 0;
+    for (auto i = 0; i < CmdLine.backupNum; i++)
+    {
+        auto startTmp = std::chrono::high_resolution_clock::now();
+        if (CmdLine.chunkingType == MTAR || CmdLine.chunkingType == MTAROdess || CmdLine.chunkingType == MTARPalantir)
+        {
+            absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+            auto Startmtar = std::chrono::high_resolution_clock::now();
+            absMethodObj->dataWrite_->MTar2Tar(readfileList[i]);
+            auto Endmtar = std::chrono::high_resolution_clock::now();
+            auto MTarTime = std::chrono::duration_cast<std::chrono::duration<double>>(Endmtar - Startmtar).count();
+            cout << "Version " << i << " MTar2Tar time: " << MTarTime << " s" << endl;
+        }
+        else if (CmdLine.chunkingType == TAR_MultiHeader)
+        {
+            absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
+        }
+        else
+            absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+        auto endTmp = std::chrono::high_resolution_clock::now();
+        auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
+        RestoreTimeSum += TimeTmp;
+        cout << "Version " << i << " restore time: " << TimeTmp << " s" << endl;
+    }
+    cout << "Time taken by restoreFile: " << RestoreTimeSum << " s " << std::endl;
+
+    // string fileName = "C" + to_string(CmdLine.chunkingType) + "_M" + to_string(CmdLine.compressionMethod);
     // absMethodObj->dataWrite_->Save_to_File_unique(fileName);
     delete absMethodObj->dataWrite_;
     delete chunkerObj;
