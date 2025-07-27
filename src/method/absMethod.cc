@@ -436,6 +436,7 @@ void AbsMethod::StatsDelta(Chunk_t &tmpChunk)
     deltachunkSize += tmpChunk.saveSize;
     deltachunkNum++;
     DeltaReduct += tmpChunk.chunkSize - tmpChunk.saveSize;
+    DCESum_INT += tmpChunk.chunkSize / tmpChunk.saveSize;
     DCESum += (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
     DCESum2 += 1 - (double)tmpChunk.saveSize / (double)tmpChunk.chunkSize;
 }

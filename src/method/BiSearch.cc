@@ -27,7 +27,7 @@ bool BiSearch::estimateGain(uint64_t chunkSize, uint64_t deltaSize)
     double avgLz4CompressionRatio = (double)lz4LogicalSize / (double)lz4UniqueSize;
     double CostSelf = chunkSize - (chunkSize / avgLz4CompressionRatio);
     double newDeltaNum = deltachunkNum / basechunkNum;
-    double deltaGain = DCESum / deltachunkNum;
+    double deltaGain = DCESum_INT / deltachunkNum;
 
     double futureDeltaCost = deltaGain * newDeltaNum;
     if (IsFalseFilter)
