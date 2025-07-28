@@ -637,8 +637,8 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
 
         chunklist[id].loadFromDisk = false;
         startTime = std::chrono::high_resolution_clock::now();
-        string tmpContainer;
-        tmpContainer.assign(CONTAINER_MAX_SIZE, 0);
+        // string tmpContainer;
+        // tmpContainer.assign(CONTAINER_MAX_SIZE, 0);
         uint8_t *tmpContainerData = containerCache->ReadFromCache(tmpContainerIDcontainerID);
         // memcpy((uint8_t *)tmpContainer.c_str(), tmpContainerData, CONTAINER_MAX_SIZE);
         // memcpy(chunklist[id].chunkPtr, tmpContainer.c_str() + chunklist[id].offset, tmpSize);
