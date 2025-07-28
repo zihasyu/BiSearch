@@ -61,7 +61,7 @@ public:
     void ProcessTrace();
     bool estimateGain(uint64_t chunkSize, uint64_t deltaSize);
     long deflateCompress(uint8_t *in, size_t in_size, uint8_t *out, size_t out_size);
-    void Version_log(double time);
+    // void Version_log(double time);
     void Version_log(double time, double chunktime);
     void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio);
     void PrintChunkInfo(string inputDirpath, int chunkingMethod, int method, int fileNum, int64_t time, double ratio, double chunktime);

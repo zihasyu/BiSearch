@@ -71,7 +71,7 @@ sudo echo 3 > /proc/sys/vm/drop_caches
 }
 
 run_method /mnt/dataset2/react _react 100
-run_method /mnt/dataset2/netty  _netty 100
+run_method /mnt/dataset2/netty  _netty 99
 run_method /mnt/dataset2/Cpython _Cpython 100
 run_method /mnt/dataset2/automake_tarballs _automake 100
 

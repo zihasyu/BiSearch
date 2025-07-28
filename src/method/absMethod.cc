@@ -498,7 +498,7 @@ void AbsMethod::Version_log(double time)
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 32 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
     cout << "-----------------END-------------------------------" << endl;
-
+    VersionLogicalSize.push_back(logicalchunkSize - preLogicalchunkiSize);
     preLogicalchunkiSize = logicalchunkSize;
     preSFTime = SFTime;
 }
@@ -557,7 +557,7 @@ void AbsMethod::Version_log(double time, double chunktime)
     cout << "case 3 OnlyMeta: " << OnlyMeta << endl;
     cout << "case 4 DifferentCount: " << differentCount << endl;
     cout << "-----------------END-------------------------------" << endl;
-
+    VersionLogicalSize.push_back(logicalchunkSize - preLogicalchunkiSize);
     preLogicalchunkiSize = logicalchunkSize;
     preuniquechunkSize = uniquechunkSize;
     preSFTime = SFTime;

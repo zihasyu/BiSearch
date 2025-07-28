@@ -178,7 +178,6 @@ int main(int argc, char **argv)
         auto endTmp = std::chrono::high_resolution_clock::now();
         auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
         if (CmdLine.compressionMethod != 5)
-
         {
             if (CmdLine.chunkingType == MTAR)
             {
@@ -211,30 +210,35 @@ int main(int argc, char **argv)
     absMethodObj->PrintChunkInfo(sumTimeInSeconds, CmdLine);
 
     double RestoreTimeSum = 0;
-    // for (auto i = 0; i < CmdLine.backupNum; i++)
-    // {
-    //     auto startTmp = std::chrono::high_resolution_clock::now();
-    //     if (CmdLine.chunkingType == MTAR || CmdLine.chunkingType == MTAROdess || CmdLine.chunkingType == MTARPalantir)
-    //     {
-    //         absMethodObj->dataWrite_->restoreFile(readfileList[i]);
-    //         auto Startmtar = std::chrono::high_resolution_clock::now();
-    //         absMethodObj->dataWrite_->MTar2Tar(readfileList[i]);
-    //         auto Endmtar = std::chrono::high_resolution_clock::now();
-    //         auto MTarTime = std::chrono::duration_cast<std::chrono::duration<double>>(Endmtar - Startmtar).count();
-    //         cout << "Version " << i << " MTar2Tar time: " << MTarTime << " s" << endl;
-    //     }
-    //     else if (CmdLine.chunkingType == TAR_MultiHeader)
-    //     {
-    //         absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
-    //     }
-    //     else
-    //         absMethodObj->dataWrite_->restoreFile(readfileList[i]);
-    //     auto endTmp = std::chrono::high_resolution_clock::now();
-    //     auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
-    //     RestoreTimeSum += TimeTmp;
-    //     cout << "Version " << i << " restore time: " << TimeTmp << " s" << endl;
-    // }
-    // cout << "Time taken by restoreFile: " << RestoreTimeSum << " s " << std::endl;
+
+
+    for (auto i = 0; i < CmdLine.backupNum; i++)
+    {
+        auto startTmp = std::chrono::high_resolution_clock::now();
+        if (CmdLine.chunkingType == MTAR || CmdLine.chunkingType == MTAROdess || CmdLine.chunkingType == MTARPalantir)
+        {
+            absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+            auto Startmtar = std::chrono::high_resolution_clock::now();
+            absMethodObj->dataWrite_->MTar2Tar(readfileList[i]);
+            auto Endmtar = std::chrono::high_resolution_clock::now();
+            auto MTarTime = std::chrono::duration_cast<std::chrono::duration<double>>(Endmtar - Startmtar).count();
+            cout << "Version " << i << " MTar2Tar time: " << MTarTime << " s" << endl;
+        }
+        else if (CmdLine.chunkingType == TAR_MultiHeader)
+        {
+            absMethodObj->dataWrite_->restoreHeaderFile(readfileList[i]);
+        }
+        else
+            absMethodObj->dataWrite_->restoreFile(readfileList[i]);
+        auto endTmp = std::chrono::high_resolution_clock::now();
+        auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
+        RestoreTimeSum += TimeTmp;
+        cout << "Version " << i <<endl;
+        cout << "Restore time: " << TimeTmp << " s" << endl;
+        cout << "Restore throughput: " << (double)absMethodObj->VersionLogicalSize[i]/ TimeTmp / 1024 / 1024 << " MiB/s" << endl;
+    }
+    cout << "Time taken by restoreFile: " << RestoreTimeSum << " s " << std::endl;
+    cout << "Restore throughput: " << (double)absMethodObj->logicalchunkSize / RestoreTimeSum / 1024 / 1024 << " MiB/s" << endl;
 
     // string fileName = "C" + to_string(CmdLine.chunkingType) + "_M" + to_string(CmdLine.compressionMethod);
     // absMethodObj->dataWrite_->Save_to_File_unique(fileName);

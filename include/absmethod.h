@@ -42,6 +42,7 @@ public:
     double LZ4RatioSum = 0;
     double DCESum2 = 0; // DCE ratio 1-
     uint64_t SFnum = 0;
+    vector<uint64_t> VersionLogicalSize; 
     // SF time statics
     std::chrono::time_point<std::chrono::high_resolution_clock> startSF, endSF;
     std::chrono::duration<double> preSFTime;
