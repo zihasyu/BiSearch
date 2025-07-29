@@ -297,9 +297,18 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     out << "SF generation throughput: " << (double)logicalchunkSize / SFTime.count() / 1024 / 1024 << "MiB/s" << endl;
     out << "-----------------OverHead--------------------------" << endl;
     // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
-    out << "Index Overhead: " << (double)(uniquechunkNum * 112 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
-    out << "FP Overhead: " << (double)(uniquechunkNum * 80 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+    if( CmdLine.compressionMethod==5){
+    out << "Index Overhead: " << (double)(uniquechunkNum * 120 + basechunkNum * 160) / 1024 / 1024 << "MiB" << endl;
+    out << "FP Overhead: " << (double)(uniquechunkNum * 88 + uniquechunkNum * 32  ) / 1024 / 1024 << "MiB" << endl;
     out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
+    out <<"Name Overhead: "<< (double)(basechunkNum * 40) / 1024 / 1024 << "MiB" << endl;
+    }
+    else
+    {
+    out << "Index Overhead: " << (double)(uniquechunkNum * 120 + basechunkNum * 120) / 1024 / 1024 << "MiB" << endl;
+    out << "FP Overhead: " << (double)(uniquechunkNum * 88 + uniquechunkNum * 32  ) / 1024 / 1024 << "MiB" << endl;
+    out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
+    }
     out << "Recipe Overhead: " << (double)logicalchunkNum * 32 / 1024 / 1024 << "MiB" << endl;
     out << "SF number: " << SFnum << endl;
     out << "-----------------Reduct----------------------------" << endl;
