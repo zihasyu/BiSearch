@@ -238,7 +238,7 @@ int main(int argc, char **argv)
         cout << "Restore throughput: " << (double)absMethodObj->VersionLogicalSize[i]/ TimeTmp / 1024 / 1024 << " MiB/s" << endl;
     }
     cout << "Time taken by restoreFile: " << RestoreTimeSum << " s " << std::endl;
-    cout << "Restore throughput: " << (double)absMethodObj->logicalchunkSize / RestoreTimeSum / 1024 / 1024 << " MiB/s" << endl;
+    cout << "Avg Restore throughput: " << (double)absMethodObj->logicalchunkSize / RestoreTimeSum / 1024 / 1024 << " MiB/s" << endl;
 
     // string fileName = "C" + to_string(CmdLine.chunkingType) + "_M" + to_string(CmdLine.compressionMethod);
     // absMethodObj->dataWrite_->Save_to_File_unique(fileName);
