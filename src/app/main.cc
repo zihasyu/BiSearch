@@ -189,6 +189,7 @@ int main(int argc, char **argv)
         }
         else
             absMethodObj->Version_log(TimeTmp, chunkerObj->ChunkTime.count());
+        absMethodObj->dataWrite_->ClearAllCache(); // clear all chunk in queue
     }
 
     auto endsum = std::chrono::high_resolution_clock::now();
