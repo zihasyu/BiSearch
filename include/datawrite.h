@@ -120,6 +120,7 @@ public:
     Chunk_t Get_Chunk_MetaInfo(int id);
     void PrintMetrics();
     static void chunkprint(const Chunk_t chunk);
+    void ClearAllCache();
     dataWrite();
     ~dataWrite();
 };

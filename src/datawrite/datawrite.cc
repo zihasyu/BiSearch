@@ -1304,3 +1304,11 @@ void dataWrite::Save_to_File_unique(string methodname)
     outfile.close();
     return;
 }
+
+void dataWrite::ClearAllCache()
+{
+    if (containerCache != nullptr)
+    {
+        containerCache->ClearAllCache(); // 假设你已经在ReadCache中实现了ClearAllCache方法
+    }
+}

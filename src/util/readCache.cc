@@ -55,3 +55,12 @@ uint8_t *ReadCache::ReadFromCache(string &name)
     uint32_t index = this->readCache_->get(name);
     return containerPool_[index];
 }
+
+void ReadCache::ClearAllCache()
+{
+    // 清除LRU缓存中的所有条目
+    readCache_->clear();
+    // 重置当前索引
+    currentIndex_ = 0;
+    // 注意：containerPool_中的内存空间会被重用，不需要额外清理
+}

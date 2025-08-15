@@ -71,6 +71,10 @@ public:
      * @return uint8_t* container data
      */
     uint8_t *ReadFromCache(string &name);
+    /**
+     * @brief clear all cache entries
+     */
+    void ClearAllCache();
 };
 
 #endif // !BASICDEDUP_READCACHE_H

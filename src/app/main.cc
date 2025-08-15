@@ -211,7 +211,6 @@ int main(int argc, char **argv)
 
     double RestoreTimeSum = 0;
 
-
     for (auto i = 0; i < CmdLine.backupNum; i++)
     {
         auto startTmp = std::chrono::high_resolution_clock::now();
@@ -233,9 +232,10 @@ int main(int argc, char **argv)
         auto endTmp = std::chrono::high_resolution_clock::now();
         auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
         RestoreTimeSum += TimeTmp;
-        cout << "Version " << i <<endl;
+        cout << "Version " << i << endl;
         cout << "Restore time: " << TimeTmp << " s" << endl;
-        cout << "Restore throughput: " << (double)absMethodObj->VersionLogicalSize[i]/ TimeTmp / 1024 / 1024 << " MiB/s" << endl;
+        cout << "Restore throughput: " << (double)absMethodObj->VersionLogicalSize[i] / TimeTmp / 1024 / 1024 << " MiB/s" << endl;
+        absMethodObj->dataWrite_->ClearAllCache(); // clear all chunk in queue
     }
     cout << "Time taken by restoreFile: " << RestoreTimeSum << " s " << std::endl;
     cout << "Avg Restore throughput: " << (double)absMethodObj->logicalchunkSize / RestoreTimeSum / 1024 / 1024 << " MiB/s" << endl;
