@@ -618,6 +618,20 @@ void dataWrite::MTar2Tar(string fileName)
     std::cout << "MTar to tar path: " << tarPath << std::endl;
 }
 
+// persistent version
+void dataWrite::MTarBIN2Tar(string fileName)
+{
+    // 3. restore 操作(如果需要的话)
+    string restoreCmd = "../mtarbin/mtar --restore -f " + fileName;
+    int result = system(restoreCmd.c_str());
+    if (result != 0)
+    {
+        cout << "Failed to restore file: " << fileName << endl;
+    }
+
+    std::cout << "MTar to tar form path: " << fileName << std::endl;
+}
+
 Chunk_t dataWrite::Get_Chunk_Info(int id)
 {
     // TODO: cache read container

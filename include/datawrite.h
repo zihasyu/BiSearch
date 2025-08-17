@@ -100,7 +100,7 @@ public:
     void restoreFile(string fileName);
     void restoreHeaderFile(string fileName);
     void MTar2Tar(string fileName);
-
+    void MTarBIN2Tar(string fileName);
     void Save_to_File(string methodname);
     void Save_to_File_unique(string methodname);
     void Save_to_File_Chunking(string methodname);

@@ -58,7 +58,7 @@ void Chunker::ChunkerInit()
         break;
     }
     case MTAR:
-
+    case MTARBIN:
     case FASTCDC: // FastCDC chunking
     {
         readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
@@ -687,6 +687,71 @@ void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
     chunkType = FASTCDC;
     localType = FILE_HEADER;
     Next_Chunk_Type = FILE_HEADER;
+    return;
+}
+
+void Chunker::MTarBIN(vector<string> &readfileList, uint32_t backupNum)
+{
+
+    for (int i = 0; i < backupNum; i++)
+    {
+        auto startTmp = std::chrono::high_resolution_clock::now();
+        string name;
+        string bin_path = "../mtarbin/mtar";
+        size_t pos = readfileList[i].find_last_of('/');
+        if (pos != std::string::npos)
+        {
+            name = readfileList[i].substr(pos + 1);
+        }
+        else
+        {
+            name = readfileList[i];
+        }
+        string copiedFile = "./mTarFile/" + name;
+        string filteredFile = "./mTarFile/" + name + ".f";
+        string finalPath = "./mTarFile/" + name + ".f.m";
+        // 使用系统调用 cp 复制文件
+        string cpCommand = "cp " + readfileList[i] + " " + copiedFile;
+
+        int result = system(cpCommand.c_str());
+        if (result != 0)
+        {
+            cout << "Failed to copy file: " << readfileList[i] << " to " << copiedFile << endl;
+            continue;
+        }
+
+        // 1. filterToFile 操作
+        string filterCmd = bin_path + " --filter -f " + copiedFile;
+        result = system(filterCmd.c_str());
+        if (result != 0)
+        {
+            cout << "Failed to filter file: " << copiedFile << endl;
+            continue;
+        }
+
+        // 2. migrate 操作
+        string migrateCmd = bin_path + " --migrate -f " + filteredFile;
+        result = system(migrateCmd.c_str());
+        if (result != 0)
+        {
+            cout << "Failed to migrate file: " << filteredFile << endl;
+            continue;
+        }
+
+        cout << "write path is " << finalPath << endl;
+
+        // mtar overwrite the readfileList
+        readfileList[i] = finalPath;
+        auto endTmp = std::chrono::high_resolution_clock::now();
+        auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
+        MTarTime.push_back(TimeTmp);
+        string rmCopiedCmd = "rm " + copiedFile;
+        string rmFilteredCmd = "rm " + filteredFile;
+        system(rmCopiedCmd.c_str());
+        system(rmFilteredCmd.c_str());
+    }
+    // reset
+    chunkType = FASTCDC;
     return;
 }
 
