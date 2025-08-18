@@ -457,13 +457,13 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                     chunk.name = hashNameToUint64(name);
                 else if (IsLongNameChunk1)
                 {
-                    chunk.name = hashNameToUint64(LongName) - 1;
+                    chunk.name = hashLongNameToUint64(LongName) - 1;
                     IsLongNameChunk1 = false;
                     IsLongNameChunk2 = true;
                 }
                 else
                 {
-                    chunk.name = hashNameToUint64(LongName);
+                    chunk.name = hashLongNameToUint64(LongName);
                     IsLongNameChunk2 = false;
                 } // 记录data边界
                 // boundaries_.push_back({current_offset_ + cpSum, cp, 'D'});
@@ -928,28 +928,13 @@ uint64_t Chunker::hashNameToUint64(const char *name)
     return hash;
 }
 
-// void Chunker::WriteBoundariesToFile()
-// {
-//     // 获取文件名
-//     std::string filename = input_file_path_.substr(input_file_path_.find_last_of("/\\") + 1);
-//     std::string output_path = filename + ".boundaries";
-
-//     std::ofstream out_file(output_path);
-//     if (!out_file)
-//     {
-//         tool::Logging(myName_.c_str(), "Failed to open output file: %s\n", output_path.c_str());
-//         return;
-//     }
-
-//     for (const auto &[offset, size, type] : boundaries_)
-//     {
-//         out_file << type << " " << offset << " " << size << "\n";
-//     }
-//     out_file.close();
-// }
-
-// void Chunker::SetHeaderChunkSize(uint64_t size)
-// {
-//     MultiHeaderSize = size;
-//     return;
-// }
+uint64_t Chunker::hashLongNameToUint64(const char *name)
+{
+    uint64_t hash = 0;
+    for (int i = 0; i < 8197 && name[i] != '\0'; ++i)
+    {
+        hash = hash * prime + name[i];
+    }
+    cout << "longname: " << name << "hash: " << hash << endl;
+    return hash;
+}
