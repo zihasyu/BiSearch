@@ -59,11 +59,12 @@ private:
     // MessageQueue<uint64_t> *MaskoutputMQ_;
 
     bool NameExist = 0;
-    bool IsLongNameChunk = 0;
+    bool IsLongNameChunk1 = 0;
+    bool IsLongNameChunk2 = 0;
     std::unordered_set<std::string> nameHashSet;
     char name[101];
     char path[101];
-    char LongName[513];
+    char LongName[8197];
     const uint64_t prime = 1099511628211;
 
     // 记录边界
@@ -123,7 +124,7 @@ public:
     long sameCount = 0;
     uint64_t recipeSegCount = 0;
     bool FindName(const char *src);
-    bool FindLongName(const char *src);
+    bool FindLongName(const char *src, uint64_t roundedUp);
     const char *FindNameBegin(const char *src);
     const char *FindLongNameBegin(const char *src);
     uint16_t hashNameToUint16(const char *name);

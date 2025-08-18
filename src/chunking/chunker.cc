@@ -16,7 +16,7 @@ Chunker::Chunker(int chunkType_)
     }
     // init chunker
     name[100] = '\0';
-    LongName[512] = '\0';
+    LongName[8196] = '\0';
     ChunkerInit();
     // in different chunking method, the chunkBuffer is different
 }
@@ -269,14 +269,6 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
                 NameExist = true;
                 Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
                 Big_Chunk_Offset = 0;
-                // Big_Chunk_Allowance = Next_Chunk_Size / CONTAINER_MAX_SIZE;
-                // Big_Chunk_Last_Size = Next_Chunk_Size % CONTAINER_MAX_SIZE;
-                // if (Big_Chunk_Last_Size == 0)
-                // {
-                //     Big_Chunk_Allowance--;
-                //     Big_Chunk_Last_Size = CONTAINER_MAX_SIZE;
-                // }
-                // cout << "REGTYPE BigChunkSize is " << Big_Chunk_Size << endl;
             }
         }
         if (*(src + 156) == AREGTYPE)
@@ -313,7 +305,7 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
         if (*(src + 156) == 'x' || *(src + 156) == GNUTYPE_LONGNAME)
         {
             Next_Chunk_Type = FILE_CHUNK;
-            IsLongNameChunk = true;
+            IsLongNameChunk1 = true;
             FindName((char *)src);
             ExtractPath((char *)src);
         }
@@ -331,19 +323,18 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             return 512;
         else
         {
-            // printf("emmmm");
             return len;
         }
         break;
     }
     case FILE_CHUNK:
     {
-        if (IsLongNameChunk)
-        {
-            FindLongName((char *)src);
-            IsLongNameChunk = false;
-        }
+
         uint64_t roundedUp = (Next_Chunk_Size + 511) / 512 * 512;
+        if (IsLongNameChunk1)
+        {
+            FindLongName((char *)src, Next_Chunk_Size);
+        }
         Next_Chunk_Type = FILE_HEADER;
         Next_Chunk_Size = 512;
         if (roundedUp < len)
@@ -462,9 +453,19 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
                 chunk.NameExist = NameExist;
-                chunk.name = hashNameToUint64(name);
-
-                // 记录data边界
+                if (!IsLongNameChunk1 && !IsLongNameChunk2)
+                    chunk.name = hashNameToUint64(name);
+                else if (IsLongNameChunk1)
+                {
+                    chunk.name = hashNameToUint64(LongName) - 1;
+                    IsLongNameChunk1 = false;
+                    IsLongNameChunk2 = true;
+                }
+                else
+                {
+                    chunk.name = hashNameToUint64(LongName);
+                    IsLongNameChunk2 = false;
+                } // 记录data边界
                 // boundaries_.push_back({current_offset_ + cpSum, cp, 'D'});
                 // input MQ
                 if (!outputMQ_->Push(chunk))
@@ -552,6 +553,11 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
             {
                 break; // 同时，这个backup结束了，可能要设计个flag
             }
+        }
+        if (IsLongNameChunk1 || IsLongNameChunk2)
+        {
+            IsLongNameChunk1 = false;
+            IsLongNameChunk2 = false;
         }
     }
 
@@ -755,7 +761,7 @@ void Chunker::MTarBIN(vector<string> &readfileList, uint32_t backupNum)
     return;
 }
 
-// 查找文件名是否已经存在于哈希表中
+// For next data blocks
 bool Chunker::FindName(const char *src)
 {
     // 提取文件名
@@ -775,6 +781,7 @@ bool Chunker::FindName(const char *src)
 
     return 1;
 }
+// For header block
 bool Chunker::ExtractPath(const char *full)
 {
     // 假定 full 为 "版本号/目录.../filename"
@@ -851,11 +858,9 @@ bool Chunker::ExtractPath(const char *full)
 
     return true;
 }
-bool Chunker::FindLongName(const char *src)
+bool Chunker::FindLongName(const char *src, uint64_t roundedUp)
 {
-    // 提取文件名
-    // 提取文件名
-    const char *end = src + 512;
+    const char *end = src + roundedUp;
     const char *relativePath = std::find(src, end, '/');
 
     // 如果找到了'/'，则剔除其之前的内容
@@ -867,23 +872,7 @@ bool Chunker::FindLongName(const char *src)
     {
         relativePath = src; // 如果没有找到'/'，则使用原始src
     }
-    std::copy(relativePath, src + 512, LongName);
-    // std::strncpy(LongName, src, 512);
-
-    // 查找文件名是否存在于哈希表中
-    // if (nameHashSet.find(std::string(LongName)) != nameHashSet.end())
-    // {
-    //     // cout << "do long exist name is " << name << endl;
-    //     NameExist = 1;
-    //     return 1; // 文件名已存在
-    // }
-    // else
-    // {
-    //     // cout << "no long exist name is " << name << endl;
-    //     NameExist = 0;
-    //     nameHashSet.insert(std::string(LongName));
-    //     return 0; // 文件名不存在
-    // }
+    std::copy(relativePath, src + roundedUp, LongName);
     return 1;
 }
 const char *Chunker::FindNameBegin(const char *src)
