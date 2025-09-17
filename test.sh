@@ -89,14 +89,14 @@ datasetsMo=(
 #   run_RAW $dataset
 # done
 
-run_RAW /mnt/dataset2/react _react 100
-run_RAW /mnt/dataset2/netty  _netty 99
-run_RAW /mnt/dataset2/Cpython _Cpython 100
-run_RAW /mnt/dataset2/automake_tarballs _automake 100
+# run_RAW /mnt/dataset2/react _react 100
+# run_RAW /mnt/dataset2/netty  _netty 99
+# run_RAW /mnt/dataset2/Cpython _Cpython 100
+# run_RAW /mnt/dataset2/automake_tarballs _automake 100
 
-run_RAW  /mnt/dataset2/coreutils_tarballs _coreutils 28
+# run_RAW  /mnt/dataset2/coreutils_tarballs _coreutils 28
 run_RAW /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
-run_RAW  /mnt/dataset2/linux _linux 270
+# run_RAW  /mnt/dataset2/linux _linux 270
 run_RAW  /mnt/dataset2/WEB _WEB 102
 
 

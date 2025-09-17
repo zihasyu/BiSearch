@@ -373,7 +373,8 @@ enum FILE_TYPE_OPTION
 {
     FILE_CHUNK = 0,
     FILE_HEADER,
-    BIG_CHUNK
+    BIG_CHUNK,
+    LONGNAME
 };
 
 struct DedupFile

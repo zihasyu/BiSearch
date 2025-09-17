@@ -313,7 +313,8 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
         }
         if (*(src + 156) == 'x' || *(src + 156) == GNUTYPE_LONGNAME)
         {
-            Next_Chunk_Type = FILE_CHUNK;
+            // Next_Chunk_Type = FILE_CHUNK;
+            Next_Chunk_Type = LONGNAME;
             IsLongNameChunk = true;
             FindName((char *)src);
         }
@@ -338,11 +339,18 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
     }
     case FILE_CHUNK:
     {
-        if (IsLongNameChunk)
-        {
-            FindLongName((char *)src);
-            IsLongNameChunk = false;
-        }
+
+        uint64_t roundedUp = (Next_Chunk_Size + 511) / 512 * 512;
+        Next_Chunk_Type = FILE_HEADER;
+        Next_Chunk_Size = 512;
+        if (roundedUp < len)
+            return roundedUp;
+        else
+            return len;
+        break;
+    }
+    case LONGNAME:
+    {
         uint64_t roundedUp = (Next_Chunk_Size + 511) / 512 * 512;
         Next_Chunk_Type = FILE_HEADER;
         Next_Chunk_Size = 512;
@@ -945,7 +953,7 @@ void Chunker::Motivation_FindCase(vector<string> &readfileList, uint32_t backupN
                 {
                     continue;
                 }
-                if (localType != FILE_HEADER)
+                if (localType != FILE_HEADER && localType != LONGNAME)
                 {
                     GenerateHash(mdCtx, readFileBuffer + localOffset, cp, hashBuf);
                     hashStr.assign((char *)hashBuf, CHUNK_HASH_SIZE);
@@ -1001,7 +1009,7 @@ void Chunker::Motivation_FindCase(vector<string> &readfileList, uint32_t backupN
                 {
                     continue;
                 }
-                if (localType == FILE_HEADER)
+                if (localType == FILE_HEADER || localType == LONGNAME)
                 {
                     outFile.write((char *)readFileBuffer + localOffset, cp);
                 }
