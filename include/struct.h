@@ -24,10 +24,11 @@ typedef struct
     uint8_t *chunkPtr;            // 8 bytes (assuming 64-bit pointer)
     uint64_t name = 0;            // 8 bytes
     int basechunkID;              // 4 bytes
-    uint8_t deltaFlag = NO_DELTA; // 1 byte
+    uint8_t deltaFlag = NO_DELTA; // 8 byte
     bool loadFromDisk = false;    // 1 byte
     bool HeaderFlag = false;      // 1 byte
     bool NameExist = true;        // 1 byte
+    bool CDCFlag = false;         // 1 byte
     // 1 byte padding to align the structure to 8 bytes boundary
 } Chunk_t;
 
@@ -67,15 +68,16 @@ typedef uint64_t Recipe_Header_t;
 
 typedef struct
 {
-    std::string dirName;
-    int chunkingType;
-    int compressionMethod;
-    int backupNum;
-    double ratio;
-    double AcceptThreshold;
-    bool IsFalseFilter;
-    bool TurnOnNameHash;
-    int MultiHeaderChunk = 16; // num
+    std::string dirName;        // std::string 默认构造为空字符串
+    int chunkingType = -1;      // -1 表示未设置
+    int compressionMethod = -1; // -1 表示未设置
+    int backupNum = -1;         // -1 表示未设置
+    double ratio = 0.1;
+    double AcceptThreshold = 0.0;
+    bool IsFalseFilter = true;
+    bool TurnOnNameHash = true;
+    int MultiHeaderChunk = 16;
+    int BigChunkSize = 4 * 1024 * 1024;
 } CommandLine_t;
 
 #endif

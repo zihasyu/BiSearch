@@ -42,7 +42,7 @@ public:
     double LZ4RatioSum = 0;
     double DCESum2 = 0; // DCE ratio 1-
     uint64_t SFnum = 0;
-    vector<uint64_t> VersionLogicalSize; 
+    vector<uint64_t> VersionLogicalSize;
     // SF time statics
     std::chrono::time_point<std::chrono::high_resolution_clock> startSF, endSF;
     std::chrono::duration<double> preSFTime;
@@ -103,7 +103,21 @@ public:
     // LocalReduct+=tmpChunk.chunkSize-tmpChunk.saveSize;
     uint64_t LocalityReduct = 0;
     uint64_t FeatureReduct = 0;
+    // breakdown for filechunk headerchunk & CDCchunks
+    uint64_t File_chunk_numbers = 0;
+    uint64_t File_chunk_oriSize = 0;
+    uint64_t File_chunk_saveSize = 0;
+    uint64_t File_chunk_reductSize = 0;
 
+    uint64_t Header_chunk_numbers = 0;
+    uint64_t Header_chunk_oriSize = 0;
+    uint64_t Header_chunk_saveSize = 0;
+    uint64_t Header_chunk_reductSize = 0;
+
+    uint64_t CDC_chunk_numbers = 0;
+    uint64_t CDC_chunk_oriSize = 0;
+    uint64_t CDC_chunk_saveSize = 0;
+    uint64_t CDC_chunk_reductSize = 0;
     // evaluation for false filter
     bool IsFalseFilter = true;
     double AcceptThreshold = 0;
@@ -138,6 +152,7 @@ public:
     void StatsDelta(Chunk_t &tmpChunk);
     void StatsDeltaFeature(Chunk_t &tmpChunk);
     void StatsDeltaLocality(Chunk_t &tmpChunk);
+    void StatsFileHeaderCDC(Chunk_t &tmpChunk);
     virtual void Version_log(double time);
     virtual void Version_log(double time, double chunktime);
     void SetTime(std::chrono::time_point<std::chrono::high_resolution_clock> &atime);

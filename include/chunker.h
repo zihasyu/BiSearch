@@ -19,7 +19,7 @@ enum ChunkTypeNum
     MTARPalantir,
     MTARBIN
 };
-const int BigChunkSize = CONTAINER_MAX_SIZE;
+
 class Chunker
 {
 private:
@@ -33,6 +33,7 @@ private:
     uint64_t minChunkSize = 4096;
     uint64_t avgChunkSize = 8192;
     uint64_t maxChunkSize = 16384;
+    int BigChunkSize = CONTAINER_MAX_SIZE;
     uint64_t normalSize;
     uint32_t bits;
     uint32_t maskS;
@@ -74,7 +75,6 @@ private:
 
 public:
     vector<double> MTarTime;
-    int a;
     Chunker(int chunkType_);
     ~Chunker();
     // util method
@@ -137,5 +137,9 @@ public:
     // 记录边界
     // void WriteBoundariesToFile();
     // void ClearBoundaries() { boundaries_.clear(); }
+    void SetBigChunkSize(int size)
+    {
+        BigChunkSize = size;
+    }
 };
 #endif

@@ -18,68 +18,62 @@ int main(int argc, char **argv)
 {
     signal(SIGINT, signalHandler);
     CommandLine_t CmdLine;
-    // uint32_t chunkingType;
-    // uint32_t compressionMethod;
-    // uint32_t backupNum;
-    // string dirName;
+
     string myName = "BiSearchSystem";
-    CmdLine.ratio = 10;
-    CmdLine.IsFalseFilter = true;
-    CmdLine.AcceptThreshold = 0;
-    CmdLine.TurnOnNameHash = true;
-    CmdLine.MultiHeaderChunk = 16;
 
     vector<string> readfileList;
 
-    const char optString[] = "i:m:c:n:r:a:b:t:H:";
-    if (argc != sizeof(optString) && argc != sizeof(optString) - 2 && argc != sizeof(optString) - 4 && argc != sizeof(optString) - 6 && argc != sizeof(optString) - 8 && argc != sizeof(optString) - 10 && argc != sizeof(optString) - 12)
-    {
-        cout << "argc is " << argc << endl;
-        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio> -a <False Filter Fixed parameters> -b <0 = fixed parameter> -t <0 = No meta-guided> -H <Multi Header num>" << endl;
-        return 0;
-    }
+    const char optString[] = "i:m:c:n:r:a:b:t:H:B:";
 
-    // Grab command-line instructions
     int option = 0;
     while ((option = getopt(argc, argv, optString)) != -1)
     {
         switch (option)
         {
-        case 'i':
+        case 'i': // input directory
             CmdLine.dirName.assign(optarg);
             break;
-        case 'c':
+        case 'c': // chunking type
             CmdLine.chunkingType = atoi(optarg);
             break;
-        case 'm':
+        case 'm': // compression method
             CmdLine.compressionMethod = atoi(optarg);
             break;
-        case 'n':
+        case 'n': // backups number
             CmdLine.backupNum = atoi(optarg);
             break;
-        case 'r':
+        case 'r': // for false filter β(set 0.1 as default)
             CmdLine.ratio = atoi(optarg);
             break;
-        case 'a':
+        case 'a': // Accept threshold for false filter, only b = 0 is useful
             CmdLine.AcceptThreshold = atoi(optarg);
             break;
-        case 'b':
+        case 'b': // 0 = fixed parameter, set 1 = meta-guided as default
             CmdLine.IsFalseFilter = atoi(optarg);
             break;
-        case 't':
+        case 't': // 0 = No meta-guided, set 1 = meta-guided as default
             CmdLine.TurnOnNameHash = atoi(optarg);
             break;
-        case 'H':
+        case 'H': // Multi Header num, set 16 as default
             CmdLine.MultiHeaderChunk = atoi(optarg);
+            break;
+        case 'B': // Big Chunk Size, only for BiSearch
+            CmdLine.BigChunkSize = atoi(optarg);
             break;
         default:
             break;
         }
     }
+    if (CmdLine.dirName.empty() || CmdLine.chunkingType == -1 || CmdLine.compressionMethod == -1 || CmdLine.backupNum == -1)
+    {
+        cout << "argc is " << argc << endl;
+        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio> -a <False Filter Fixed parameters> -b <0 = fixed parameter> -t <0 = No meta-guided> -H <Multi Header num> -B<Big Chunk Size>" << endl;
+        return 1;
+    }
 
     AbsMethod *absMethodObj;
     Chunker *chunkerObj = new Chunker(CmdLine.chunkingType);
-
+    chunkerObj->SetBigChunkSize(CmdLine.BigChunkSize);
     MessageQueue<Chunk_t> *chunkerMQ = new MessageQueue<Chunk_t>(CHUNK_QUEUE_SIZE);
 
     switch (CmdLine.compressionMethod)
@@ -193,8 +187,8 @@ int main(int argc, char **argv)
                 absMethodObj->Version_log(TimeTmp);
         }
         else
-            absMethodObj->Version_log(TimeTmp, chunkerObj->ChunkTime.count());
-        absMethodObj->dataWrite_->ClearAllCache(); // clear all chunk in queue
+            absMethodObj->Version_log(TimeTmp, chunkerObj->ChunkTime.count()); // for BiSearch
+        absMethodObj->dataWrite_->ClearAllCache();                             // clear all chunk in queue
     }
 
     auto endsum = std::chrono::high_resolution_clock::now();

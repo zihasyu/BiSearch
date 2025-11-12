@@ -468,7 +468,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 } // 记录data边界
                 // boundaries_.push_back({current_offset_ + cpSum, cp, 'D'});
                 // input MQ
-                if (!outputMQ_->Push(chunk))
+                if (!outputMQ_->Push(chunk)) // file-chunks
                 {
                     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
                     exit(EXIT_FAILURE);
@@ -507,7 +507,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
         // reset
         HeaderCp = 0;
         // input chunk MQ
-        if (!outputMQ_->Push(chunk))
+        if (!outputMQ_->Push(chunk)) // header-chunks
         {
             tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
             exit(EXIT_FAILURE);
@@ -541,8 +541,9 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 memcpy(chunk.chunkPtr, src + cpSum, cp);
                 chunk.chunkSize = cp;
                 chunk.NameExist = true;
+                chunk.CDCFlag = true;
                 // chunk.name = name;
-                if (!outputMQ_->Push(chunk))
+                if (!outputMQ_->Push(chunk)) // cdc-chunks
                 {
                     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
                     exit(EXIT_FAILURE);
