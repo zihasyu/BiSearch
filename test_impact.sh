@@ -1,7 +1,7 @@
 # --- 配置 ---
 # R 参数: 0, 0.1, 0.2, ..., 1.0
-R_VALUES=(0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0)
-
+# R_VALUES=(0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0)
+R_VALUES=(0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0)
 # B 参数: 8k, 16k, 32k, 64k, 128k, 256k, 512k, 1m, 2m, 4m
 B_VALUES=(8192 16384 32768 65536 131072 262144 524288 1048576 2097152 4194304)
 
@@ -33,8 +33,8 @@ run_all_datasets() {
         $BASE_CMD -i "$path" -n "$num" "$param_flag" "$param_val" > "$output_file"
 
         # 清理
-        sudo rm -r mtarRestore restoreFile >/dev/null 2>&1
-        sudo mkdir mtarRestore restoreFile
+        # sudo rm -r mtarRestore restoreFile >/dev/null 2>&1
+        # sudo mkdir mtarRestore restoreFile
         sudo rm Containers/* >/dev/null 2>&1
         sudo echo 3 > /proc/sys/vm/drop_caches
         sleep 1
@@ -48,17 +48,17 @@ if [ ! -f "./BiSearch" ] && [ -d "./bin" ] && [ -f "./bin/BiSearch" ]; then
     cd bin
 fi
 
-# 实验 2: 测试 -B 的影响
-echo "--- STARTING EXPERIMENT 2: Impact of -B ---"
-for val in "${B_VALUES[@]}"; do
-    # 动态生成文件名 (e.g., 512K, 1M)
-    if [ "$val" -ge 1048576 ]; then
-        name="$((val / 1024 / 1024))M"
-    else
-        name="$((val / 1024))K"
-    fi
-    run_all_datasets "-B" "$val" "B$name"
-done
+# # 实验 2: 测试 -B 的影响
+# echo "--- STARTING EXPERIMENT 2: Impact of -B ---"
+# for val in "${B_VALUES[@]}"; do
+#     # 动态生成文件名 (e.g., 512K, 1M)
+#     if [ "$val" -ge 1048576 ]; then
+#         name="$((val / 1024 / 1024))M"
+#     else
+#         name="$((val / 1024))K"
+#     fi
+#     run_all_datasets "-B" "$val" "B$name"
+# done
 
 
 # 实验 1: 测试 -r 的影响

@@ -271,7 +271,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out.open(fileName, ios::app);
 
     out << "-----------------INSTRUCTION----------------------" << endl;
-    out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << endl;
+    out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << " -B " << CmdLine.BigChunkSize << endl;
     out << "-----------------CHUNK NUM-----------------------" << endl;
     out << "logical chunk num: " << logicalchunkNum << endl;
     out << "unique chunk num: " << uniquechunkNum << endl;
@@ -320,6 +320,10 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     out << "delta reduct size : " << DeltaReduct << endl;
     out << "local reduct size : " << LocalReduct << endl;
     out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
+    out << "-----------------Breakdown Reduct--------------------" << endl;
+    out << "File chunk num: " << File_chunk_numbers << ", reduct: " << (double)File_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
+    out << "Header chunk num: " << Header_chunk_numbers << ", reduct: " << (double)Header_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
+    out << "CDC chunk num: " << CDC_chunk_numbers << ", reduct: " << (double)CDC_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
     out << "-----------------END-------------------------------" << endl;
     out.close();
     return;
