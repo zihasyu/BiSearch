@@ -576,6 +576,7 @@ void BiSearch::ProcessTrace()
                 // dataWrite_->Chunk_Insert(tmpChunk);
                 uniquechunkSize += tmpChunk.saveSize;
                 uniquechunkNum++;
+                StatsFileHeaderCDC(tmpChunk);//breakdown header chunk CDC stats
             }
             else
             {

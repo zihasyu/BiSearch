@@ -78,6 +78,7 @@ typedef struct
     bool TurnOnNameHash = true;
     int MultiHeaderChunk = 16;
     int BigChunkSize = 4 * 1024 * 1024;
+    bool enableRestore = false;
 } CommandLine_t;
 
 #endif

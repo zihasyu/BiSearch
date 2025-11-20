@@ -321,9 +321,9 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     out << "local reduct size : " << LocalReduct << endl;
     out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
     out << "-----------------Breakdown Reduct--------------------" << endl;
-    out << "File chunk num: " << File_chunk_numbers << ", reduct: " << (double)File_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
-    out << "Header chunk num: " << Header_chunk_numbers << ", reduct: " << (double)Header_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
-    out << "CDC chunk num: " << CDC_chunk_numbers << ", reduct: " << (double)CDC_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
+    out << "File chunk num: " << File_chunk_numbers << ", oriSize: " << (double)File_chunk_oriSize / 1024 / 1024 << "MiB, saveSize: " << (double)File_chunk_saveSize / 1024 / 1024 << "MiB, reduct: " << (double)File_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
+    out << "Header chunk num: " << Header_chunk_numbers << ", oriSize: " << (double)Header_chunk_oriSize / 1024 / 1024 << "MiB, saveSize: " << (double)Header_chunk_saveSize / 1024 / 1024 << "MiB, reduct: " << (double)Header_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
+    out << "CDC chunk num: " << CDC_chunk_numbers << ", oriSize: " << (double)CDC_chunk_oriSize / 1024 / 1024 << "MiB, saveSize: " << (double)CDC_chunk_saveSize / 1024 / 1024 << "MiB, reduct: " << (double)CDC_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
     out << "-----------------END-------------------------------" << endl;
     out.close();
     return;
@@ -464,7 +464,7 @@ void AbsMethod::StatsDeltaFeature(Chunk_t &tmpChunk)
     DCESum_INT += tmpChunk.chunkSize / tmpChunk.saveSize;
     DCESum += (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
     DCESum2 += 1 - (double)tmpChunk.saveSize / (double)tmpChunk.chunkSize;
-    StatsFileHeaderCDC(tmpChunk);
+    
 }
 
 void AbsMethod::StatsDeltaLocality(Chunk_t &tmpChunk)
@@ -478,7 +478,6 @@ void AbsMethod::StatsDeltaLocality(Chunk_t &tmpChunk)
     DCESum += (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
     DCESum2 += 1 - (double)tmpChunk.saveSize / (double)tmpChunk.chunkSize;
     LocalityDeltaTime += LocalityDeltaTmp;
-    StatsFileHeaderCDC(tmpChunk);
 }
 void AbsMethod::StatsFileHeaderCDC(Chunk_t &tmpChunk)
 {

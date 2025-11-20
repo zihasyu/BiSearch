@@ -936,6 +936,6 @@ uint64_t Chunker::hashLongNameToUint64(const char *name)
     {
         hash = hash * prime + name[i];
     }
-    cout << "longname: " << name << "hash: " << hash << endl;
+    // cout << "longname: " << name << "hash: " << hash << endl;
     return hash;
 }
