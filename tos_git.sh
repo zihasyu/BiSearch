@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # --- 配置 ---
-EXPERIMENT_BASE_DIR="git_final_experiment"
+# 将实验根目录设置为 ./TosGit
+EXPERIMENT_BASE_DIR="./TosGit"
 
 # --- 函数定义 ---
 
@@ -113,15 +114,23 @@ process_dataset() {
     # 记录总结结果
     echo "$name,$total_logical_size,$git_objects_size_bytes,$git_metadata_size_bytes,$total_physical_size_bytes,$ocr,$err" >> ../summary_results.csv
 
-    cd ../..
+    # 返回到脚本执行的初始目录
+    cd - > /dev/null
 }
 
 # --- 主程序 ---
-echo "正在设置实验环境..."
+# 获取脚本执行的绝对路径，以确保 cd - 能正常工作
+initial_dir=$(pwd)
+echo "正在设置实验环境于 $initial_dir/$EXPERIMENT_BASE_DIR..."
 rm -rf "$EXPERIMENT_BASE_DIR"
 mkdir -p "$EXPERIMENT_BASE_DIR"
-# 更新 CSV 头部以匹配您的要求
-echo "Dataset,TotalLogicalSize_Bytes,GitObjectsSize_Bytes,GitMetadataSize_Bytes,TotalPhysicalSize_Bytes,OCR,ERR" > "$EXPERIMENT_BASE_DIR/summary_results.csv"
+# 进入实验目录以处理相对路径
+cd "$EXPERIMENT_BASE_DIR" || exit
+# 将结果文件路径调整为相对路径
+echo "Dataset,TotalLogicalSize_Bytes,GitObjectsSize_Bytes,GitMetadataSize_Bytes,TotalPhysicalSize_Bytes,OCR,ERR" > "summary_results.csv"
+# 返回初始目录，准备开始处理数据集
+cd "$initial_dir" || exit
+
 
 # --- 运行实验 ---
 # 帮助函数，用于调用 process_dataset
