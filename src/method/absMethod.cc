@@ -285,6 +285,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     out << "-----------------Delta METRICS-------------------------" << endl;
     out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
     out << "OCR(+Recipe): " << (double)logicalchunkSize / (double)(uniquechunkSize + logicalchunkNum * 32) << endl;
+    out << "OCR(vsGit): " << (double)(logicalchunkSize - Header_chunk_oriSize) / (double)(uniquechunkSize - Header_chunk_saveSize) << endl;
     out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
     out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
     out << "DCE: " << DCESum / (double)deltachunkNum << endl;
@@ -464,7 +465,6 @@ void AbsMethod::StatsDeltaFeature(Chunk_t &tmpChunk)
     DCESum_INT += tmpChunk.chunkSize / tmpChunk.saveSize;
     DCESum += (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
     DCESum2 += 1 - (double)tmpChunk.saveSize / (double)tmpChunk.chunkSize;
-    
 }
 
 void AbsMethod::StatsDeltaLocality(Chunk_t &tmpChunk)
@@ -522,6 +522,8 @@ void AbsMethod::Version_log(double time)
     cout << "delta chunk size: " << deltachunkSize << endl;
     cout << "-----------------METRICS-------------------------" << endl;
     cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    cout << "OCR(+Recipe): " << (double)logicalchunkSize / (double)(uniquechunkSize + logicalchunkNum * 32) << endl;
+    cout << "OCR(vsGit): " << (double)(logicalchunkSize - Header_chunk_oriSize) / (double)(uniquechunkSize - Header_chunk_saveSize) << endl;
     cout << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
     cout << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
     cout << "DCE: " << DCESum / (double)deltachunkNum << endl;

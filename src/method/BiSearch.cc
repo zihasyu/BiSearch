@@ -576,7 +576,7 @@ void BiSearch::ProcessTrace()
                 // dataWrite_->Chunk_Insert(tmpChunk);
                 uniquechunkSize += tmpChunk.saveSize;
                 uniquechunkNum++;
-                StatsFileHeaderCDC(tmpChunk);//breakdown header chunk CDC stats
+                StatsFileHeaderCDC(tmpChunk); // breakdown header chunk CDC stats
             }
             else
             {
@@ -645,6 +645,8 @@ void BiSearch::Version_log(double time, double chunktime)
     cout << "Header chunk delta unique size: " << headerDeltaChunkUniqueSize << endl;
     cout << "-----------------METRICS-------------------------" << endl;
     cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    cout << "OCR(+Recipe): " << (double)logicalchunkSize / (double)(uniquechunkSize + logicalchunkNum * 32) << endl;
+    cout << "OCR(vsGit): " << (double)(logicalchunkSize - Header_chunk_oriSize) / (double)(uniquechunkSize - Header_chunk_saveSize) << endl;
     cout << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
     cout << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
     cout << "DCE: " << DCESum / (double)deltachunkNum << endl;
