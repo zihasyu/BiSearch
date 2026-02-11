@@ -72,6 +72,7 @@ private:
     uint32_t maskS;
     uint32_t maskL;
     uint8_t *lz4SafeChunkBuffer;
+    z_stream infstream;
 
 public:
     void SetFilename(string name);
@@ -121,6 +122,7 @@ public:
     void PrintMetrics();
     static void chunkprint(const Chunk_t chunk);
     void ClearAllCache();
+    int inflateDecompress(const char *source, char *dest, int compressedSize, int maxDecompressedSize);
     dataWrite();
     ~dataWrite();
 };

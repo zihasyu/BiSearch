@@ -127,6 +127,9 @@ public:
     long OnlyFeature = 0;
     long OnlyMeta = 0;
     long differentCount = 0;
+    // TOS_deflate
+    z_stream defstream;
+
     AbsMethod();
     ~AbsMethod();
     void SetFilename(string name);
@@ -156,5 +159,6 @@ public:
     virtual void Version_log(double time);
     virtual void Version_log(double time, double chunktime);
     void SetTime(std::chrono::time_point<std::chrono::high_resolution_clock> &atime);
+    int deflateCompress(const char *in, char *out, int in_size, int out_size, int level);
 };
 #endif

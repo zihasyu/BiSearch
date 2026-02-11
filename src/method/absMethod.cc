@@ -4,6 +4,9 @@ AbsMethod::AbsMethod()
 {
     mdCtx = EVP_MD_CTX_new();
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
+    defstream.zalloc = Z_NULL;
+    defstream.zfree = Z_NULL;
+    defstream.opaque = Z_NULL;
 }
 
 AbsMethod::~AbsMethod()
@@ -605,4 +608,17 @@ void AbsMethod::Version_log(double time, double chunktime)
     preLogicalchunkiSize = logicalchunkSize;
     preuniquechunkSize = uniquechunkSize;
     preSFTime = SFTime;
+}
+int AbsMethod::deflateCompress(const char *in, char *out, int in_size, int out_size, int level)
+{
+    defstream.avail_in = (uInt)in_size;   // size of input
+    defstream.next_in = (Bytef *)in;      // input char array
+    defstream.avail_out = (uInt)out_size; // size of output
+    defstream.next_out = (Bytef *)out;    // output char array
+
+    deflateInit(&defstream, Z_BEST_COMPRESSION);
+    deflate(&defstream, Z_FINISH);
+    deflateEnd(&defstream);
+
+    return defstream.total_out;
 }
