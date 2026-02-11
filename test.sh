@@ -62,12 +62,12 @@ run_method(){
 
 ./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
 # ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Ode$name.txt
-sudo rm -r mtarRestore
-sudo mkdir mtarRestore
-sudo rm -r restoreFile
-sudo mkdir restoreFile
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
+# sudo rm -r mtarRestore
+# sudo mkdir mtarRestore
+# sudo rm -r restoreFile
+# sudo mkdir restoreFile
+# sudo rm Containers/*
+# sudo echo 3 > /proc/sys/vm/drop_caches
 }
 
 run_method /mnt/dataset2/react _react 100
