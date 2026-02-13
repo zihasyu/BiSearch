@@ -77,6 +77,7 @@ process_dataset() {
         GIT_COMMITTER_NAME="x" GIT_COMMITTER_EMAIL="x@x" \
         git commit -m "v$version_num" --no-gpg-sign > /dev/null
 
+        git repack -d -l --depth=1
         local end_time
         end_time=$(date +%s.%N)
         
@@ -104,7 +105,8 @@ process_dataset() {
     local repack_start
     repack_start=$(date +%s.%N)
     
-    git repack -a -d -f -q --depth=1
+    # git repack -a -d -f -q --depth=1
+    # git repack -d -l --depth=1
     
     local repack_end
     repack_end=$(date +%s.%N)
@@ -157,6 +159,7 @@ run_git_experiment /mnt/dataset2/coreutils_tarballs _coreutils 28
 run_git_experiment /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
 run_git_experiment /mnt/dataset2/linux _linux 270
 run_git_experiment /mnt/dataset2/WEB _WEB 102
+run_git_experiment /mnt/dataset2/cross_gcc _cross_gcc 212
 
 cd ..
 
