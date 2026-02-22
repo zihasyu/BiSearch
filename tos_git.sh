@@ -22,7 +22,11 @@ process_dataset() {
     mkdir -p "$repo_path"
     cd "$repo_path" || { echo "错误: 无法进入目录 $repo_path"; exit 1; }
     git init
+    # 2. 设置 loose 对象压缩级别
+    git config core.looseCompression 6
 
+    # 3. 设置 pack 对象压缩级别
+    git config pack.compression 0
     # 2. Git 配置
     git config --local gc.auto 0
     git config --local gc.autoPackLimit 0
