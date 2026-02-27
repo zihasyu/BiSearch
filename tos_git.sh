@@ -22,11 +22,15 @@ process_dataset() {
     mkdir -p "$repo_path"
     cd "$repo_path" || { echo "错误: 无法进入目录 $repo_path"; exit 1; }
     git init
+    git config pack.depth 1
+    git config pack.windowMemory 8m
+    git config pack.window 2
+    git config --local pack.threads 1
     # 2. 设置 loose 对象压缩级别
-    git config core.looseCompression 6
+    # git config core.looseCompression 6
 
-    # 3. 设置 pack 对象压缩级别
-    git config pack.compression 0
+    # # 3. 设置 pack 对象压缩级别
+    # git config pack.compression 0
     # 2. Git 配置
     git config --local gc.auto 0
     git config --local gc.autoPackLimit 0
@@ -81,7 +85,7 @@ process_dataset() {
         GIT_COMMITTER_NAME="x" GIT_COMMITTER_EMAIL="x@x" \
         git commit -m "v$version_num" --no-gpg-sign > /dev/null
 
-        git repack -d -l --depth=1
+        git repack -d -l
         local end_time
         end_time=$(date +%s.%N)
         
@@ -154,15 +158,14 @@ run_git_experiment() {
     local num=$3
     process_dataset "$name" "$path" "$num"
 }
-
-run_git_experiment /mnt/dataset2/react _react 100
-run_git_experiment /mnt/dataset2/netty _netty 99
-run_git_experiment /mnt/dataset2/Cpython _Cpython 100
+run_git_experiment /mnt/dataset2/linux _linux 270
+run_git_experiment /mnt/dataset2/WEB _WEB 102
 run_git_experiment /mnt/dataset2/automake_tarballs _automake 100
 run_git_experiment /mnt/dataset2/coreutils_tarballs _coreutils 28
 run_git_experiment /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
-run_git_experiment /mnt/dataset2/linux _linux 270
-run_git_experiment /mnt/dataset2/WEB _WEB 102
+run_git_experiment /mnt/dataset2/react _react 100
+run_git_experiment /mnt/dataset2/netty _netty 99
+run_git_experiment /mnt/dataset2/Cpython _Cpython 100
 run_git_experiment /mnt/dataset2/cross_gcc _cross_gcc 212
 
 cd ..

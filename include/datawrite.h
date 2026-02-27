@@ -75,6 +75,7 @@ private:
     z_stream infstream;
 
 public:
+    bool LZ4Compress = true;
     void SetFilename(string name);
     vector<Chunk_t> chunklist;
     void writing();

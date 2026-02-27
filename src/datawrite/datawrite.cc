@@ -666,8 +666,10 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
         else
         {
             // base chunk & lz4 compress
-            // int decompressedSize = LZ4_decompress_safe((char *)(tmpContainerData + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
-            int decompressedSize = inflateDecompress((char *)(tmpContainerData + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+            if (LZ4Compress)
+                int decompressedSize = LZ4_decompress_safe((char *)(tmpContainerData + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+            else
+                int decompressedSize = inflateDecompress((char *)(tmpContainerData + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
             chunklist[id].chunkPtr = (uint8_t *)malloc(chunklist[id].chunkSize);
             memcpy(chunklist[id].chunkPtr, lz4SafeChunkBuffer, tmpSize);
             chunklist[id].loadFromDisk = true;
@@ -706,8 +708,10 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
             else
             {
                 // base chunk & lz4 compress
-                // int decompressedSize = LZ4_decompress_safe((char *)(container.c_str() + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
-                int decompressedSize = inflateDecompress((char *)(container.c_str() + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+                if (LZ4Compress)
+                    int decompressedSize = LZ4_decompress_safe((char *)(container.c_str() + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+                else
+                    int decompressedSize = inflateDecompress((char *)(container.c_str() + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
                 memcpy(chunklist[id].chunkPtr, lz4SafeChunkBuffer, tmpSize);
             }
 
@@ -739,8 +743,10 @@ Chunk_t dataWrite::Get_Chunk_Info(int id)
             else
             {
                 // base chunk & lz4 compress
-                // int decompressedSize = LZ4_decompress_safe((char *)(curContainer.data + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
-                int decompressedSize = inflateDecompress((char *)(curContainer.data + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+                if (LZ4Compress)
+                    int decompressedSize = LZ4_decompress_safe((char *)(curContainer.data + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
+                else
+                    int decompressedSize = inflateDecompress((char *)(curContainer.data + chunklist[id].offset), (char *)lz4SafeChunkBuffer, chunklist[id].saveSize, CONTAINER_MAX_SIZE);
                 chunklist[id].chunkPtr = (uint8_t *)malloc(chunklist[id].chunkSize);
                 memcpy(chunklist[id].chunkPtr, lz4SafeChunkBuffer, tmpSize);
                 chunklist[id].loadFromDisk = true;

@@ -79,6 +79,7 @@ typedef struct
     int MultiHeaderChunk = 16;
     int BigChunkSize = 4 * 1024 * 1024;
     bool enableRestore = false;
+    bool LZ4Compress = true; // false=false
 } CommandLine_t;
 
 #endif

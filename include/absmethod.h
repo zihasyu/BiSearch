@@ -129,7 +129,12 @@ public:
     long differentCount = 0;
     // TOS_deflate
     z_stream defstream;
-
+    bool LZ4Compress = true;
+    void setLZ4Compress(bool flag)
+    {
+        LZ4Compress = flag;
+        dataWrite_->LZ4Compress = flag;
+    }
     AbsMethod();
     ~AbsMethod();
     void SetFilename(string name);

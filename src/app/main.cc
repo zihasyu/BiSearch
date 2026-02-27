@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 
     vector<string> readfileList;
 
-    const char optString[] = "i:m:c:n:r:a:b:t:H:B:R:";
+    const char optString[] = "i:m:c:n:r:a:b:t:H:B:R:L:";
 
     int option = 0;
     while ((option = getopt(argc, argv, optString)) != -1)
@@ -63,6 +63,9 @@ int main(int argc, char **argv)
         case 'R': // Enable restore
             CmdLine.enableRestore = atoi(optarg) != 0;
             break;
+        case 'L': // local compression
+            CmdLine.LZ4Compress = atoi(optarg);
+            break;
         default:
             break;
         }
@@ -70,7 +73,7 @@ int main(int argc, char **argv)
     if (CmdLine.dirName.empty() || CmdLine.chunkingType == -1 || CmdLine.compressionMethod == -1 || CmdLine.backupNum == -1)
     {
         cout << "argc is " << argc << endl;
-        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio> -a <False Filter Fixed parameters> -b <0 = fixed parameter> -t <0 = No meta-guided> -H <Multi Header num> -B<Big Chunk Size> -R <enable restore>" << endl;
+        cout << "Usage: " << argv[0] << " -i <input file> -m <chunking method> -c <compression method> -n <process number> -r <Bisearch fault ratio> -a <False Filter Fixed parameters> -b <0 = fixed parameter> -t <0 = No meta-guided> -H <Multi Header num> -B<Big Chunk Size> -R <enable restore> -L <local compression>" << endl;
         return 1;
     }
 
@@ -128,6 +131,7 @@ int main(int argc, char **argv)
     attrs.set_stack_size(THREAD_STACK_SIZE);
     chunkerObj->SetOutputMQ(chunkerMQ);
     absMethodObj->SetInputMQ(chunkerMQ);
+    absMethodObj->setLZ4Compress(CmdLine.LZ4Compress);
     absMethodObj->dataWrite_ = new dataWrite();
     absMethodObj->AcceptThreshold = CmdLine.AcceptThreshold;
     absMethodObj->IsFalseFilter = CmdLine.IsFalseFilter;

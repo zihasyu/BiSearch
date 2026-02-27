@@ -5,9 +5,7 @@ EXPERIMENT_BASE_DIR="./TosGit"
 
 # --- 函数定义 ---
 
-# 参数1: 数据集名称
-# 参数2: 数据集源路径
-# 参数3: 版本数量
+
 process_dataset() {
     local name=$1
     local source_path=$2
@@ -23,6 +21,7 @@ process_dataset() {
     git config pack.depth 1
     git config pack.windowMemory 8m
     git config pack.window 2
+    git config --local pack.threads 1
 
     # 2. Git 配置 (使用默认GC配置，不禁用)
     # git config --local gc.auto 0  <-- 移除此行以启用自动GC
@@ -64,10 +63,15 @@ process_dataset() {
 
         # 添加并提交
         git add -A
+        GIT_AUTHOR_DATE="2000-01-01T00:00:00+00:00" \
+        GIT_COMMITTER_DATE="2000-01-01T00:00:00+00:00" \
+        GIT_AUTHOR_NAME="x" GIT_AUTHOR_EMAIL="x@x" \
+        GIT_COMMITTER_NAME="x" GIT_COMMITTER_EMAIL="x@x" \
         git commit -m "v$version_num" --no-gpg-sign > /dev/null
 
         # --- 不执行手动 repack ---
         # git repack ...
+        # git repack -d -l --depth=1
 
         local end_time
         end_time=$(date +%s.%N)
@@ -91,16 +95,20 @@ process_dataset() {
 
 
     # --- 6. 记录最终状态 ---
+    local final_objects_size
+    final_objects_size=$(du -sb .git/objects | awk '{print $1}')
     local final_physical_size
     final_physical_size=$(du -sb .git | awk '{print $1}')
     
+    local final_ocr=0
+    if (( final_objects_size > 0 )); then final_ocr=$(echo "scale=4; $total_logical_size / $final_objects_size" | bc); fi
     local final_err=0
     if (( final_physical_size > 0 )); then final_err=$(echo "scale=4; $total_logical_size / $final_physical_size" | bc); fi
 
     # 写入总结
-    echo "$name-auto-gc,$total_logical_size,$final_physical_size,$final_err,$total_commit_time" >> ../summary_results.csv
+    echo "$name-auto-gc,$total_logical_size,$final_objects_size,$final_physical_size,$final_ocr,$final_err,$total_commit_time" >> ../summary_results.csv
 
-    echo "  [结果] 总耗时: ${total_commit_time}s | 最终物理大小: $final_physical_size bytes | ERR: $final_err"
+    echo "  [结果] 总耗时: ${total_commit_time}s | 最终物理大小: $final_physical_size bytes | OCR: $final_ocr | ERR: $final_err"
     echo "--- 数据集 '$name' 处理完成 ---"
     cd ..
 }
@@ -108,9 +116,11 @@ process_dataset() {
 # --- 主程序 ---
 echo "正在设置实验环境于 $(pwd)/$EXPERIMENT_BASE_DIR..."
 
+rm -rf "$EXPERIMENT_BASE_DIR"
 mkdir -p "$EXPERIMENT_BASE_DIR"
 cd "$EXPERIMENT_BASE_DIR" || exit
-echo "Dataset,TotalLogicalSize_Bytes,TotalPhysicalSize_Bytes,ERR,TotalTime_Seconds" > "summary_results.csv"
+echo "Dataset,TotalLogicalSize_Bytes,GitObjectsSize_Bytes,TotalPhysicalSize_Bytes,OCR,ERR,TotalTime_Seconds" > "summary_results.csv"
+
 
 # --- 运行实验 ---
 run_git_experiment() {

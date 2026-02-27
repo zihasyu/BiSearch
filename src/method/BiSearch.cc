@@ -243,8 +243,10 @@ void BiSearch::ProcessTrace()
                             }
                             int tmpChunkLz4CompressSize = 0;
                             SetTime(startLz4);
-                            // tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
-                            tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 6);
+                            if (LZ4Compress)
+                                tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
+                            else
+                                tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 6);
                             SetTime(endLz4);
                             lz4CompressionTime += (endLz4 - startLz4);
                             // FeatureMatchTime += LocalityDeltaTmp;
@@ -330,8 +332,10 @@ void BiSearch::ProcessTrace()
                                     bugCount++;
                                     int tmpChunkLz4CompressSize = 0;
                                     SetTime(startLz4);
-                                    // tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
-                                    tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 6);
+                                    if (LZ4Compress)
+                                        tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
+                                    else
+                                        tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 6);
                                     SetTime(endLz4);
                                     lz4CompressionTime += (endLz4 - startLz4);
                                     if (tmpChunkLz4CompressSize > 0)
@@ -434,8 +438,10 @@ void BiSearch::ProcessTrace()
                     {
                         int tmpChunkLz4CompressSize = 0;
                         SetTime(startLz4);
-                        // tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
-                        tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 6);
+                        if (LZ4Compress)
+                            tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
+                        else
+                            tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 6);
                         SetTime(endLz4);
                         lz4CompressionTime += (endLz4 - startLz4);
                         if (tmpChunkLz4CompressSize > 0)
@@ -503,8 +509,10 @@ void BiSearch::ProcessTrace()
                                 // cout << "bug in odess try & not in locality windows &odess hits" << endl;
                                 bugCount++;
                                 int tmpChunkLz4CompressSize = 0;
-                                // tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
-                                tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 6);
+                                if (LZ4Compress)
+                                    tmpChunkLz4CompressSize = LZ4_compress_fast((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 3);
+                                else
+                                    tmpChunkLz4CompressSize = deflateCompress((char *)tmpChunk.chunkPtr, (char *)lz4ChunkBuffer, tmpChunk.chunkSize, tmpChunk.chunkSize, 6);
                                 if (tmpChunkLz4CompressSize > 0)
                                 {
                                     tmpChunk.deltaFlag = NO_DELTA;

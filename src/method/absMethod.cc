@@ -7,11 +7,13 @@ AbsMethod::AbsMethod()
     defstream.zalloc = Z_NULL;
     defstream.zfree = Z_NULL;
     defstream.opaque = Z_NULL;
+    lz4ChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
 }
 
 AbsMethod::~AbsMethod()
 {
     free(hashBuf);
+    free(lz4ChunkBuffer);
 }
 
 void AbsMethod::SetFilename(string name)
@@ -257,6 +259,14 @@ uint8_t *AbsMethod::xd3_encode(const uint8_t *targetChunkbuffer, size_t targetCh
         const char *errMsg = xd3_strerror(ret);
         cout << errMsg << endl;
     }
+    // size_t tmpChunkLz4CompressSize = deflateCompress((char *)tmpbuffer, (char *)lz4ChunkBuffer, deltachunkSize, deltachunkSize, 6);
+
+    // uint8_t *deltaChunkBuffer;
+    // deltaChunkBuffer = (uint8_t *)malloc(tmpChunkLz4CompressSize);
+    // *deltaChunkBuffer_size = tmpChunkLz4CompressSize;
+    // memcpy(deltaChunkBuffer, lz4ChunkBuffer, tmpChunkLz4CompressSize);
+    // return deltaChunkBuffer;
+
     uint8_t *deltaChunkBuffer;
     deltaChunkBuffer = (uint8_t *)malloc(deltachunkSize);
     *deltaChunkBuffer_size = deltachunkSize;
@@ -274,7 +284,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
         out.open(fileName, ios::app);
 
     out << "-----------------INSTRUCTION----------------------" << endl;
-    out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << " -B " << CmdLine.BigChunkSize << endl;
+    out << "./BiSearch -i " << CmdLine.dirName << " -c " << CmdLine.chunkingType << " -m " << CmdLine.compressionMethod << " -n " << CmdLine.backupNum << " -r " << CmdLine.ratio << " -a " << CmdLine.AcceptThreshold << " -b " << CmdLine.IsFalseFilter << " -t " << CmdLine.TurnOnNameHash << " -H " << CmdLine.MultiHeaderChunk << " -B " << CmdLine.BigChunkSize << " -R " << CmdLine.enableRestore << " -L " << CmdLine.LZ4Compress << endl;
     out << "-----------------CHUNK NUM-----------------------" << endl;
     out << "logical chunk num: " << logicalchunkNum << endl;
     out << "unique chunk num: " << uniquechunkNum << endl;
