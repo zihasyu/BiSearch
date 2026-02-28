@@ -53,8 +53,8 @@ process_dataset() {
 
     # 4. 查找并排序 tar 包
     local tar_files
-    mapfile -t tar_files < <(find "$source_path" -maxdepth 1 -type f \( -name "*.tar" -o -name "*.tar.gz" -o -name "*.tgz" -o -name "*.tar.bz2" \) | sort -V | head -n "$num_versions")
-
+    # mapfile -t tar_files < <(find "$source_path" -maxdepth 1 -type f \( -name "*.tar" -o -name "*.tar.gz" -o -name "*.tgz" -o -name "*.tar.bz2" \) | sort -V | head -n "$num_versions")
+    mapfile -t tar_files < <(find "$source_path" -type f \( -name "*.tar" -o -name "*.tar.gz" -o -name "*.tgz" -o -name "*.tar.bz2" \) | sort -V | head -n "$num_versions") 
     if [ ${#tar_files[@]} -eq 0 ]; then
         echo "警告: 在 $source_path 中没有找到 tar 包，跳过。"
         cd ..
@@ -140,8 +140,12 @@ process_dataset() {
 
     echo "  [结果] Repack 耗时: ${repack_time}s | 提交总耗时: ${total_commit_time}s | 总耗时: ${total_time}s"
     echo "  [结果] Repack 后物理大小: $final_total_physical_size bytes | OCR: $final_ocr | ERR: $final_err"
+
     
-        # --- 8. 逐个版本恢复测试 ---
+    # --- 8. 逐个版本恢复测试 ---
+    # 清理缓存，模拟独立的恢复操作
+    sync
+    sudo echo 3 > /proc/sys/vm/drop_caches
     echo "  [Restore Test] 开始逐个版本恢复测试..."
     local restore_log_file="../${name}_restore_log.csv"
     echo "Version,CommitHash,RestoredLogicalSize_Bytes,RestoreTime_Seconds,RestoreThroughput_MB/s" > "$restore_log_file"
@@ -158,7 +162,8 @@ process_dataset() {
         restore_start=$(date +%s.%N)
 
         # 清理工作区并检出指定版本
-        git checkout -f "$commit_hash" -- .
+        # git checkout -f "$commit_hash" -- .
+        git reset --hard "$commit_hash"
 
         local restore_end
         restore_end=$(date +%s.%N)
@@ -177,9 +182,7 @@ process_dataset() {
         echo "    [Restore $version_num/${#commit_hashes[@]}] 恢复耗时: ${restore_time}s, 吞吐量: ${restore_throughput} MB/s"
         echo "$version_num,$commit_hash,$restored_size,$restore_time,$restore_throughput" >> "$restore_log_file"
         
-        # 清理缓存，模拟独立的恢复操作
-        sync
-        sudo echo 3 > /proc/sys/vm/drop_caches
+
     done
     
     echo "--- 数据集 '$name' 处理完成 ---"
@@ -202,6 +205,7 @@ run_git_experiment() {
     local num=$3
     process_dataset "$name" "$path" "$num"
 }
+
 run_git_experiment /mnt/dataset2/cross_c++_tar _cross_c++_tar 317
 run_git_experiment /mnt/dataset2/linux _linux 270
 run_git_experiment /mnt/dataset2/WEB _WEB 102
