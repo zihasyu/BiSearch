@@ -152,7 +152,8 @@ process_dataset() {
 
     # 获取所有 commit 的 hash，按时间正序排列
     local commit_hashes
-    mapfile -t commit_hashes < <(git log --reverse --pretty=format:"%H")
+    # mapfile -t commit_hashes < <(git log --reverse --pretty=format:"%H")
+    mapfile -t commit_hashes < <(git log --reverse --pretty=format:"%H"; echo)
 
     for (( i=0; i<${#commit_hashes[@]}; i++ )); do
         local commit_hash="${commit_hashes[$i]}"
@@ -181,7 +182,7 @@ process_dataset() {
 
         echo "    [Restore $version_num/${#commit_hashes[@]}] 恢复耗时: ${restore_time}s, 吞吐量: ${restore_throughput} MB/s"
         echo "$version_num,$commit_hash,$restored_size,$restore_time,$restore_throughput" >> "$restore_log_file"
-        
+        sudo echo 3 > /proc/sys/vm/drop_caches
 
     done
     
@@ -205,7 +206,7 @@ run_git_experiment() {
     local num=$3
     process_dataset "$name" "$path" "$num"
 }
-
+# run_git_experiment /mnt/dataset2/cross_c++_tar _cross_c++_tar 5
 run_git_experiment /mnt/dataset2/cross_c++_tar _cross_c++_tar 317
 run_git_experiment /mnt/dataset2/linux _linux 270
 run_git_experiment /mnt/dataset2/WEB _WEB 102

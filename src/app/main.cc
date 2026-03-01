@@ -131,8 +131,8 @@ int main(int argc, char **argv)
     attrs.set_stack_size(THREAD_STACK_SIZE);
     chunkerObj->SetOutputMQ(chunkerMQ);
     absMethodObj->SetInputMQ(chunkerMQ);
-    absMethodObj->setLZ4Compress(CmdLine.LZ4Compress);
     absMethodObj->dataWrite_ = new dataWrite();
+    absMethodObj->setLZ4Compress(CmdLine.LZ4Compress);
     absMethodObj->AcceptThreshold = CmdLine.AcceptThreshold;
     absMethodObj->IsFalseFilter = CmdLine.IsFalseFilter;
     absMethodObj->TurnOnNameHash = CmdLine.TurnOnNameHash;

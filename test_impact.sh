@@ -6,14 +6,15 @@ R_VALUES=(0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0)
 B_VALUES=(8192 16384 32768 65536 131072 262144 524288 1048576 2097152 4194304)
 
 DATASETS=(
-    "/mnt/dataset2/react _react 100"
-    "/mnt/dataset2/netty _netty 99"
-    "/mnt/dataset2/Cpython _Cpython 100"
-    "/mnt/dataset2/automake_tarballs _automake 100"
-    "/mnt/dataset2/coreutils_tarballs _coreutils 28"
-    "/mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117"
-    "/mnt/dataset2/linux _linux 270"
-    "/mnt/dataset2/WEB _WEB 102"
+    # "/mnt/dataset2/react _react 100"
+    # "/mnt/dataset2/netty _netty 99"
+    # "/mnt/dataset2/Cpython _Cpython 100"
+    # "/mnt/dataset2/automake_tarballs _automake 100"
+    # "/mnt/dataset2/coreutils_tarballs _coreutils 28"
+    # "/mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117"
+    # "/mnt/dataset2/linux _linux 270"
+    # "/mnt/dataset2/WEB _WEB 102"
+    "/mnt/dataset2/cross_c++_tar _cross_gcc_tar 317"
 )
 BASE_CMD="./BiSearch -c 4 -m 5"
 
