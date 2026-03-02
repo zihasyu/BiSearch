@@ -313,6 +313,20 @@ void dataWrite::restoreHeaderFile(string fileName)
                 free(tmpChunkInfo.chunkPtr);
         }
 
+        // if (name == "glibc-2.7.tar")
+        // {
+        //     // 在调用 CutPointTarFast 之前打印关键变量的值
+        //     std::cout << "[DEBUG2] glibc-2.7.tar:" << std::endl;
+        //     std::cout << "  - MultiHeaderChunkSize: " << MultiHeaderChunkSize << std::endl;
+        //     std::cout << "  - MultiHeaderOffset: " << MultiHeaderOffset << std::endl;
+        //     std::cout << "  - Remaining buffer size (len): " << (MultiHeaderChunkSize - MultiHeaderOffset) << std::endl;
+        //     std::cout << "  - DataP: " << static_cast<const void *>(DataP) << std::endl;
+        //     std::cout << "  - DataEnd: " << static_cast<const void *>(DataEnd) << std::endl;
+        //     std::cout << "  - HeaderP: " << static_cast<const void *>(HeaderP) << std::endl;
+        //     std::cout << "  - HeaderEnd: " << static_cast<const void *>(HeaderEnd) << std::endl;
+        // }
+        if (MultiHeaderOffset >= MultiHeaderChunkSize)
+            break;
         Next_Chunk_Type = FILE_HEADER;
         uint64_t cp = CutPointTarFast(MultiHeaderBuffer + MultiHeaderOffset, MultiHeaderChunkSize - MultiHeaderOffset);
         // change Next_Chunk_Type and Next_Chunk_Size
