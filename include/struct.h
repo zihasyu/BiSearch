@@ -16,19 +16,28 @@
 
 typedef struct
 {
-    uint64_t chunkID;             // 8 bytes
-    uint64_t chunkSize;           // 8 bytes
-    uint64_t saveSize;            // 8 bytes
-    uint64_t offset;              // 8 bytes
-    uint64_t containerID;         // 8 bytes
-    uint8_t *chunkPtr;            // 8 bytes (assuming 64-bit pointer)
-    uint64_t name = 0;            // 8 bytes
+    uint64_t chunkID;     // 8 bytes
+    uint64_t chunkSize;   // 8 bytes
+    uint64_t saveSize;    // 8 bytes
+    uint64_t offset;      // 8 bytes
+    uint64_t containerID; // 8 bytes
+    uint8_t *chunkPtr;    // 8 bytes (assuming 64-bit pointer)
+    uint64_t name = 0;    // 8 bytes
+    uint64_t mtime = 0;
+    char typeflag = 0;
+    std::string uname;
+    std::string gname;
+    std::string linkname;
+    int mode = 0;
     int basechunkID;              // 4 bytes
     uint8_t deltaFlag = NO_DELTA; // 8 byte
     bool loadFromDisk = false;    // 1 byte
     bool HeaderFlag = false;      // 1 byte
     bool NameExist = true;        // 1 byte
     bool CDCFlag = false;         // 1 byte
+    // string MetadataJson;          // variable size
+    uint64_t parentDirName = 0;
+    uint64_t fileName = 0;
     // 1 byte padding to align the structure to 8 bytes boundary
 } Chunk_t;
 
@@ -79,6 +88,7 @@ typedef struct
     int MultiHeaderChunk = 16;
     int BigChunkSize = 4 * 1024 * 1024;
     bool enableRestore = false;
+    int SuperFeatureGroupSize = 4; // default: 12 features -> 3 groups -> 4 per group
 } CommandLine_t;
 
 #endif

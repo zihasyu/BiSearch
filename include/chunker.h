@@ -67,6 +67,14 @@ private:
     char path[101];
     char LongName[8197];
     const uint64_t prime = 1099511628211;
+    uint64_t currentParentDirHash = 0;
+    uint64_t currentFileNameHash = 0;
+    uint64_t currentMtime = 0;
+    char currentTypeflag = 0;
+    char currentUname[33];
+    char currentGname[33];
+    char currentLinkname[101];
+    int currentMode = 0;
 
     // 记录边界
     // std::vector<std::tuple<uint64_t, uint32_t, char>> boundaries_; // offset, size, type(H/D/B)
@@ -115,7 +123,7 @@ public:
     }
     int Next_Chunk_Type = FILE_HEADER;
     int localType = FILE_HEADER;
-    size_t localOffset = 0;
+    int64_t localOffset = 0;
     uint64_t Next_Chunk_Size = 0;
     uint64_t Big_Chunk_Allowance = 0; // CutPointTar
     uint64_t Big_Chunk_Last_Size = 0; // CutPointTar
@@ -131,6 +139,8 @@ public:
     uint64_t hashNameToUint64(const char *name);
     uint64_t hashLongNameToUint64(const char *name);
     bool ExtractPath(const char *full);
+    void ExtractParentAndFileHashes(const char *fullPath, uint64_t &parentHash, uint64_t &fileHash);
+    uint64_t ParseOctal(const uint8_t *field, size_t len);
     int MULTI_HEADER_CHUNK = 16;
     // void SetHeaderChunkSize(uint64_t size);
 

@@ -299,10 +299,17 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     // out << "deltaCompressionTime: " << deltaCompressionTime.count() << "s" << endl;
     if (CmdLine.compressionMethod == 5)
     {
-        out << "Index Overhead: " << (double)(uniquechunkNum * 120 + basechunkNum * 160) / 1024 / 1024 << "MiB" << endl;
-        out << "FP Overhead: " << (double)(uniquechunkNum * 88 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+        // out << "Index Overhead: " << (double)(uniquechunkNum * 120 + basechunkNum * 160) / 1024 / 1024 << "MiB" << endl;
+        // out << "Index Overhead: " << (double)(uniquechunkNum * 120 + basechunkNum * 160) / 1024 / 1024 << "MiB" << endl;
+        // out << "FP Overhead: " << (double)(uniquechunkNum * 88 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
+        // out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
+        // out << "Name Overhead: " << (double)(basechunkNum * 40) / 1024 / 1024 << "MiB" << endl;
+        out << "Index Overhead: " << (double)(uniquechunkNum * 210 + basechunkNum * 160 + parentDirIndexSize + fileNameIndexSize) / 1024 / 1024 << "MiB" << endl;
+        out << "FP Overhead: " << (double)(uniquechunkNum * 178 + uniquechunkNum * 32) / 1024 / 1024 << "MiB" << endl;
         out << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
         out << "Name Overhead: " << (double)(basechunkNum * 40) / 1024 / 1024 << "MiB" << endl;
+        out << "Dir OverheadL: " << parentDirIndexSize / 1024 / 1024 << "MiB" << endl;
+        out << "FileName Overhead: " << fileNameIndexSize / 1024 / 1024 << "MiB" << endl;
     }
     else
     {
@@ -464,7 +471,6 @@ void AbsMethod::StatsDeltaFeature(Chunk_t &tmpChunk)
     DCESum_INT += tmpChunk.chunkSize / tmpChunk.saveSize;
     DCESum += (double)tmpChunk.chunkSize / (double)tmpChunk.saveSize;
     DCESum2 += 1 - (double)tmpChunk.saveSize / (double)tmpChunk.chunkSize;
-    
 }
 
 void AbsMethod::StatsDeltaLocality(Chunk_t &tmpChunk)

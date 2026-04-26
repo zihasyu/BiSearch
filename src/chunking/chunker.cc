@@ -117,7 +117,7 @@ void Chunker::Chunking()
         memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
         inputFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
         end = inputFile.eof();
-        size_t len = inputFile.gcount();
+        int64_t len = inputFile.gcount();
         if (len == 0)
         {
             break;
@@ -128,16 +128,22 @@ void Chunker::Chunking()
             // cout << " len is " << len << " localOffset is " << localOffset << endl;
             Chunk_t chunk;
             // compute cutPoint
+            chunk.parentDirName = currentParentDirHash;
+            chunk.fileName = currentFileNameHash;
             uint64_t cp = 0;
             switch (chunkType)
             {
             case FIXED_SIZE:
-            {
-                cp = avgChunkSize; // 8KB
-                break;
-            }
+                chunk.parentDirName = (currentParentDirHash > 0) ? currentParentDirHash - 1 : 0;
+                chunk.fileName = (currentFileNameHash > 0) ? currentFileNameHash - 1 : 0;
+                {
+                    cp = avgChunkSize; // 8KB
+                    break;
+                }
             case FASTCDC:
             {
+                chunk.parentDirName = currentParentDirHash;
+                chunk.fileName = currentFileNameHash;
                 cp = CutPointFastCDC(readFileBuffer + localOffset, len - localOffset);
                 break;
             }
@@ -167,6 +173,8 @@ void Chunker::Chunking()
             chunk.chunkPtr = (uint8_t *)malloc(cp);
             memcpy(chunk.chunkPtr, readFileBuffer + localOffset, cp);
             chunk.chunkSize = cp;
+            chunk.parentDirName = 0;
+            chunk.fileName = 0;
             // chunk.chunkID = chunkID++;太早了
             if (cp == 0)
             {
@@ -262,6 +270,16 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
                 Next_Chunk_Type = FILE_CHUNK;
                 FindName((char *)src);
                 ExtractPath((char *)src);
+                ExtractParentAndFileHashes(name, currentParentDirHash, currentFileNameHash);
+                currentMtime = ParseOctal(src + 136, 12);
+                currentTypeflag = *(src + 156);
+                currentMode = static_cast<int>(ParseOctal(src + 100, 8));
+                std::memcpy(currentUname, src + 265, 32);
+                currentUname[32] = '\0';
+                std::memcpy(currentGname, src + 297, 32);
+                currentGname[32] = '\0';
+                std::memcpy(currentLinkname, src + 157, 100);
+                currentLinkname[100] = '\0';
             }
             else
             {
@@ -269,6 +287,18 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
                 NameExist = true;
                 Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
                 Big_Chunk_Offset = 0;
+                FindName((char *)src);
+                ExtractPath((char *)src);
+                ExtractParentAndFileHashes(name, currentParentDirHash, currentFileNameHash);
+                currentMtime = ParseOctal(src + 136, 12);
+                currentTypeflag = *(src + 156);
+                currentMode = static_cast<int>(ParseOctal(src + 100, 8));
+                std::memcpy(currentUname, src + 265, 32);
+                currentUname[32] = '\0';
+                std::memcpy(currentGname, src + 297, 32);
+                currentGname[32] = '\0';
+                std::memcpy(currentLinkname, src + 157, 100);
+                currentLinkname[100] = '\0';
             }
         }
         if (*(src + 156) == AREGTYPE)
@@ -286,6 +316,16 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
                 Next_Chunk_Type = FILE_CHUNK;
                 FindName((char *)src);
                 ExtractPath((char *)src);
+                ExtractParentAndFileHashes(name, currentParentDirHash, currentFileNameHash);
+                currentMtime = ParseOctal(src + 136, 12);
+                currentTypeflag = *(src + 156);
+                currentMode = static_cast<int>(ParseOctal(src + 100, 8));
+                std::memcpy(currentUname, src + 265, 32);
+                currentUname[32] = '\0';
+                std::memcpy(currentGname, src + 297, 32);
+                currentGname[32] = '\0';
+                std::memcpy(currentLinkname, src + 157, 100);
+                currentLinkname[100] = '\0';
             }
             else
             {
@@ -299,6 +339,18 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
                 }
                 Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
                 Big_Chunk_Offset = 0;
+                FindName((char *)src);
+                ExtractPath((char *)src);
+                ExtractParentAndFileHashes(name, currentParentDirHash, currentFileNameHash);
+                currentMtime = ParseOctal(src + 136, 12);
+                currentTypeflag = *(src + 156);
+                currentMode = static_cast<int>(ParseOctal(src + 100, 8));
+                std::memcpy(currentUname, src + 265, 32);
+                currentUname[32] = '\0';
+                std::memcpy(currentGname, src + 297, 32);
+                currentGname[32] = '\0';
+                std::memcpy(currentLinkname, src + 157, 100);
+                currentLinkname[100] = '\0';
                 // cout << "AREGTYPE BigChunkSize is " << Big_Chunk_Size << endl;
             }
         }
@@ -308,6 +360,16 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
             IsLongNameChunk1 = true;
             FindName((char *)src);
             ExtractPath((char *)src);
+            ExtractParentAndFileHashes(name, currentParentDirHash, currentFileNameHash);
+            currentMtime = ParseOctal(src + 136, 12);
+            currentTypeflag = *(src + 156);
+            currentMode = static_cast<int>(ParseOctal(src + 100, 8));
+            std::memcpy(currentUname, src + 265, 32);
+            currentUname[32] = '\0';
+            std::memcpy(currentGname, src + 297, 32);
+            currentGname[32] = '\0';
+            std::memcpy(currentLinkname, src + 157, 100);
+            currentLinkname[100] = '\0';
         }
         /*use to debug*/
         // cout<<"Next_Chunk_Flag: " <<int(*(src + 156));
@@ -334,6 +396,7 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
         if (IsLongNameChunk1)
         {
             FindLongName((char *)src, Next_Chunk_Size);
+            ExtractParentAndFileHashes(LongName, currentParentDirHash, currentFileNameHash);
         }
         Next_Chunk_Type = FILE_HEADER;
         Next_Chunk_Size = 512;
@@ -454,18 +517,52 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 chunk.chunkSize = cp;
                 chunk.NameExist = NameExist;
                 if (!IsLongNameChunk1 && !IsLongNameChunk2)
+                {
                     chunk.name = hashNameToUint64(name);
+                    chunk.parentDirName = currentParentDirHash;
+                    chunk.fileName = currentFileNameHash;
+                    chunk.mtime = currentMtime;
+                    chunk.typeflag = currentTypeflag;
+                    chunk.mode = currentMode;
+                    chunk.uname = currentUname;
+                    chunk.gname = currentGname;
+                    chunk.linkname = currentLinkname;
+                }
                 else if (IsLongNameChunk1)
                 {
                     chunk.name = hashLongNameToUint64(LongName) - 1;
+                    chunk.parentDirName = (currentParentDirHash > 0) ? currentParentDirHash - 1 : 0;
+                    chunk.fileName = (currentFileNameHash > 0) ? currentFileNameHash - 1 : 0;
+                    chunk.mtime = currentMtime;
+                    chunk.typeflag = currentTypeflag;
+                    chunk.mode = currentMode;
+                    chunk.uname = currentUname;
+                    chunk.gname = currentGname;
+                    chunk.linkname = currentLinkname;
                     IsLongNameChunk1 = false;
                     IsLongNameChunk2 = true;
                 }
                 else
                 {
                     chunk.name = hashLongNameToUint64(LongName);
+                    chunk.parentDirName = currentParentDirHash;
+                    chunk.fileName = currentFileNameHash;
+                    chunk.mtime = currentMtime;
+                    chunk.typeflag = currentTypeflag;
+                    chunk.mode = currentMode;
+                    chunk.uname = currentUname;
+                    chunk.gname = currentGname;
+                    chunk.linkname = currentLinkname;
                     IsLongNameChunk2 = false;
                 } // 记录data边界
+                // std::cout << "file chunk meta | parentHash: " << chunk.parentDirName
+                //           << " fileHash: " << chunk.fileName
+                //           << " mtime: " << chunk.mtime
+                //           << " typeflag: " << chunk.typeflag
+                //           << " mode: " << chunk.mode
+                //           << " uname: " << chunk.uname
+                //           << " gname: " << chunk.gname
+                //           << " linkname: " << chunk.linkname << std::endl;
                 // boundaries_.push_back({current_offset_ + cpSum, cp, 'D'});
                 // input MQ
                 if (!outputMQ_->Push(chunk)) // file-chunks
@@ -503,6 +600,8 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
         chunk.HeaderFlag = true;
         chunk.NameExist = true;
         chunk.name = hashNameToUint64(path);
+        chunk.parentDirName = currentParentDirHash;
+        chunk.fileName = currentFileNameHash;
         // cout << "path is " << path << " namehash is " << chunk.name << endl;
         // reset
         HeaderCp = 0;
@@ -542,6 +641,8 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 chunk.chunkSize = cp;
                 chunk.NameExist = true;
                 chunk.CDCFlag = true;
+                chunk.parentDirName = currentParentDirHash;
+                chunk.fileName = currentFileNameHash;
                 // chunk.name = name;
                 if (!outputMQ_->Push(chunk)) // cdc-chunks
                 {
@@ -938,4 +1039,51 @@ uint64_t Chunker::hashLongNameToUint64(const char *name)
     }
     // cout << "longname: " << name << "hash: " << hash << endl;
     return hash;
+}
+
+uint64_t Chunker::ParseOctal(const uint8_t *field, size_t len)
+{
+    uint64_t value = 0;
+    for (size_t i = 0; i < len; ++i)
+    {
+        uint8_t c = field[i];
+        if (c == ' ' || c == '\0')
+        {
+            break;
+        }
+        if (c >= '0' && c <= '7')
+        {
+            value = (value << 3) + (c - '0');
+        }
+    }
+    return value;
+}
+
+void Chunker::ExtractParentAndFileHashes(const char *fullPath, uint64_t &parentHash, uint64_t &fileHash)
+{
+    const char *lastSlash = std::strrchr(fullPath, '/');
+    const char *fileBegin = lastSlash ? lastSlash + 1 : fullPath;
+
+    fileHash = hashNameToUint64(fileBegin);
+
+    if (lastSlash)
+    {
+        const char *parentBegin = fullPath;
+        size_t parentLen = static_cast<size_t>((lastSlash - fullPath) + 1); // include trailing '/'
+        if (parentLen > 100)
+        {
+            parentLen = 100;
+        }
+        char parentBuf[101];
+        std::memcpy(parentBuf, parentBegin, parentLen);
+        parentBuf[parentLen] = '\0';
+        parentHash = hashNameToUint64(parentBuf);
+    }
+    else
+    {
+        parentHash = 0;
+    }
+
+    // std::cout << "parentPath: " << (lastSlash ? std::string(fullPath, (lastSlash - fullPath) + 1) : "")
+    //           << " fileName: " << fileBegin << std::endl;
 }

@@ -1,0 +1,4315 @@
+2026-01-13 17:03:17 <Chunker>: chunking done.
+total_size is 8
+Version: 1
+-----------------CHUNK NUM-----------------------
+logical chunk num: 99
+unique chunk num: 99
+base chunk num: 88
+delta chunk num: 11
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1280000
+uniquechunkSize is 868723
+base chunk size: 867016
+delta chunk size: 1707
+-----------------METRICS-------------------------
+Overall Compression Ratio: 1.47343
+DCC: 0.111111
+DCR: 15.8969
+DCE: 20.2463
+-----------------Time------------------------------
+Version time: 0.091524s
+Throughput: 13.3375MiB/s
+Reduce data speed: 4.28548MiB/s
+SF generation time: 0.000745527s
+SF generation throughput: 1637.37MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.0206451MiB
+FP Overhead: 0.0105743MiB
+SF Overhead: 0.0100708MiB
+Recipe Overhead: 0.00302124MiB
+SF number: 264
+-----------------END-------------------------------
+2026-01-13 17:03:17 <Chunker>: chunking done.
+total_size is 8
+Version: 2
+-----------------CHUNK NUM-----------------------
+logical chunk num: 231
+unique chunk num: 156
+base chunk num: 119
+delta chunk num: 37
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 3266560
+uniquechunkSize is 1270679
+base chunk size: 1265998
+delta chunk size: 4681
+-----------------METRICS-------------------------
+Overall Compression Ratio: 2.57072
+DCC: 0.237179
+DCR: 22.7507
+DCE: 30.9426
+-----------------Time------------------------------
+Version time: 0.053837s
+Throughput: 35.1902MiB/s
+Reduce data speed: 12.6812MiB/s
+SF generation time: 0.00048977s
+SF generation throughput: 3868.21MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.0302811MiB
+FP Overhead: 0.0166626MiB
+SF Overhead: 0.0136185MiB
+Recipe Overhead: 0.00704956MiB
+SF number: 357
+-----------------END-------------------------------
+2026-01-13 17:03:17 <Chunker>: chunking done.
+total_size is 8
+Version: 3
+-----------------CHUNK NUM-----------------------
+logical chunk num: 371
+unique chunk num: 183
+base chunk num: 135
+delta chunk num: 48
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 5273600
+uniquechunkSize is 1285268
+base chunk size: 1278342
+delta chunk size: 6926
+-----------------METRICS-------------------------
+Overall Compression Ratio: 4.10311
+DCC: 0.262295
+DCR: 24.9864
+DCE: 33.5813
+-----------------Time------------------------------
+Version time: 0.0454906s
+Throughput: 42.076MiB/s
+Reduce data speed: 15.1314MiB/s
+SF generation time: 9.1979e-05s
+SF generation throughput: 20809.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.034996MiB
+FP Overhead: 0.0195465MiB
+SF Overhead: 0.0154495MiB
+Recipe Overhead: 0.011322MiB
+SF number: 405
+-----------------END-------------------------------
+2026-01-13 17:03:17 <Chunker>: chunking done.
+total_size is 8
+Version: 4
+-----------------CHUNK NUM-----------------------
+logical chunk num: 523
+unique chunk num: 221
+base chunk num: 159
+delta chunk num: 62
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 7321600
+uniquechunkSize is 1313953
+base chunk size: 1305671
+delta chunk size: 8282
+-----------------METRICS-------------------------
+Overall Compression Ratio: 5.57219
+DCC: 0.280543
+DCR: 29.0558
+DCE: 46.7442
+-----------------Time------------------------------
+Version time: 0.044596s
+Throughput: 43.7959MiB/s
+Reduce data speed: 15.6974MiB/s
+SF generation time: 0.000111886s
+SF generation throughput: 17456.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.0418015MiB
+FP Overhead: 0.0236053MiB
+SF Overhead: 0.0181961MiB
+Recipe Overhead: 0.0159607MiB
+SF number: 477
+-----------------END-------------------------------
+2026-01-13 17:03:17 <Chunker>: chunking done.
+total_size is 8
+Version: 5
+-----------------CHUNK NUM-----------------------
+logical chunk num: 690
+unique chunk num: 272
+base chunk num: 189
+delta chunk num: 83
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 9431040
+uniquechunkSize is 1355771
+base chunk size: 1345475
+delta chunk size: 10296
+-----------------METRICS-------------------------
+Overall Compression Ratio: 6.95622
+DCC: 0.305147
+DCR: 33.6659
+DCE: 57.6245
+-----------------Time------------------------------
+Version time: 0.048012s
+Throughput: 41.9003MiB/s
+Reduce data speed: 14.9703MiB/s
+SF generation time: 0.000159931s
+SF generation throughput: 12578.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.0506821MiB
+FP Overhead: 0.0290527MiB
+SF Overhead: 0.0216293MiB
+Recipe Overhead: 0.0210571MiB
+SF number: 567
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 6
+-----------------CHUNK NUM-----------------------
+logical chunk num: 858
+unique chunk num: 330
+base chunk num: 204
+delta chunk num: 126
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 11550720
+uniquechunkSize is 1378975
+base chunk size: 1363285
+delta chunk size: 15690
+-----------------METRICS-------------------------
+Overall Compression Ratio: 8.37631
+DCC: 0.381818
+DCR: 32.1754
+DCE: 51.0222
+-----------------Time------------------------------
+Version time: 0.0494916s
+Throughput: 40.845MiB/s
+Reduce data speed: 14.2729MiB/s
+SF generation time: 0.000161324s
+SF generation throughput: 12530.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.0585938MiB
+FP Overhead: 0.0352478MiB
+SF Overhead: 0.0233459MiB
+Recipe Overhead: 0.0261841MiB
+SF number: 612
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 7
+-----------------CHUNK NUM-----------------------
+logical chunk num: 1048
+unique chunk num: 393
+base chunk num: 240
+delta chunk num: 153
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 13731840
+uniquechunkSize is 1442891
+base chunk size: 1420385
+delta chunk size: 22506
+-----------------METRICS-------------------------
+Overall Compression Ratio: 9.51689
+DCC: 0.389313
+DCR: 27.9364
+DCE: 46.7135
+-----------------Time------------------------------
+Version time: 0.0429697s
+Throughput: 48.4081MiB/s
+Reduce data speed: 16.3844MiB/s
+SF generation time: 0.000193008s
+SF generation throughput: 10777.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.0694427MiB
+FP Overhead: 0.0419769MiB
+SF Overhead: 0.0274658MiB
+Recipe Overhead: 0.0319824MiB
+SF number: 720
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 8
+-----------------CHUNK NUM-----------------------
+logical chunk num: 1230
+unique chunk num: 444
+base chunk num: 266
+delta chunk num: 178
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 15923200
+uniquechunkSize is 1487958
+base chunk size: 1462656
+delta chunk size: 25302
+-----------------METRICS-------------------------
+Overall Compression Ratio: 10.7014
+DCC: 0.400901
+DCR: 29.6653
+DCE: 51.3659
+-----------------Time------------------------------
+Version time: 0.0522152s
+Throughput: 40.0237MiB/s
+Reduce data speed: 12.8471MiB/s
+SF generation time: 0.000171525s
+SF generation throughput: 12183.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.0778656MiB
+FP Overhead: 0.0474243MiB
+SF Overhead: 0.0304413MiB
+Recipe Overhead: 0.0375366MiB
+SF number: 798
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 9
+-----------------CHUNK NUM-----------------------
+logical chunk num: 1419
+unique chunk num: 488
+base chunk num: 290
+delta chunk num: 198
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 18145280
+uniquechunkSize is 1529051
+base chunk size: 1499151
+delta chunk size: 29900
+-----------------METRICS-------------------------
+Overall Compression Ratio: 11.867
+DCC: 0.405738
+DCR: 31.5762
+DCE: 58.063
+-----------------Time------------------------------
+Version time: 0.0500517s
+Throughput: 42.339MiB/s
+Reduce data speed: 13.2048MiB/s
+SF generation time: 0.000211857s
+SF generation throughput: 10002.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.0853119MiB
+FP Overhead: 0.052124MiB
+SF Overhead: 0.0331879MiB
+Recipe Overhead: 0.0433044MiB
+SF number: 870
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 10
+-----------------CHUNK NUM-----------------------
+logical chunk num: 1608
+unique chunk num: 520
+base chunk num: 307
+delta chunk num: 213
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 20367360
+uniquechunkSize is 1553619
+base chunk size: 1520238
+delta chunk size: 33381
+-----------------METRICS-------------------------
+Overall Compression Ratio: 13.1096
+DCC: 0.409615
+DCR: 31.2436
+DCE: 57.7324
+-----------------Time------------------------------
+Version time: 0.0536293s
+Throughput: 39.5146MiB/s
+Reduce data speed: 11.887MiB/s
+SF generation time: 0.000131144s
+SF generation throughput: 16158.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.0906754MiB
+FP Overhead: 0.055542MiB
+SF Overhead: 0.0351334MiB
+Recipe Overhead: 0.0490723MiB
+SF number: 921
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 11
+-----------------CHUNK NUM-----------------------
+logical chunk num: 1797
+unique chunk num: 536
+base chunk num: 321
+delta chunk num: 215
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 22589440
+uniquechunkSize is 1568863
+base chunk size: 1535308
+delta chunk size: 33555
+-----------------METRICS-------------------------
+Overall Compression Ratio: 14.3986
+DCC: 0.401119
+DCR: 31.6004
+DCE: 57.9461
+-----------------Time------------------------------
+Version time: 0.0442306s
+Throughput: 47.9112MiB/s
+Reduce data speed: 14.0843MiB/s
+SF generation time: 7.3672e-05s
+SF generation throughput: 28764.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.0939865MiB
+FP Overhead: 0.057251MiB
+SF Overhead: 0.0367355MiB
+Recipe Overhead: 0.0548401MiB
+SF number: 963
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 12
+-----------------CHUNK NUM-----------------------
+logical chunk num: 1994
+unique chunk num: 584
+base chunk num: 350
+delta chunk num: 234
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 25169920
+uniquechunkSize is 1911465
+base chunk size: 1874229
+delta chunk size: 37236
+-----------------METRICS-------------------------
+Overall Compression Ratio: 13.1679
+DCC: 0.400685
+DCR: 32.6291
+DCE: 59.6074
+-----------------Time------------------------------
+Version time: 0.056939s
+Throughput: 43.2206MiB/s
+Reduce data speed: 11.2054MiB/s
+SF generation time: 0.000375198s
+SF generation throughput: 6559.04MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.102432MiB
+FP Overhead: 0.0623779MiB
+SF Overhead: 0.0400543MiB
+Recipe Overhead: 0.0608521MiB
+SF number: 1050
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 13
+-----------------CHUNK NUM-----------------------
+logical chunk num: 2202
+unique chunk num: 623
+base chunk num: 376
+delta chunk num: 247
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 28518400
+uniquechunkSize is 3050010
+base chunk size: 3009355
+delta chunk size: 40655
+-----------------METRICS-------------------------
+Overall Compression Ratio: 9.35026
+DCC: 0.396469
+DCR: 31.963
+DCE: 58.1136
+-----------------Time------------------------------
+Version time: 0.0548317s
+Throughput: 58.2393MiB/s
+Reduce data speed: 5.19121MiB/s
+SF generation time: 0.000795142s
+SF generation throughput: 4016.09MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.109573MiB
+FP Overhead: 0.0665436MiB
+SF Overhead: 0.0430298MiB
+Recipe Overhead: 0.0671997MiB
+SF number: 1128
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 14
+-----------------CHUNK NUM-----------------------
+logical chunk num: 2425
+unique chunk num: 663
+base chunk num: 403
+delta chunk num: 260
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 32696320
+uniquechunkSize is 3935139
+base chunk size: 3889426
+delta chunk size: 45713
+-----------------METRICS-------------------------
+Overall Compression Ratio: 8.30881
+DCC: 0.392157
+DCR: 30.6105
+DCE: 57.0276
+-----------------Time------------------------------
+Version time: 0.0504265s
+Throughput: 79.0135MiB/s
+Reduce data speed: 4.59151MiB/s
+SF generation time: 0.000703357s
+SF generation throughput: 5664.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.116936MiB
+FP Overhead: 0.070816MiB
+SF Overhead: 0.0461197MiB
+Recipe Overhead: 0.0740051MiB
+SF number: 1209
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 15
+-----------------CHUNK NUM-----------------------
+logical chunk num: 2658
+unique chunk num: 703
+base chunk num: 425
+delta chunk num: 278
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 36925440
+uniquechunkSize is 3971651
+base chunk size: 3919260
+delta chunk size: 52391
+-----------------METRICS-------------------------
+Overall Compression Ratio: 9.29725
+DCC: 0.395448
+DCR: 29.2301
+DCE: 55.8827
+-----------------Time------------------------------
+Version time: 0.0503714s
+Throughput: 80.0693MiB/s
+Reduce data speed: 4.87462MiB/s
+SF generation time: 0.000167429s
+SF generation throughput: 24089MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.123726MiB
+FP Overhead: 0.0750885MiB
+SF Overhead: 0.0486374MiB
+Recipe Overhead: 0.0811157MiB
+SF number: 1275
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 16
+-----------------CHUNK NUM-----------------------
+logical chunk num: 2932
+unique chunk num: 794
+base chunk num: 491
+delta chunk num: 303
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 42823680
+uniquechunkSize is 5337369
+base chunk size: 5278136
+delta chunk size: 59233
+-----------------METRICS-------------------------
+Overall Compression Ratio: 8.02337
+DCC: 0.381612
+DCR: 28.637
+DCE: 57.6917
+-----------------Time------------------------------
+Version time: 0.110117s
+Throughput: 51.0822MiB/s
+Reduce data speed: 4.85747MiB/s
+SF generation time: 0.00194001s
+SF generation throughput: 2899.46MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.140999MiB
+FP Overhead: 0.0848083MiB
+SF Overhead: 0.0561905MiB
+Recipe Overhead: 0.0894775MiB
+SF number: 1473
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 17
+-----------------CHUNK NUM-----------------------
+logical chunk num: 3208
+unique chunk num: 827
+base chunk num: 516
+delta chunk num: 311
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 49039360
+uniquechunkSize is 5658118
+base chunk size: 5595655
+delta chunk size: 62463
+-----------------METRICS-------------------------
+Overall Compression Ratio: 8.66708
+DCC: 0.376058
+DCR: 28.4513
+DCE: 57.7434
+-----------------Time------------------------------
+Version time: 0.0791419s
+Throughput: 74.9001MiB/s
+Reduce data speed: 6.71873MiB/s
+SF generation time: 0.000343768s
+SF generation throughput: 17243.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.147385MiB
+FP Overhead: 0.0883331MiB
+SF Overhead: 0.0590515MiB
+Recipe Overhead: 0.0979004MiB
+SF number: 1548
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 18
+-----------------CHUNK NUM-----------------------
+logical chunk num: 3491
+unique chunk num: 908
+base chunk num: 551
+delta chunk num: 357
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 55296000
+uniquechunkSize is 5727517
+base chunk size: 5654448
+delta chunk size: 73069
+-----------------METRICS-------------------------
+Overall Compression Ratio: 9.65445
+DCC: 0.393172
+DCR: 28.4908
+DCE: 59.8209
+-----------------Time------------------------------
+Version time: 0.0598185s
+Throughput: 99.7484MiB/s
+Reduce data speed: 8.43571MiB/s
+SF generation time: 0.000335179s
+SF generation throughput: 17801.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.160042MiB
+FP Overhead: 0.0969849MiB
+SF Overhead: 0.0630569MiB
+Recipe Overhead: 0.106537MiB
+SF number: 1653
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 19
+-----------------CHUNK NUM-----------------------
+logical chunk num: 3788
+unique chunk num: 995
+base chunk num: 589
+delta chunk num: 406
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 61624320
+uniquechunkSize is 5803449
+base chunk size: 5715804
+delta chunk size: 87645
+-----------------METRICS-------------------------
+Overall Compression Ratio: 10.6186
+DCC: 0.40804
+DCR: 27.76
+DCE: 59.0134
+-----------------Time------------------------------
+Version time: 0.0601117s
+Throughput: 100.399MiB/s
+Reduce data speed: 8.3271MiB/s
+SF generation time: 0.000363748s
+SF generation throughput: 16591.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.173683MiB
+FP Overhead: 0.106277MiB
+SF Overhead: 0.0674057MiB
+Recipe Overhead: 0.115601MiB
+SF number: 1767
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 20
+-----------------CHUNK NUM-----------------------
+logical chunk num: 4089
+unique chunk num: 1027
+base chunk num: 611
+delta chunk num: 416
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 67973120
+uniquechunkSize is 5828199
+base chunk size: 5734436
+delta chunk size: 93763
+-----------------METRICS-------------------------
+Overall Compression Ratio: 11.6628
+DCC: 0.405063
+DCR: 27.0135
+DCE: 59.3692
+-----------------Time------------------------------
+Version time: 0.0790731s
+Throughput: 76.5708MiB/s
+Reduce data speed: 6.2788MiB/s
+SF generation time: 0.000157111s
+SF generation throughput: 38537.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.179619MiB
+FP Overhead: 0.109695MiB
+SF Overhead: 0.0699234MiB
+Recipe Overhead: 0.124786MiB
+SF number: 1833
+-----------------END-------------------------------
+2026-01-13 17:03:18 <Chunker>: chunking done.
+total_size is 8
+Version: 21
+-----------------CHUNK NUM-----------------------
+logical chunk num: 4391
+unique chunk num: 1060
+base chunk num: 636
+delta chunk num: 424
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 74332160
+uniquechunkSize is 5859116
+base chunk size: 5761261
+delta chunk size: 97855
+-----------------METRICS-------------------------
+Overall Compression Ratio: 12.6866
+DCC: 0.4
+DCR: 26.5379
+DCE: 58.7886
+-----------------Time------------------------------
+Version time: 0.0609525s
+Throughput: 99.4948MiB/s
+Reduce data speed: 7.82191MiB/s
+SF generation time: 0.000148142s
+SF generation throughput: 40936.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.186005MiB
+FP Overhead: 0.11322MiB
+SF Overhead: 0.0727844MiB
+Recipe Overhead: 0.134003MiB
+SF number: 1908
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 22
+-----------------CHUNK NUM-----------------------
+logical chunk num: 4700
+unique chunk num: 1107
+base chunk num: 663
+delta chunk num: 444
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 82554880
+uniquechunkSize is 6435675
+base chunk size: 6328299
+delta chunk size: 107376
+-----------------METRICS-------------------------
+Overall Compression Ratio: 12.8277
+DCC: 0.401084
+DCR: 25.6868
+DCE: 57.6816
+-----------------Time------------------------------
+Version time: 0.0958177s
+Throughput: 81.8408MiB/s
+Reduce data speed: 17.7865MiB/s
+SF generation time: 0.00126013s
+SF generation throughput: 6222.99MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.194115MiB
+FP Overhead: 0.11824MiB
+SF Overhead: 0.0758743MiB
+Recipe Overhead: 0.143433MiB
+SF number: 1989
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 23
+-----------------CHUNK NUM-----------------------
+logical chunk num: 5011
+unique chunk num: 1141
+base chunk num: 689
+delta chunk num: 452
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 90798080
+uniquechunkSize is 6468895
+base chunk size: 6357127
+delta chunk size: 111768
+-----------------METRICS-------------------------
+Overall Compression Ratio: 14.0361
+DCC: 0.396144
+DCR: 25.305
+DCE: 58.2519
+-----------------Time------------------------------
+Version time: 0.0743205s
+Throughput: 105.776MiB/s
+Reduce data speed: 22.7677MiB/s
+SF generation time: 0.000154375s
+SF generation throughput: 50923.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.200722MiB
+FP Overhead: 0.121872MiB
+SF Overhead: 0.0788498MiB
+Recipe Overhead: 0.152924MiB
+SF number: 2067
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 24
+-----------------CHUNK NUM-----------------------
+logical chunk num: 5330
+unique chunk num: 1190
+base chunk num: 721
+delta chunk num: 469
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 99102720
+uniquechunkSize is 6537486
+base chunk size: 6416407
+delta chunk size: 121079
+-----------------METRICS-------------------------
+Overall Compression Ratio: 15.1591
+DCC: 0.394118
+DCR: 24.6657
+DCE: 58.0611
+-----------------Time------------------------------
+Version time: 0.0716067s
+Throughput: 110.603MiB/s
+Reduce data speed: 23.5354MiB/s
+SF generation time: 0.000256366s
+SF generation throughput: 30893MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.209618MiB
+FP Overhead: 0.127106MiB
+SF Overhead: 0.0825119MiB
+Recipe Overhead: 0.162659MiB
+SF number: 2163
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 25
+-----------------CHUNK NUM-----------------------
+logical chunk num: 5647
+unique chunk num: 1231
+base chunk num: 750
+delta chunk num: 481
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 107407360
+uniquechunkSize is 6575925
+base chunk size: 6449033
+delta chunk size: 126892
+-----------------METRICS-------------------------
+Overall Compression Ratio: 16.3334
+DCC: 0.390739
+DCR: 24.3024
+DCE: 57.8978
+-----------------Time------------------------------
+Version time: 0.077288s
+Throughput: 102.473MiB/s
+Reduce data speed: 21.331MiB/s
+SF generation time: 0.000181633s
+SF generation throughput: 43604MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.217316MiB
+FP Overhead: 0.131485MiB
+SF Overhead: 0.0858307MiB
+Recipe Overhead: 0.172333MiB
+SF number: 2250
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 26
+-----------------CHUNK NUM-----------------------
+logical chunk num: 5964
+unique chunk num: 1258
+base chunk num: 771
+delta chunk num: 487
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 115712000
+uniquechunkSize is 6595554
+base chunk size: 6463870
+delta chunk size: 131684
+-----------------METRICS-------------------------
+Overall Compression Ratio: 17.5439
+DCC: 0.387122
+DCR: 23.7757
+DCE: 57.5905
+-----------------Time------------------------------
+Version time: 0.0696511s
+Throughput: 113.708MiB/s
+Reduce data speed: 23.4011MiB/s
+SF generation time: 0.000121005s
+SF generation throughput: 65451.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.222603MiB
+FP Overhead: 0.134369MiB
+SF Overhead: 0.0882339MiB
+Recipe Overhead: 0.182007MiB
+SF number: 2313
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 27
+-----------------CHUNK NUM-----------------------
+logical chunk num: 6283
+unique chunk num: 1291
+base chunk num: 796
+delta chunk num: 495
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 124026880
+uniquechunkSize is 6624332
+base chunk size: 6487328
+delta chunk size: 137004
+-----------------METRICS-------------------------
+Overall Compression Ratio: 18.7229
+DCC: 0.383424
+DCR: 23.3645
+DCE: 57.3185
+-----------------Time------------------------------
+Version time: 0.0702728s
+Throughput: 112.842MiB/s
+Reduce data speed: 22.9425MiB/s
+SF generation time: 0.000149958s
+SF generation throughput: 52879.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.228989MiB
+FP Overhead: 0.137894MiB
+SF Overhead: 0.091095MiB
+Recipe Overhead: 0.191742MiB
+SF number: 2388
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 28
+-----------------CHUNK NUM-----------------------
+logical chunk num: 6602
+unique chunk num: 1316
+base chunk num: 816
+delta chunk num: 500
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 132341760
+uniquechunkSize is 6643730
+base chunk size: 6501396
+delta chunk size: 142334
+-----------------METRICS-------------------------
+Overall Compression Ratio: 19.9198
+DCC: 0.379939
+DCR: 22.8061
+DCE: 56.9435
+-----------------Time------------------------------
+Version time: 0.0695412s
+Throughput: 114.029MiB/s
+Reduce data speed: 22.9178MiB/s
+SF generation time: 0.000117547s
+SF generation throughput: 67459.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.233948MiB
+FP Overhead: 0.140564MiB
+SF Overhead: 0.0933838MiB
+Recipe Overhead: 0.201477MiB
+SF number: 2448
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 29
+-----------------CHUNK NUM-----------------------
+logical chunk num: 6922
+unique chunk num: 1351
+base chunk num: 839
+delta chunk num: 512
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 140666880
+uniquechunkSize is 6675275
+base chunk size: 6523584
+delta chunk size: 151691
+-----------------METRICS-------------------------
+Overall Compression Ratio: 21.0728
+DCC: 0.378979
+DCR: 22.1317
+DCE: 56.1821
+-----------------Time------------------------------
+Version time: 0.0706428s
+Throughput: 112.389MiB/s
+Reduce data speed: 22.2728MiB/s
+SF generation time: 0.000166524s
+SF generation throughput: 47677.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.240318MiB
+FP Overhead: 0.144302MiB
+SF Overhead: 0.0960159MiB
+Recipe Overhead: 0.211243MiB
+SF number: 2517
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 30
+-----------------CHUNK NUM-----------------------
+logical chunk num: 7242
+unique chunk num: 1378
+base chunk num: 862
+delta chunk num: 516
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 148992000
+uniquechunkSize is 6705635
+base chunk size: 6548150
+delta chunk size: 157485
+-----------------METRICS-------------------------
+Overall Compression Ratio: 22.2189
+DCC: 0.374456
+DCR: 21.6296
+DCE: 55.9264
+-----------------Time------------------------------
+Version time: 0.0812971s
+Throughput: 97.6597MiB/s
+Reduce data speed: 18.9977MiB/s
+SF generation time: 0.00013687s
+SF generation throughput: 58007.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.245834MiB
+FP Overhead: 0.147186MiB
+SF Overhead: 0.0986481MiB
+Recipe Overhead: 0.221008MiB
+SF number: 2586
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 31
+-----------------CHUNK NUM-----------------------
+logical chunk num: 7563
+unique chunk num: 1419
+base chunk num: 892
+delta chunk num: 527
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 157327360
+uniquechunkSize is 6765648
+base chunk size: 6601226
+delta chunk size: 164422
+-----------------METRICS-------------------------
+Overall Compression Ratio: 23.2538
+DCC: 0.371388
+DCR: 21.2495
+DCE: 55.5374
+-----------------Time------------------------------
+Version time: 0.0712561s
+Throughput: 111.558MiB/s
+Reduce data speed: 21.0086MiB/s
+SF generation time: 0.000191158s
+SF generation throughput: 41584.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.253647MiB
+FP Overhead: 0.151566MiB
+SF Overhead: 0.102081MiB
+Recipe Overhead: 0.230804MiB
+SF number: 2676
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 32
+-----------------CHUNK NUM-----------------------
+logical chunk num: 7886
+unique chunk num: 1449
+base chunk num: 914
+delta chunk num: 535
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 165672960
+uniquechunkSize is 6794378
+base chunk size: 6623230
+delta chunk size: 171148
+-----------------METRICS-------------------------
+Overall Compression Ratio: 24.3838
+DCC: 0.36922
+DCR: 20.8243
+DCE: 55.1005
+-----------------Time------------------------------
+Version time: 0.0701849s
+Throughput: 113.4MiB/s
+Reduce data speed: 21.0781MiB/s
+SF generation time: 0.000135561s
+SF generation throughput: 58711.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.259369MiB
+FP Overhead: 0.15477MiB
+SF Overhead: 0.104599MiB
+Recipe Overhead: 0.240662MiB
+SF number: 2742
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 33
+-----------------CHUNK NUM-----------------------
+logical chunk num: 8211
+unique chunk num: 1479
+base chunk num: 934
+delta chunk num: 545
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 174028800
+uniquechunkSize is 6816456
+base chunk size: 6637492
+delta chunk size: 178964
+-----------------METRICS-------------------------
+Overall Compression Ratio: 25.5307
+DCC: 0.368492
+DCR: 20.4555
+DCE: 54.6872
+-----------------Time------------------------------
+Version time: 0.0697726s
+Throughput: 114.21MiB/s
+Reduce data speed: 21.0408MiB/s
+SF generation time: 0.000163858s
+SF generation throughput: 48632MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.264862MiB
+FP Overhead: 0.157974MiB
+SF Overhead: 0.106888MiB
+Recipe Overhead: 0.25058MiB
+SF number: 2802
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 34
+-----------------CHUNK NUM-----------------------
+logical chunk num: 8536
+unique chunk num: 1506
+base chunk num: 954
+delta chunk num: 552
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 182384640
+uniquechunkSize is 6842037
+base chunk size: 6656183
+delta chunk size: 185854
+-----------------METRICS-------------------------
+Overall Compression Ratio: 26.6565
+DCC: 0.366534
+DCR: 20.0966
+DCE: 54.4034
+-----------------Time------------------------------
+Version time: 0.0908374s
+Throughput: 87.7255MiB/s
+Reduce data speed: 15.893MiB/s
+SF generation time: 0.000131856s
+SF generation throughput: 60435.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.270035MiB
+FP Overhead: 0.160858MiB
+SF Overhead: 0.109177MiB
+Recipe Overhead: 0.260498MiB
+SF number: 2862
+-----------------END-------------------------------
+2026-01-13 17:03:19 <Chunker>: chunking done.
+total_size is 8
+Version: 35
+-----------------CHUNK NUM-----------------------
+logical chunk num: 8861
+unique chunk num: 1536
+base chunk num: 975
+delta chunk num: 561
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 190740480
+uniquechunkSize is 6864154
+base chunk size: 6671328
+delta chunk size: 192826
+-----------------METRICS-------------------------
+Overall Compression Ratio: 27.7879
+DCC: 0.365234
+DCR: 19.7524
+DCE: 54.0869
+-----------------Time------------------------------
+Version time: 0.0804037s
+Throughput: 99.1092MiB/s
+Reduce data speed: 17.693MiB/s
+SF generation time: 0.000141998s
+SF generation throughput: 56118.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.275642MiB
+FP Overhead: 0.164062MiB
+SF Overhead: 0.11158MiB
+Recipe Overhead: 0.270416MiB
+SF number: 2925
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 36
+-----------------CHUNK NUM-----------------------
+logical chunk num: 9186
+unique chunk num: 1561
+base chunk num: 997
+delta chunk num: 564
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 199096320
+uniquechunkSize is 6885985
+base chunk size: 6687188
+delta chunk size: 198797
+-----------------METRICS-------------------------
+Overall Compression Ratio: 28.9133
+DCC: 0.361307
+DCR: 19.3703
+DCE: 53.986
+-----------------Time------------------------------
+Version time: 0.0699263s
+Throughput: 113.959MiB/s
+Reduce data speed: 20.0463MiB/s
+SF generation time: 0.000128885s
+SF generation throughput: 61828.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.28083MiB
+FP Overhead: 0.166733MiB
+SF Overhead: 0.114098MiB
+Recipe Overhead: 0.280334MiB
+SF number: 2991
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 37
+-----------------CHUNK NUM-----------------------
+logical chunk num: 9512
+unique chunk num: 1799
+base chunk num: 1044
+delta chunk num: 755
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 207421440
+uniquechunkSize is 7243544
+base chunk size: 7014396
+delta chunk size: 229148
+-----------------METRICS-------------------------
+Overall Compression Ratio: 28.6354
+DCC: 0.419678
+DCR: 20.5629
+DCE: 57.6731
+-----------------Time------------------------------
+Version time: 0.0751529s
+Throughput: 105.644MiB/s
+Reduce data speed: 13.725MiB/s
+SF generation time: 0.000908343s
+SF generation throughput: 8740.59MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.31163MiB
+FP Overhead: 0.192154MiB
+SF Overhead: 0.119476MiB
+Recipe Overhead: 0.290283MiB
+SF number: 3132
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 38
+-----------------CHUNK NUM-----------------------
+logical chunk num: 9838
+unique chunk num: 1825
+base chunk num: 1067
+delta chunk num: 758
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 215746560
+uniquechunkSize is 7268046
+base chunk size: 7032659
+delta chunk size: 235387
+-----------------METRICS-------------------------
+Overall Compression Ratio: 29.6843
+DCC: 0.415342
+DCR: 20.1679
+DCE: 57.5456
+-----------------Time------------------------------
+Version time: 0.0733023s
+Throughput: 108.311MiB/s
+Reduce data speed: 13.7527MiB/s
+SF generation time: 0.000123801s
+SF generation throughput: 64130.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.317039MiB
+FP Overhead: 0.194931MiB
+SF Overhead: 0.122108MiB
+Recipe Overhead: 0.300232MiB
+SF number: 3201
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 39
+-----------------CHUNK NUM-----------------------
+logical chunk num: 10169
+unique chunk num: 1857
+base chunk num: 1091
+delta chunk num: 766
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 224112640
+uniquechunkSize is 7306214
+base chunk size: 7061105
+delta chunk size: 245109
+-----------------METRICS-------------------------
+Overall Compression Ratio: 30.6743
+DCC: 0.412493
+DCR: 19.7878
+DCE: 57.2075
+-----------------Time------------------------------
+Version time: 0.0820829s
+Throughput: 97.2007MiB/s
+Reduce data speed: 12.314MiB/s
+SF generation time: 0.000174094s
+SF generation throughput: 45828.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.323204MiB
+FP Overhead: 0.198349MiB
+SF Overhead: 0.124855MiB
+Recipe Overhead: 0.310333MiB
+SF number: 3273
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 40
+-----------------CHUNK NUM-----------------------
+logical chunk num: 10500
+unique chunk num: 1883
+base chunk num: 1113
+delta chunk num: 770
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 232478720
+uniquechunkSize is 7328977
+base chunk size: 7076687
+delta chunk size: 252290
+-----------------METRICS-------------------------
+Overall Compression Ratio: 31.7205
+DCC: 0.408922
+DCR: 19.4397
+DCE: 57.0586
+-----------------Time------------------------------
+Version time: 0.0699367s
+Throughput: 114.082MiB/s
+Reduce data speed: 14.1422MiB/s
+SF generation time: 0.000132224s
+SF generation throughput: 60340.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.328499MiB
+FP Overhead: 0.201126MiB
+SF Overhead: 0.127373MiB
+Recipe Overhead: 0.320435MiB
+SF number: 3339
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 41
+-----------------CHUNK NUM-----------------------
+logical chunk num: 10831
+unique chunk num: 1916
+base chunk num: 1135
+delta chunk num: 781
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 240844800
+uniquechunkSize is 7366881
+base chunk size: 7104294
+delta chunk size: 262587
+-----------------METRICS-------------------------
+Overall Compression Ratio: 32.6929
+DCC: 0.40762
+DCR: 19.1785
+DCE: 56.654
+-----------------Time------------------------------
+Version time: 0.0936678s
+Throughput: 85.1788MiB/s
+Reduce data speed: 10.1733MiB/s
+SF generation time: 0.000185538s
+SF generation throughput: 43002.1MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.334541MiB
+FP Overhead: 0.204651MiB
+SF Overhead: 0.12989MiB
+Recipe Overhead: 0.330536MiB
+SF number: 3405
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 42
+-----------------CHUNK NUM-----------------------
+logical chunk num: 11162
+unique chunk num: 1945
+base chunk num: 1156
+delta chunk num: 789
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 249210880
+uniquechunkSize is 7390507
+base chunk size: 7119373
+delta chunk size: 271134
+-----------------METRICS-------------------------
+Overall Compression Ratio: 33.7204
+DCC: 0.405656
+DCR: 18.8893
+DCE: 56.6345
+-----------------Time------------------------------
+Version time: 0.070009s
+Throughput: 113.964MiB/s
+Reduce data speed: 13.2894MiB/s
+SF generation time: 0.000144224s
+SF generation throughput: 55320.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.340042MiB
+FP Overhead: 0.207748MiB
+SF Overhead: 0.132294MiB
+Recipe Overhead: 0.340637MiB
+SF number: 3468
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 43
+-----------------CHUNK NUM-----------------------
+logical chunk num: 11496
+unique chunk num: 1976
+base chunk num: 1180
+delta chunk num: 796
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 257587200
+uniquechunkSize is 7417299
+base chunk size: 7138034
+delta chunk size: 279265
+-----------------METRICS-------------------------
+Overall Compression Ratio: 34.7279
+DCC: 0.402834
+DCR: 18.5667
+DCE: 56.5101
+-----------------Time------------------------------
+Version time: 0.0707359s
+Throughput: 112.931MiB/s
+Reduce data speed: 12.9297MiB/s
+SF generation time: 0.000151285s
+SF generation throughput: 52802.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.3461MiB
+FP Overhead: 0.21106MiB
+SF Overhead: 0.13504MiB
+Recipe Overhead: 0.35083MiB
+SF number: 3540
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 44
+-----------------CHUNK NUM-----------------------
+logical chunk num: 11834
+unique chunk num: 2022
+base chunk num: 1206
+delta chunk num: 816
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 265984000
+uniquechunkSize is 7459576
+base chunk size: 7164096
+delta chunk size: 295480
+-----------------METRICS-------------------------
+Overall Compression Ratio: 35.6567
+DCC: 0.403561
+DCR: 18.3206
+DCE: 55.744
+-----------------Time------------------------------
+Version time: 0.0970986s
+Throughput: 82.4709MiB/s
+Reduce data speed: 9.20514MiB/s
+SF generation time: 0.000241272s
+SF generation throughput: 33190MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.353989MiB
+FP Overhead: 0.215973MiB
+SF Overhead: 0.138016MiB
+Recipe Overhead: 0.361145MiB
+SF number: 3618
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 45
+-----------------CHUNK NUM-----------------------
+logical chunk num: 12173
+unique chunk num: 2061
+base chunk num: 1230
+delta chunk num: 831
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 274391040
+uniquechunkSize is 7497377
+base chunk size: 7186400
+delta chunk size: 310977
+-----------------METRICS-------------------------
+Overall Compression Ratio: 36.5983
+DCC: 0.403202
+DCR: 18.0777
+DCE: 55.2336
+-----------------Time------------------------------
+Version time: 0.0787544s
+Throughput: 101.805MiB/s
+Reduce data speed: 11.0155MiB/s
+SF generation time: 0.000229283s
+SF generation throughput: 34968MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.360901MiB
+FP Overhead: 0.220139MiB
+SF Overhead: 0.140762MiB
+Recipe Overhead: 0.37149MiB
+SF number: 3690
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 46
+-----------------CHUNK NUM-----------------------
+logical chunk num: 12513
+unique chunk num: 2094
+base chunk num: 1254
+delta chunk num: 840
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 282808320
+uniquechunkSize is 7531343
+base chunk size: 7204842
+delta chunk size: 326501
+-----------------METRICS-------------------------
+Overall Compression Ratio: 37.5508
+DCC: 0.401146
+DCR: 17.6604
+DCE: 54.8329
+-----------------Time------------------------------
+Version time: 0.0792694s
+Throughput: 101.267MiB/s
+Reduce data speed: 10.6585MiB/s
+SF generation time: 0.000194237s
+SF generation throughput: 41327.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.367172MiB
+FP Overhead: 0.223663MiB
+SF Overhead: 0.143509MiB
+Recipe Overhead: 0.381866MiB
+SF number: 3762
+-----------------END-------------------------------
+2026-01-13 17:03:20 <Chunker>: chunking done.
+total_size is 8
+Version: 47
+-----------------CHUNK NUM-----------------------
+logical chunk num: 12877
+unique chunk num: 2182
+base chunk num: 1311
+delta chunk num: 871
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 292710400
+uniquechunkSize is 8802538
+base chunk size: 8446475
+delta chunk size: 356063
+-----------------METRICS-------------------------
+Overall Compression Ratio: 33.253
+DCC: 0.399175
+DCR: 17.0886
+DCE: 54.438
+-----------------Time------------------------------
+Version time: 0.101616s
+Throughput: 92.9321MiB/s
+Reduce data speed: 10.3193MiB/s
+SF generation time: 0.0011466s
+SF generation throughput: 8235.95MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.383095MiB
+FP Overhead: 0.233063MiB
+SF Overhead: 0.150032MiB
+Recipe Overhead: 0.392975MiB
+SF number: 3933
+-----------------END-------------------------------
+2026-01-13 17:03:21 <Chunker>: chunking done.
+total_size is 8
+Version: 48
+-----------------CHUNK NUM-----------------------
+logical chunk num: 13240
+unique chunk num: 2220
+base chunk num: 1332
+delta chunk num: 888
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 302612480
+uniquechunkSize is 8844243
+base chunk size: 8470169
+delta chunk size: 374074
+-----------------METRICS-------------------------
+Overall Compression Ratio: 34.2158
+DCC: 0.4
+DCR: 16.7927
+DCE: 53.8225
+-----------------Time------------------------------
+Version time: 0.0874103s
+Throughput: 108.035MiB/s
+Reduce data speed: 11.5413MiB/s
+SF generation time: 0.000218409s
+SF generation throughput: 43237MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.389557MiB
+FP Overhead: 0.237122MiB
+SF Overhead: 0.152435MiB
+Recipe Overhead: 0.404053MiB
+SF number: 3996
+-----------------END-------------------------------
+2026-01-13 17:03:21 <Chunker>: chunking done.
+total_size is 8
+Version: 49
+-----------------CHUNK NUM-----------------------
+logical chunk num: 13606
+unique chunk num: 2278
+base chunk num: 1373
+delta chunk num: 905
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 312576000
+uniquechunkSize is 8959013
+base chunk size: 8564261
+delta chunk size: 394752
+-----------------METRICS-------------------------
+Overall Compression Ratio: 34.8896
+DCC: 0.397278
+DCR: 16.5914
+DCE: 53.7995
+-----------------Time------------------------------
+Version time: 0.0986203s
+Throughput: 96.3489MiB/s
+Reduce data speed: 9.71375MiB/s
+SF generation time: 0.000386623s
+SF generation throughput: 24576.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.400444MiB
+FP Overhead: 0.243317MiB
+SF Overhead: 0.157127MiB
+Recipe Overhead: 0.415222MiB
+SF number: 4119
+-----------------END-------------------------------
+2026-01-13 17:03:21 <Chunker>: chunking done.
+total_size is 8
+Version: 50
+-----------------CHUNK NUM-----------------------
+logical chunk num: 13978
+unique chunk num: 2327
+base chunk num: 1404
+delta chunk num: 923
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 322631680
+uniquechunkSize is 9040522
+base chunk size: 8632212
+delta chunk size: 408310
+-----------------METRICS-------------------------
+Overall Compression Ratio: 35.6873
+DCC: 0.396648
+DCR: 16.522
+DCE: 54.7907
+-----------------Time------------------------------
+Version time: 0.0988281s
+Throughput: 97.0356MiB/s
+Reduce data speed: 9.7961MiB/s
+SF generation time: 0.000282594s
+SF generation throughput: 33935.1MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.409225MiB
+FP Overhead: 0.24855MiB
+SF Overhead: 0.160675MiB
+Recipe Overhead: 0.426575MiB
+SF number: 4212
+-----------------END-------------------------------
+2026-01-13 17:03:21 <Chunker>: chunking done.
+total_size is 8
+Version: 51
+-----------------CHUNK NUM-----------------------
+logical chunk num: 14358
+unique chunk num: 2368
+base chunk num: 1439
+delta chunk num: 929
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 332718080
+uniquechunkSize is 9089925
+base chunk size: 8672781
+delta chunk size: 417144
+-----------------METRICS-------------------------
+Overall Compression Ratio: 36.603
+DCC: 0.392314
+DCR: 16.2642
+DCE: 54.599
+-----------------Time------------------------------
+Version time: 0.0997207s
+Throughput: 96.4608MiB/s
+Reduce data speed: 9.52974MiB/s
+SF generation time: 0.00018384s
+SF generation throughput: 52323.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.41761MiB
+FP Overhead: 0.25293MiB
+SF Overhead: 0.16468MiB
+Recipe Overhead: 0.438171MiB
+SF number: 4317
+-----------------END-------------------------------
+2026-01-13 17:03:21 <Chunker>: chunking done.
+total_size is 8
+Version: 52
+-----------------CHUNK NUM-----------------------
+logical chunk num: 14738
+unique chunk num: 2399
+base chunk num: 1463
+delta chunk num: 936
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 342804480
+uniquechunkSize is 9116951
+base chunk size: 8689897
+delta chunk size: 427054
+-----------------METRICS-------------------------
+Overall Compression Ratio: 37.6008
+DCC: 0.390163
+DCR: 16.0858
+DCE: 54.7842
+-----------------Time------------------------------
+Version time: 0.0926076s
+Throughput: 103.87MiB/s
+Reduce data speed: 9.9834MiB/s
+SF generation time: 0.000155693s
+SF generation throughput: 61782.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.423668MiB
+FP Overhead: 0.256241MiB
+SF Overhead: 0.167427MiB
+Recipe Overhead: 0.449768MiB
+SF number: 4389
+-----------------END-------------------------------
+2026-01-13 17:03:21 <Chunker>: chunking done.
+total_size is 8
+Version: 53
+-----------------CHUNK NUM-----------------------
+logical chunk num: 15135
+unique chunk num: 2458
+base chunk num: 1513
+delta chunk num: 945
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 355993600
+uniquechunkSize is 12148575
+base chunk size: 11710929
+delta chunk size: 437646
+-----------------METRICS-------------------------
+Overall Compression Ratio: 29.3033
+DCC: 0.384459
+DCR: 15.9153
+DCE: 54.7388
+-----------------Time------------------------------
+Version time: 0.123856s
+Throughput: 101.554MiB/s
+Reduce data speed: 8.01203MiB/s
+SF generation time: 0.00194577s
+SF generation throughput: 6464.33MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.435692MiB
+FP Overhead: 0.262543MiB
+SF Overhead: 0.173149MiB
+Recipe Overhead: 0.461884MiB
+SF number: 4539
+-----------------END-------------------------------
+2026-01-13 17:03:21 <Chunker>: chunking done.
+total_size is 8
+Version: 54
+-----------------CHUNK NUM-----------------------
+logical chunk num: 15535
+unique chunk num: 2501
+base chunk num: 1543
+delta chunk num: 958
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 369203200
+uniquechunkSize is 12200291
+base chunk size: 11751064
+delta chunk size: 449227
+-----------------METRICS-------------------------
+Overall Compression Ratio: 30.2618
+DCC: 0.383047
+DCR: 15.7523
+DCE: 55.0688
+-----------------Time------------------------------
+Version time: 0.134001s
+Throughput: 94.0119MiB/s
+Reduce data speed: 7.18319MiB/s
+SF generation time: 0.000216678s
+SF generation throughput: 58140MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.443718MiB
+FP Overhead: 0.267136MiB
+SF Overhead: 0.176582MiB
+Recipe Overhead: 0.474091MiB
+SF number: 4629
+-----------------END-------------------------------
+2026-01-13 17:03:21 <Chunker>: chunking done.
+total_size is 8
+Version: 55
+-----------------CHUNK NUM-----------------------
+logical chunk num: 15935
+unique chunk num: 2533
+base chunk num: 1572
+delta chunk num: 961
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 382412800
+uniquechunkSize is 12234855
+base chunk size: 11776402
+delta chunk size: 458453
+-----------------METRICS-------------------------
+Overall Compression Ratio: 31.256
+DCC: 0.379392
+DCR: 15.5235
+DCE: 54.9541
+-----------------Time------------------------------
+Version time: 0.116831s
+Throughput: 107.828MiB/s
+Reduce data speed: 7.95672MiB/s
+SF generation time: 0.000147028s
+SF generation throughput: 85682MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.450455MiB
+FP Overhead: 0.270554MiB
+SF Overhead: 0.179901MiB
+Recipe Overhead: 0.486298MiB
+SF number: 4716
+-----------------END-------------------------------
+2026-01-13 17:03:21 <Chunker>: chunking done.
+total_size is 8
+Version: 56
+-----------------CHUNK NUM-----------------------
+logical chunk num: 16345
+unique chunk num: 2585
+base chunk num: 1608
+delta chunk num: 977
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 396062720
+uniquechunkSize is 12669312
+base chunk size: 12193925
+delta chunk size: 475387
+-----------------METRICS-------------------------
+Overall Compression Ratio: 31.2616
+DCC: 0.37795
+DCR: 15.271
+DCE: 54.7055
+-----------------Time------------------------------
+Version time: 0.127279s
+Throughput: 102.276MiB/s
+Reduce data speed: 7.34749MiB/s
+SF generation time: 0.000451814s
+SF generation throughput: 28811.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.460129MiB
+FP Overhead: 0.276108MiB
+SF Overhead: 0.184021MiB
+Recipe Overhead: 0.49881MiB
+SF number: 4824
+-----------------END-------------------------------
+2026-01-13 17:03:22 <Chunker>: chunking done.
+total_size is 8
+Version: 57
+-----------------CHUNK NUM-----------------------
+logical chunk num: 16784
+unique chunk num: 2657
+base chunk num: 1667
+delta chunk num: 990
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 414115840
+uniquechunkSize is 16714776
+base chunk size: 16236027
+delta chunk size: 478749
+-----------------METRICS-------------------------
+Overall Compression Ratio: 24.7754
+DCC: 0.372601
+DCR: 15.3627
+DCE: 54.739
+-----------------Time------------------------------
+Version time: 0.161785s
+Throughput: 106.418MiB/s
+Reduce data speed: 7.88914MiB/s
+SF generation time: 0.00263256s
+SF generation throughput: 6539.95MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.474571MiB
+FP Overhead: 0.283798MiB
+SF Overhead: 0.190773MiB
+Recipe Overhead: 0.512207MiB
+SF number: 5001
+-----------------END-------------------------------
+2026-01-13 17:03:22 <Chunker>: chunking done.
+total_size is 8
+Version: 58
+-----------------CHUNK NUM-----------------------
+logical chunk num: 17224
+unique chunk num: 2703
+base chunk num: 1697
+delta chunk num: 1006
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 432189440
+uniquechunkSize is 16760196
+base chunk size: 16276282
+delta chunk size: 483914
+-----------------METRICS-------------------------
+Overall Compression Ratio: 25.7867
+DCC: 0.372179
+DCR: 15.5966
+DCE: 54.4543
+-----------------Time------------------------------
+Version time: 0.154216s
+Throughput: 111.768MiB/s
+Reduce data speed: 8.12213MiB/s
+SF generation time: 0.000265235s
+SF generation throughput: 64985.1MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.482918MiB
+FP Overhead: 0.288712MiB
+SF Overhead: 0.194206MiB
+Recipe Overhead: 0.525635MiB
+SF number: 5091
+-----------------END-------------------------------
+2026-01-13 17:03:22 <Chunker>: chunking done.
+total_size is 8
+Version: 59
+-----------------CHUNK NUM-----------------------
+logical chunk num: 17665
+unique chunk num: 2740
+base chunk num: 1723
+delta chunk num: 1017
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 450273280
+uniquechunkSize is 16787411
+base chunk size: 16300155
+delta chunk size: 487256
+-----------------METRICS-------------------------
+Overall Compression Ratio: 26.8221
+DCC: 0.371168
+DCR: 15.6892
+DCE: 54.4136
+-----------------Time------------------------------
+Version time: 0.147739s
+Throughput: 116.734MiB/s
+Reduce data speed: 8.36862MiB/s
+SF generation time: 0.000172783s
+SF generation throughput: 99813.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.489845MiB
+FP Overhead: 0.292664MiB
+SF Overhead: 0.197182MiB
+Recipe Overhead: 0.539093MiB
+SF number: 5169
+-----------------END-------------------------------
+2026-01-13 17:03:22 <Chunker>: chunking done.
+total_size is 8
+Version: 60
+-----------------CHUNK NUM-----------------------
+logical chunk num: 18112
+unique chunk num: 2786
+base chunk num: 1761
+delta chunk num: 1025
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 468981760
+uniquechunkSize is 17384520
+base chunk size: 16894729
+delta chunk size: 489791
+-----------------METRICS-------------------------
+Overall Compression Ratio: 26.977
+DCC: 0.367911
+DCR: 15.8181
+DCE: 54.3162
+-----------------Time------------------------------
+Version time: 0.162472s
+Throughput: 109.815MiB/s
+Reduce data speed: 7.77136MiB/s
+SF generation time: 0.0005968s
+SF generation throughput: 29895.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.499107MiB
+FP Overhead: 0.297577MiB
+SF Overhead: 0.20153MiB
+Recipe Overhead: 0.552734MiB
+SF number: 5283
+-----------------END-------------------------------
+2026-01-13 17:03:22 <Chunker>: chunking done.
+total_size is 8
+Version: 61
+-----------------CHUNK NUM-----------------------
+logical chunk num: 18559
+unique chunk num: 2826
+base chunk num: 1791
+delta chunk num: 1035
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 487690240
+uniquechunkSize is 17418355
+base chunk size: 16925148
+delta chunk size: 493207
+-----------------METRICS-------------------------
+Overall Compression Ratio: 27.9986
+DCC: 0.366242
+DCR: 16.0615
+DCE: 54.7413
+-----------------Time------------------------------
+Version time: 0.156298s
+Throughput: 114.152MiB/s
+Reduce data speed: 7.87187MiB/s
+SF generation time: 0.000239881s
+SF generation throughput: 74377.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.506813MiB
+FP Overhead: 0.301849MiB
+SF Overhead: 0.204964MiB
+Recipe Overhead: 0.566376MiB
+SF number: 5373
+-----------------END-------------------------------
+2026-01-13 17:03:22 <Chunker>: chunking done.
+total_size is 8
+Version: 62
+-----------------CHUNK NUM-----------------------
+logical chunk num: 19022
+unique chunk num: 2927
+base chunk num: 1854
+delta chunk num: 1073
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 507944960
+uniquechunkSize is 18944497
+base chunk size: 18438128
+delta chunk size: 506369
+-----------------METRICS-------------------------
+Overall Compression Ratio: 26.8123
+DCC: 0.366587
+DCR: 16.4307
+DCE: 54.7788
+-----------------Time------------------------------
+Version time: 0.184228s
+Throughput: 104.85MiB/s
+Reduce data speed: 6.78249MiB/s
+SF generation time: 0.00133086s
+SF generation throughput: 14514.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.524811MiB
+FP Overhead: 0.312637MiB
+SF Overhead: 0.212173MiB
+Recipe Overhead: 0.580505MiB
+SF number: 5562
+-----------------END-------------------------------
+2026-01-13 17:03:23 <Chunker>: chunking done.
+total_size is 8
+Version: 63
+-----------------CHUNK NUM-----------------------
+logical chunk num: 19486
+unique chunk num: 2979
+base chunk num: 1885
+delta chunk num: 1094
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 528209920
+uniquechunkSize is 18984593
+base chunk size: 18468118
+delta chunk size: 516475
+-----------------METRICS-------------------------
+Overall Compression Ratio: 27.8231
+DCC: 0.367237
+DCR: 16.6287
+DCE: 55.571
+-----------------Time------------------------------
+Version time: 0.173287s
+Throughput: 111.527MiB/s
+Reduce data speed: 7.0464MiB/s
+SF generation time: 0.000301284s
+SF generation throughput: 64146MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.533913MiB
+FP Overhead: 0.318192MiB
+SF Overhead: 0.215721MiB
+Recipe Overhead: 0.594666MiB
+SF number: 5655
+-----------------END-------------------------------
+2026-01-13 17:03:23 <Chunker>: chunking done.
+total_size is 8
+Version: 64
+-----------------CHUNK NUM-----------------------
+logical chunk num: 19956
+unique chunk num: 3035
+base chunk num: 1921
+delta chunk num: 1114
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 548495360
+uniquechunkSize is 19027088
+base chunk size: 18502365
+delta chunk size: 524723
+-----------------METRICS-------------------------
+Overall Compression Ratio: 28.8271
+DCC: 0.367051
+DCR: 16.7244
+DCE: 55.6007
+-----------------Time------------------------------
+Version time: 0.169152s
+Throughput: 114.369MiB/s
+Reduce data speed: 7.09457MiB/s
+SF generation time: 0.000262206s
+SF generation throughput: 73780.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.544014MiB
+FP Overhead: 0.324173MiB
+SF Overhead: 0.219841MiB
+Recipe Overhead: 0.609009MiB
+SF number: 5763
+-----------------END-------------------------------
+2026-01-13 17:03:23 <Chunker>: chunking done.
+total_size is 8
+Version: 65
+-----------------CHUNK NUM-----------------------
+logical chunk num: 20428
+unique chunk num: 3085
+base chunk num: 1953
+delta chunk num: 1132
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 568791040
+uniquechunkSize is 19072049
+base chunk size: 18537333
+delta chunk size: 534716
+-----------------METRICS-------------------------
+Overall Compression Ratio: 29.8233
+DCC: 0.366937
+DCR: 16.8006
+DCE: 55.3444
+-----------------Time------------------------------
+Version time: 0.167318s
+Throughput: 115.681MiB/s
+Reduce data speed: 6.9744MiB/s
+SF generation time: 0.000265634s
+SF generation throughput: 72865.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.553017MiB
+FP Overhead: 0.329514MiB
+SF Overhead: 0.223503MiB
+Recipe Overhead: 0.623413MiB
+SF number: 5859
+-----------------END-------------------------------
+2026-01-13 17:03:23 <Chunker>: chunking done.
+total_size is 8
+Version: 66
+-----------------CHUNK NUM-----------------------
+logical chunk num: 20901
+unique chunk num: 3133
+base chunk num: 1979
+delta chunk num: 1154
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 589107200
+uniquechunkSize is 19108690
+base chunk size: 18562612
+delta chunk size: 546078
+-----------------METRICS-------------------------
+Overall Compression Ratio: 30.8293
+DCC: 0.368337
+DCR: 16.9217
+DCE: 55.2058
+-----------------Time------------------------------
+Version time: 0.177882s
+Throughput: 108.92MiB/s
+Reduce data speed: 6.47357MiB/s
+SF generation time: 0.000267262s
+SF generation throughput: 72494.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.561119MiB
+FP Overhead: 0.334641MiB
+SF Overhead: 0.226479MiB
+Recipe Overhead: 0.637848MiB
+SF number: 5937
+-----------------END-------------------------------
+2026-01-13 17:03:23 <Chunker>: chunking done.
+total_size is 8
+Version: 67
+-----------------CHUNK NUM-----------------------
+logical chunk num: 21388
+unique chunk num: 3196
+base chunk num: 2022
+delta chunk num: 1174
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 609914880
+uniquechunkSize is 19512541
+base chunk size: 18957874
+delta chunk size: 554667
+-----------------METRICS-------------------------
+Overall Compression Ratio: 31.2576
+DCC: 0.367334
+DCR: 16.9966
+DCE: 55.0105
+-----------------Time------------------------------
+Version time: 0.175761s
+Throughput: 112.902MiB/s
+Reduce data speed: 7.02739MiB/s
+SF generation time: 0.00051257s
+SF generation throughput: 38714.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.572769MiB
+FP Overhead: 0.34137MiB
+SF Overhead: 0.2314MiB
+Recipe Overhead: 0.65271MiB
+SF number: 6066
+-----------------END-------------------------------
+2026-01-13 17:03:23 <Chunker>: chunking done.
+total_size is 8
+Version: 68
+-----------------CHUNK NUM-----------------------
+logical chunk num: 21883
+unique chunk num: 3248
+base chunk num: 2060
+delta chunk num: 1188
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 631316480
+uniquechunkSize is 20061974
+base chunk size: 19500778
+delta chunk size: 561196
+-----------------METRICS-------------------------
+Overall Compression Ratio: 31.4683
+DCC: 0.365764
+DCR: 17.1191
+DCE: 54.9673
+-----------------Time------------------------------
+Version time: 0.181778s
+Throughput: 112.281MiB/s
+Reduce data speed: 7.02818MiB/s
+SF generation time: 0.0005582s
+SF generation throughput: 36564.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.582672MiB
+FP Overhead: 0.346924MiB
+SF Overhead: 0.235748MiB
+Recipe Overhead: 0.667816MiB
+SF number: 6180
+-----------------END-------------------------------
+2026-01-13 17:03:24 <Chunker>: chunking done.
+total_size is 8
+Version: 69
+-----------------CHUNK NUM-----------------------
+logical chunk num: 22380
+unique chunk num: 3296
+base chunk num: 2095
+delta chunk num: 1201
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 652738560
+uniquechunkSize is 20118817
+base chunk size: 19550826
+delta chunk size: 567991
+-----------------METRICS-------------------------
+Overall Compression Ratio: 32.4442
+DCC: 0.364381
+DCR: 17.1415
+DCE: 54.6586
+-----------------Time------------------------------
+Version time: 0.178278s
+Throughput: 114.595MiB/s
+Reduce data speed: 6.97164MiB/s
+SF generation time: 0.000247132s
+SF generation throughput: 82667.1MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.591805MiB
+FP Overhead: 0.352051MiB
+SF Overhead: 0.239754MiB
+Recipe Overhead: 0.682983MiB
+SF number: 6285
+-----------------END-------------------------------
+2026-01-13 17:03:24 <Chunker>: chunking done.
+total_size is 8
+Version: 70
+-----------------CHUNK NUM-----------------------
+logical chunk num: 22881
+unique chunk num: 3349
+base chunk num: 2132
+delta chunk num: 1217
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 672901120
+uniquechunkSize is 20186119
+base chunk size: 19613997
+delta chunk size: 572122
+-----------------METRICS-------------------------
+Overall Compression Ratio: 33.3348
+DCC: 0.363392
+DCR: 17.2414
+DCE: 54.9185
+-----------------Time------------------------------
+Version time: 0.165716s
+Throughput: 116.033MiB/s
+Reduce data speed: 1.06158e+14MiB/s
+SF generation time: 0.000259279s
+SF generation throughput: 74161.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.6017MiB
+FP Overhead: 0.357712MiB
+SF Overhead: 0.243988MiB
+Recipe Overhead: 0.698273MiB
+SF number: 6396
+-----------------END-------------------------------
+2026-01-13 17:03:24 <Chunker>: chunking done.
+total_size is 8
+Version: 71
+-----------------CHUNK NUM-----------------------
+logical chunk num: 23382
+unique chunk num: 3393
+base chunk num: 2169
+delta chunk num: 1224
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 693063680
+uniquechunkSize is 20219074
+base chunk size: 19643820
+delta chunk size: 575254
+-----------------METRICS-------------------------
+Overall Compression Ratio: 34.2777
+DCC: 0.360743
+DCR: 17.3193
+DCE: 54.9024
+-----------------Time------------------------------
+Version time: 0.170907s
+Throughput: 112.509MiB/s
+Reduce data speed: 1.02934e+14MiB/s
+SF generation time: 0.000217875s
+SF generation throughput: 88254.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.610634MiB
+FP Overhead: 0.362411MiB
+SF Overhead: 0.248222MiB
+Recipe Overhead: 0.713562MiB
+SF number: 6507
+-----------------END-------------------------------
+2026-01-13 17:03:24 <Chunker>: chunking done.
+total_size is 8
+Version: 72
+-----------------CHUNK NUM-----------------------
+logical chunk num: 23886
+unique chunk num: 3451
+base chunk num: 2207
+delta chunk num: 1244
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 713349120
+uniquechunkSize is 20315405
+base chunk size: 19729628
+delta chunk size: 585777
+-----------------METRICS-------------------------
+Overall Compression Ratio: 35.1137
+DCC: 0.360475
+DCR: 17.405
+DCE: 54.6247
+-----------------Time------------------------------
+Version time: 0.169399s
+Throughput: 114.202MiB/s
+Reduce data speed: 1.0385e+14MiB/s
+SF generation time: 0.000370741s
+SF generation throughput: 52181.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.621178MiB
+FP Overhead: 0.368607MiB
+SF Overhead: 0.252571MiB
+Recipe Overhead: 0.728943MiB
+SF number: 6621
+-----------------END-------------------------------
+2026-01-13 17:03:24 <Chunker>: chunking done.
+total_size is 8
+Version: 73
+-----------------CHUNK NUM-----------------------
+logical chunk num: 24390
+unique chunk num: 3493
+base chunk num: 2238
+delta chunk num: 1255
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 733634560
+uniquechunkSize is 20342384
+base chunk size: 19751878
+delta chunk size: 590506
+-----------------METRICS-------------------------
+Overall Compression Ratio: 36.0643
+DCC: 0.35929
+DCR: 17.6046
+DCE: 54.6016
+-----------------Time------------------------------
+Version time: 0.17726s
+Throughput: 109.138MiB/s
+Reduce data speed: 9.92453e+13MiB/s
+SF generation time: 0.000248097s
+SF generation throughput: 77976.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.629211MiB
+FP Overhead: 0.373093MiB
+SF Overhead: 0.256119MiB
+Recipe Overhead: 0.744324MiB
+SF number: 6714
+-----------------END-------------------------------
+2026-01-13 17:03:24 <Chunker>: chunking done.
+total_size is 8
+Version: 74
+-----------------CHUNK NUM-----------------------
+logical chunk num: 24895
+unique chunk num: 3538
+base chunk num: 2272
+delta chunk num: 1266
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 753930240
+uniquechunkSize is 20377112
+base chunk size: 19780852
+delta chunk size: 596260
+-----------------METRICS-------------------------
+Overall Compression Ratio: 36.9989
+DCC: 0.357829
+DCR: 17.7739
+DCE: 54.4954
+-----------------Time------------------------------
+Version time: 0.189738s
+Throughput: 102.011MiB/s
+Reduce data speed: 9.27181e+13MiB/s
+SF generation time: 0.000278553s
+SF generation throughput: 69485.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.637909MiB
+FP Overhead: 0.377899MiB
+SF Overhead: 0.26001MiB
+Recipe Overhead: 0.759735MiB
+SF number: 6816
+-----------------END-------------------------------
+2026-01-13 17:03:25 <Chunker>: chunking done.
+total_size is 8
+Version: 75
+-----------------CHUNK NUM-----------------------
+logical chunk num: 25401
+unique chunk num: 3579
+base chunk num: 2304
+delta chunk num: 1275
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 774236160
+uniquechunkSize is 20422207
+base chunk size: 19822956
+delta chunk size: 599251
+-----------------METRICS-------------------------
+Overall Compression Ratio: 37.9115
+DCC: 0.356245
+DCR: 17.833
+DCE: 54.2922
+-----------------Time------------------------------
+Version time: 0.180481s
+Throughput: 107.298MiB/s
+Reduce data speed: 9.74738e+13MiB/s
+SF generation time: 0.000211873s
+SF generation throughput: 91400.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.64595MiB
+FP Overhead: 0.382278MiB
+SF Overhead: 0.263672MiB
+Recipe Overhead: 0.775177MiB
+SF number: 6912
+-----------------END-------------------------------
+2026-01-13 17:03:25 <Chunker>: chunking done.
+total_size is 8
+Version: 76
+-----------------CHUNK NUM-----------------------
+logical chunk num: 25907
+unique chunk num: 3620
+base chunk num: 2337
+delta chunk num: 1283
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 794542080
+uniquechunkSize is 20449967
+base chunk size: 19846692
+delta chunk size: 603275
+-----------------METRICS-------------------------
+Overall Compression Ratio: 38.853
+DCC: 0.35442
+DCR: 17.9144
+DCE: 54.2127
+-----------------Time------------------------------
+Version time: 0.166634s
+Throughput: 116.214MiB/s
+Reduce data speed: 1.05574e+14MiB/s
+SF generation time: 0.000225717s
+SF generation throughput: 85794.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.654106MiB
+FP Overhead: 0.386658MiB
+SF Overhead: 0.267448MiB
+Recipe Overhead: 0.790619MiB
+SF number: 7011
+-----------------END-------------------------------
+2026-01-13 17:03:25 <Chunker>: chunking done.
+total_size is 8
+Version: 77
+-----------------CHUNK NUM-----------------------
+logical chunk num: 26413
+unique chunk num: 3668
+base chunk num: 2372
+delta chunk num: 1296
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 814827520
+uniquechunkSize is 20498354
+base chunk size: 19887202
+delta chunk size: 611152
+-----------------METRICS-------------------------
+Overall Compression Ratio: 39.7509
+DCC: 0.353326
+DCR: 18.0069
+DCE: 54.1052
+-----------------Time------------------------------
+Version time: 0.178571s
+Throughput: 108.336MiB/s
+Reduce data speed: 9.85167e+13MiB/s
+SF generation time: 0.000290868s
+SF generation throughput: 66510.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.663239MiB
+FP Overhead: 0.391785MiB
+SF Overhead: 0.271454MiB
+Recipe Overhead: 0.806061MiB
+SF number: 7116
+-----------------END-------------------------------
+2026-01-13 17:03:25 <Chunker>: chunking done.
+total_size is 8
+Version: 78
+-----------------CHUNK NUM-----------------------
+logical chunk num: 26921
+unique chunk num: 3715
+base chunk num: 2408
+delta chunk num: 1307
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 835123200
+uniquechunkSize is 20545225
+base chunk size: 19930483
+delta chunk size: 614742
+-----------------METRICS-------------------------
+Overall Compression Ratio: 40.648
+DCC: 0.351817
+DCR: 18.1291
+DCE: 54.2666
+-----------------Time------------------------------
+Version time: 0.16886s
+Throughput: 114.624MiB/s
+Reduce data speed: 1.04182e+14MiB/s
+SF generation time: 0.000260167s
+SF generation throughput: 74396.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.672379MiB
+FP Overhead: 0.396805MiB
+SF Overhead: 0.275574MiB
+Recipe Overhead: 0.821564MiB
+SF number: 7224
+-----------------END-------------------------------
+2026-01-13 17:03:25 <Chunker>: chunking done.
+total_size is 8
+Version: 79
+-----------------CHUNK NUM-----------------------
+logical chunk num: 27429
+unique chunk num: 3758
+base chunk num: 2442
+delta chunk num: 1316
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 855418880
+uniquechunkSize is 20575542
+base chunk size: 19956192
+delta chunk size: 619350
+-----------------METRICS-------------------------
+Overall Compression Ratio: 41.5745
+DCC: 0.350186
+DCR: 18.2414
+DCE: 54.1941
+-----------------Time------------------------------
+Version time: 0.167587s
+Throughput: 115.495MiB/s
+Reduce data speed: 1.04974e+14MiB/s
+SF generation time: 0.000237755s
+SF generation throughput: 81409.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.680862MiB
+FP Overhead: 0.401398MiB
+SF Overhead: 0.279465MiB
+Recipe Overhead: 0.837067MiB
+SF number: 7326
+-----------------END-------------------------------
+2026-01-13 17:03:26 <Chunker>: chunking done.
+total_size is 8
+Version: 80
+-----------------CHUNK NUM-----------------------
+logical chunk num: 27940
+unique chunk num: 3811
+base chunk num: 2477
+delta chunk num: 1334
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 875735040
+uniquechunkSize is 20616004
+base chunk size: 19984227
+delta chunk size: 631777
+-----------------METRICS-------------------------
+Overall Compression Ratio: 42.4784
+DCC: 0.350039
+DCR: 18.3032
+DCE: 54.3245
+-----------------Time------------------------------
+Version time: 0.174886s
+Throughput: 110.786MiB/s
+Reduce data speed: 1.00592e+14MiB/s
+SF generation time: 0.000318351s
+SF generation throughput: 60860.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.690529MiB
+FP Overhead: 0.407059MiB
+SF Overhead: 0.28347MiB
+Recipe Overhead: 0.852661MiB
+SF number: 7431
+-----------------END-------------------------------
+2026-01-13 17:03:26 <Chunker>: chunking done.
+total_size is 8
+Version: 81
+-----------------CHUNK NUM-----------------------
+logical chunk num: 28451
+unique chunk num: 3860
+base chunk num: 2511
+delta chunk num: 1349
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 896051200
+uniquechunkSize is 20670400
+base chunk size: 20029664
+delta chunk size: 640736
+-----------------METRICS-------------------------
+Overall Compression Ratio: 43.3495
+DCC: 0.349482
+DCR: 18.4068
+DCE: 54.1093
+-----------------Time------------------------------
+Version time: 0.182037s
+Throughput: 106.435MiB/s
+Reduce data speed: 9.66408e+13MiB/s
+SF generation time: 0.000312659s
+SF generation throughput: 61968.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.699654MiB
+FP Overhead: 0.412292MiB
+SF Overhead: 0.287361MiB
+Recipe Overhead: 0.868256MiB
+SF number: 7533
+-----------------END-------------------------------
+2026-01-13 17:03:26 <Chunker>: chunking done.
+total_size is 8
+Version: 82
+-----------------CHUNK NUM-----------------------
+logical chunk num: 28962
+unique chunk num: 3901
+base chunk num: 2545
+delta chunk num: 1356
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 916367360
+uniquechunkSize is 20699921
+base chunk size: 20055846
+delta chunk size: 644075
+-----------------METRICS-------------------------
+Overall Compression Ratio: 44.2691
+DCC: 0.347603
+DCR: 18.5022
+DCE: 54.3843
+-----------------Time------------------------------
+Version time: 0.169367s
+Throughput: 114.397MiB/s
+Reduce data speed: 1.0387e+14MiB/s
+SF generation time: 0.000229912s
+SF generation throughput: 84271.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.707924MiB
+FP Overhead: 0.416672MiB
+SF Overhead: 0.291252MiB
+Recipe Overhead: 0.88385MiB
+SF number: 7635
+-----------------END-------------------------------
+2026-01-13 17:03:26 <Chunker>: chunking done.
+total_size is 8
+Version: 83
+-----------------CHUNK NUM-----------------------
+logical chunk num: 29473
+unique chunk num: 3944
+base chunk num: 2579
+delta chunk num: 1365
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 936683520
+uniquechunkSize is 20731251
+base chunk size: 20080528
+delta chunk size: 650723
+-----------------METRICS-------------------------
+Overall Compression Ratio: 45.1822
+DCC: 0.346095
+DCR: 18.5209
+DCE: 54.4471
+-----------------Time------------------------------
+Version time: 0.177228s
+Throughput: 109.323MiB/s
+Reduce data speed: 9.92631e+13MiB/s
+SF generation time: 0.000246322s
+SF generation throughput: 78657.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.716408MiB
+FP Overhead: 0.421265MiB
+SF Overhead: 0.295143MiB
+Recipe Overhead: 0.899445MiB
+SF number: 7737
+-----------------END-------------------------------
+2026-01-13 17:03:26 <Chunker>: chunking done.
+total_size is 8
+Version: 84
+-----------------CHUNK NUM-----------------------
+logical chunk num: 29989
+unique chunk num: 3994
+base chunk num: 2614
+delta chunk num: 1380
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 957020160
+uniquechunkSize is 20768184
+base chunk size: 20109318
+delta chunk size: 658866
+-----------------METRICS-------------------------
+Overall Compression Ratio: 46.0811
+DCC: 0.345518
+DCR: 18.5919
+DCE: 54.281
+-----------------Time------------------------------
+Version time: 0.17193s
+Throughput: 112.805MiB/s
+Reduce data speed: 1.02322e+14MiB/s
+SF generation time: 0.000261553s
+SF generation throughput: 74151.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.725754MiB
+FP Overhead: 0.426605MiB
+SF Overhead: 0.299149MiB
+Recipe Overhead: 0.915192MiB
+SF number: 7842
+-----------------END-------------------------------
+2026-01-13 17:03:26 <Chunker>: chunking done.
+total_size is 8
+Version: 85
+-----------------CHUNK NUM-----------------------
+logical chunk num: 30505
+unique chunk num: 4045
+base chunk num: 2648
+delta chunk num: 1397
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 977356800
+uniquechunkSize is 20806228
+base chunk size: 20137257
+delta chunk size: 668971
+-----------------METRICS-------------------------
+Overall Compression Ratio: 46.9742
+DCC: 0.345365
+DCR: 18.6188
+DCE: 54.0667
+-----------------Time------------------------------
+Version time: 0.170785s
+Throughput: 113.561MiB/s
+Reduce data speed: 1.03008e+14MiB/s
+SF generation time: 0.000261863s
+SF generation throughput: 74063.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.735092MiB
+FP Overhead: 0.432053MiB
+SF Overhead: 0.30304MiB
+Recipe Overhead: 0.930939MiB
+SF number: 7944
+-----------------END-------------------------------
+2026-01-13 17:03:27 <Chunker>: chunking done.
+total_size is 8
+Version: 86
+-----------------CHUNK NUM-----------------------
+logical chunk num: 31039
+unique chunk num: 4115
+base chunk num: 2694
+delta chunk num: 1421
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 997765120
+uniquechunkSize is 20866867
+base chunk size: 20184942
+delta chunk size: 681925
+-----------------METRICS-------------------------
+Overall Compression Ratio: 47.8158
+DCC: 0.345322
+DCR: 18.6803
+DCE: 53.873
+-----------------Time------------------------------
+Version time: 0.168995s
+Throughput: 115.168MiB/s
+Reduce data speed: 1.04099e+14MiB/s
+SF generation time: 0.000366143s
+SF generation throughput: 53156.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.747833MiB
+FP Overhead: 0.439529MiB
+SF Overhead: 0.308304MiB
+Recipe Overhead: 0.947235MiB
+SF number: 8082
+-----------------END-------------------------------
+2026-01-13 17:03:27 <Chunker>: chunking done.
+total_size is 8
+Version: 87
+-----------------CHUNK NUM-----------------------
+logical chunk num: 31573
+unique chunk num: 4159
+base chunk num: 2730
+delta chunk num: 1429
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1018173440
+uniquechunkSize is 20904003
+base chunk size: 20211115
+delta chunk size: 692888
+-----------------METRICS-------------------------
+Overall Compression Ratio: 48.7071
+DCC: 0.343592
+DCR: 18.616
+DCE: 53.7102
+-----------------Time------------------------------
+Version time: 0.177143s
+Throughput: 109.871MiB/s
+Reduce data speed: 9.93104e+13MiB/s
+SF generation time: 0.000253492s
+SF generation throughput: 76779.1MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.756653MiB
+FP Overhead: 0.444229MiB
+SF Overhead: 0.312424MiB
+Recipe Overhead: 0.963531MiB
+SF number: 8190
+-----------------END-------------------------------
+2026-01-13 17:03:27 <Chunker>: chunking done.
+total_size is 8
+Version: 88
+-----------------CHUNK NUM-----------------------
+logical chunk num: 32110
+unique chunk num: 4211
+base chunk num: 2770
+delta chunk num: 1441
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1038602240
+uniquechunkSize is 20946074
+base chunk size: 20245690
+delta chunk size: 700384
+-----------------METRICS-------------------------
+Overall Compression Ratio: 49.5846
+DCC: 0.342199
+DCR: 18.6266
+DCE: 53.8178
+-----------------Time------------------------------
+Version time: 0.166137s
+Throughput: 117.267MiB/s
+Reduce data speed: 1.0589e+14MiB/s
+SF generation time: 0.000257688s
+SF generation throughput: 75604.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.766785MiB
+FP Overhead: 0.449783MiB
+SF Overhead: 0.317001MiB
+Recipe Overhead: 0.979919MiB
+SF number: 8310
+-----------------END-------------------------------
+2026-01-13 17:03:27 <Chunker>: chunking done.
+total_size is 8
+Version: 89
+-----------------CHUNK NUM-----------------------
+logical chunk num: 32647
+unique chunk num: 4255
+base chunk num: 2805
+delta chunk num: 1450
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1059031040
+uniquechunkSize is 20978886
+base chunk size: 20270894
+delta chunk size: 707992
+-----------------METRICS-------------------------
+Overall Compression Ratio: 50.4808
+DCC: 0.340776
+DCR: 18.6181
+DCE: 53.7426
+-----------------Time------------------------------
+Version time: 0.168587s
+Throughput: 115.563MiB/s
+Reduce data speed: 1.04351e+14MiB/s
+SF generation time: 0.000238381s
+SF generation throughput: 81728.1MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.77549MiB
+FP Overhead: 0.454483MiB
+SF Overhead: 0.321007MiB
+Recipe Overhead: 0.996307MiB
+SF number: 8415
+-----------------END-------------------------------
+2026-01-13 17:03:27 <Chunker>: chunking done.
+total_size is 8
+Version: 90
+-----------------CHUNK NUM-----------------------
+logical chunk num: 33187
+unique chunk num: 4315
+base chunk num: 2847
+delta chunk num: 1468
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1079521280
+uniquechunkSize is 21050105
+base chunk size: 20327934
+delta chunk size: 722171
+-----------------METRICS-------------------------
+Overall Compression Ratio: 51.2834
+DCC: 0.340209
+DCR: 18.5893
+DCE: 53.6854
+-----------------Time------------------------------
+Version time: 0.173394s
+Throughput: 112.697MiB/s
+Reduce data speed: 1.01458e+14MiB/s
+SF generation time: 0.000356428s
+SF generation throughput: 54824.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.786705MiB
+FP Overhead: 0.460892MiB
+SF Overhead: 0.325813MiB
+Recipe Overhead: 1.01279MiB
+SF number: 8541
+-----------------END-------------------------------
+2026-01-13 17:03:27 <Chunker>: chunking done.
+total_size is 8
+Version: 91
+-----------------CHUNK NUM-----------------------
+logical chunk num: 33729
+unique chunk num: 4365
+base chunk num: 2882
+delta chunk num: 1483
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1100021760
+uniquechunkSize is 21089068
+base chunk size: 20355250
+delta chunk size: 733818
+-----------------METRICS-------------------------
+Overall Compression Ratio: 52.1608
+DCC: 0.339748
+DCR: 18.5754
+DCE: 53.7095
+-----------------Time------------------------------
+Version time: 0.16952s
+Throughput: 115.33MiB/s
+Reduce data speed: 1.03776e+14MiB/s
+SF generation time: 0.000272673s
+SF generation throughput: 71700.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.796051MiB
+FP Overhead: 0.466232MiB
+SF Overhead: 0.329819MiB
+Recipe Overhead: 1.02933MiB
+SF number: 8646
+-----------------END-------------------------------
+2026-01-13 17:03:28 <Chunker>: chunking done.
+total_size is 8
+Version: 92
+-----------------CHUNK NUM-----------------------
+logical chunk num: 34270
+unique chunk num: 4417
+base chunk num: 2918
+delta chunk num: 1499
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1120522240
+uniquechunkSize is 21136187
+base chunk size: 20390121
+delta chunk size: 746066
+-----------------METRICS-------------------------
+Overall Compression Ratio: 53.0144
+DCC: 0.339371
+DCR: 18.5745
+DCE: 53.7445
+-----------------Time------------------------------
+Version time: 0.175364s
+Throughput: 111.487MiB/s
+Reduce data speed: 1.00318e+14MiB/s
+SF generation time: 0.000291387s
+SF generation throughput: 67095.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.805725MiB
+FP Overhead: 0.471786MiB
+SF Overhead: 0.333939MiB
+Recipe Overhead: 1.04584MiB
+SF number: 8754
+-----------------END-------------------------------
+2026-01-13 17:03:28 <Chunker>: chunking done.
+total_size is 8
+Version: 93
+-----------------CHUNK NUM-----------------------
+logical chunk num: 34811
+unique chunk num: 4469
+base chunk num: 2955
+delta chunk num: 1514
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1141022720
+uniquechunkSize is 21173029
+base chunk size: 20420119
+delta chunk size: 752910
+-----------------METRICS-------------------------
+Overall Compression Ratio: 53.8904
+DCC: 0.338778
+DCR: 18.6437
+DCE: 54.2482
+-----------------Time------------------------------
+Version time: 0.168041s
+Throughput: 116.345MiB/s
+Reduce data speed: 1.0469e+14MiB/s
+SF generation time: 0.000278914s
+SF generation throughput: 70096.1MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.815514MiB
+FP Overhead: 0.477341MiB
+SF Overhead: 0.338173MiB
+Recipe Overhead: 1.06235MiB
+SF number: 8865
+-----------------END-------------------------------
+2026-01-13 17:03:28 <Chunker>: chunking done.
+total_size is 8
+Version: 94
+-----------------CHUNK NUM-----------------------
+logical chunk num: 35352
+unique chunk num: 4520
+base chunk num: 2989
+delta chunk num: 1531
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1161523200
+uniquechunkSize is 21207210
+base chunk size: 20444328
+delta chunk size: 762882
+-----------------METRICS-------------------------
+Overall Compression Ratio: 54.7702
+DCC: 0.338717
+DCR: 18.7416
+DCE: 54.5578
+-----------------Time------------------------------
+Version time: 0.167649s
+Throughput: 116.617MiB/s
+Reduce data speed: 1.04935e+14MiB/s
+SF generation time: 0.000297719s
+SF generation throughput: 65668.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.824852MiB
+FP Overhead: 0.482788MiB
+SF Overhead: 0.342064MiB
+Recipe Overhead: 1.07886MiB
+SF number: 8967
+-----------------END-------------------------------
+2026-01-13 17:03:28 <Chunker>: chunking done.
+total_size is 8
+Version: 95
+-----------------CHUNK NUM-----------------------
+logical chunk num: 35895
+unique chunk num: 4582
+base chunk num: 3029
+delta chunk num: 1553
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1182044160
+uniquechunkSize is 21263365
+base chunk size: 20484097
+delta chunk size: 779268
+-----------------METRICS-------------------------
+Overall Compression Ratio: 55.5906
+DCC: 0.338935
+DCR: 18.8166
+DCE: 54.5276
+-----------------Time------------------------------
+Version time: 0.171995s
+Throughput: 113.784MiB/s
+Reduce data speed: 1.02283e+14MiB/s
+SF generation time: 0.000396273s
+SF generation throughput: 49385.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.836052MiB
+FP Overhead: 0.48941MiB
+SF Overhead: 0.346642MiB
+Recipe Overhead: 1.09543MiB
+SF number: 9087
+-----------------END-------------------------------
+2026-01-13 17:03:28 <Chunker>: chunking done.
+total_size is 8
+Version: 96
+-----------------CHUNK NUM-----------------------
+logical chunk num: 36440
+unique chunk num: 4771
+base chunk num: 3070
+delta chunk num: 1701
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1202575360
+uniquechunkSize is 21347024
+base chunk size: 20518313
+delta chunk size: 828711
+-----------------METRICS-------------------------
+Overall Compression Ratio: 56.3346
+DCC: 0.356529
+DCR: 19.0736
+DCE: 55.5097
+-----------------Time------------------------------
+Version time: 0.181835s
+Throughput: 107.68MiB/s
+Reduce data speed: 9.67479e+13MiB/s
+SF generation time: 0.000877465s
+SF generation throughput: 22314.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.860931MiB
+FP Overhead: 0.509598MiB
+SF Overhead: 0.351334MiB
+Recipe Overhead: 1.11206MiB
+SF number: 9210
+-----------------END-------------------------------
+2026-01-13 17:03:28 <Chunker>: chunking done.
+total_size is 8
+Version: 97
+-----------------CHUNK NUM-----------------------
+logical chunk num: 36990
+unique chunk num: 4825
+base chunk num: 3110
+delta chunk num: 1715
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1223116800
+uniquechunkSize is 21391605
+base chunk size: 20554039
+delta chunk size: 837566
+-----------------METRICS-------------------------
+Overall Compression Ratio: 57.1774
+DCC: 0.35544
+DCR: 19.0461
+DCE: 55.245
+-----------------Time------------------------------
+Version time: 0.177312s
+Throughput: 110.483MiB/s
+Reduce data speed: 9.92162e+13MiB/s
+SF generation time: 0.000265399s
+SF generation throughput: 73812.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.871277MiB
+FP Overhead: 0.515366MiB
+SF Overhead: 0.355911MiB
+Recipe Overhead: 1.12885MiB
+SF number: 9330
+-----------------END-------------------------------
+2026-01-13 17:03:29 <Chunker>: chunking done.
+total_size is 8
+Version: 98
+-----------------CHUNK NUM-----------------------
+logical chunk num: 37540
+unique chunk num: 4867
+base chunk num: 3145
+delta chunk num: 1722
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1243658240
+uniquechunkSize is 21423424
+base chunk size: 20579262
+delta chunk size: 844162
+-----------------METRICS-------------------------
+Overall Compression Ratio: 58.0513
+DCC: 0.353811
+DCR: 18.9962
+DCE: 55.0921
+-----------------Time------------------------------
+Version time: 0.165086s
+Throughput: 118.664MiB/s
+Reduce data speed: 1.06564e+14MiB/s
+SF generation time: 0.000202334s
+SF generation throughput: 96819.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.879768MiB
+FP Overhead: 0.519852MiB
+SF Overhead: 0.359917MiB
+Recipe Overhead: 1.14563MiB
+SF number: 9435
+-----------------END-------------------------------
+2026-01-13 17:03:29 <Chunker>: chunking done.
+total_size is 8
+Version: 99
+-----------------CHUNK NUM-----------------------
+logical chunk num: 38097
+unique chunk num: 4928
+base chunk num: 3192
+delta chunk num: 1736
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1264240640
+uniquechunkSize is 21492148
+base chunk size: 20638183
+delta chunk size: 853965
+-----------------METRICS-------------------------
+Overall Compression Ratio: 58.8234
+DCC: 0.352273
+DCR: 18.9658
+DCE: 55.0423
+-----------------Time------------------------------
+Version time: 0.173188s
+Throughput: 113.339MiB/s
+Reduce data speed: 1.01578e+14MiB/s
+SF generation time: 0.00030088s
+SF generation throughput: 65238.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.891663MiB
+FP Overhead: 0.526367MiB
+SF Overhead: 0.365295MiB
+Recipe Overhead: 1.16263MiB
+SF number: 9576
+-----------------END-------------------------------
+2026-01-13 17:03:29 <Chunker>: chunking done.
+total_size is 8
+Version: 100
+-----------------CHUNK NUM-----------------------
+logical chunk num: 38655
+unique chunk num: 4980
+base chunk num: 3232
+delta chunk num: 1748
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1284823040
+uniquechunkSize is 21539982
+base chunk size: 20671233
+delta chunk size: 868749
+-----------------METRICS-------------------------
+Overall Compression Ratio: 59.6483
+DCC: 0.351004
+DCR: 18.8705
+DCE: 54.9199
+-----------------Time------------------------------
+Version time: 0.178263s
+Throughput: 110.112MiB/s
+Reduce data speed: 9.86869e+13MiB/s
+SF generation time: 0.000284713s
+SF generation throughput: 68942.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.901794MiB
+FP Overhead: 0.531921MiB
+SF Overhead: 0.369873MiB
+Recipe Overhead: 1.17966MiB
+SF number: 9696
+-----------------END-------------------------------
+2026-01-13 17:03:29 <Chunker>: chunking done.
+total_size is 8
+Version: 101
+-----------------CHUNK NUM-----------------------
+logical chunk num: 39216
+unique chunk num: 5038
+base chunk num: 3273
+delta chunk num: 1765
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1305425920
+uniquechunkSize is 21599521
+base chunk size: 20710241
+delta chunk size: 889280
+-----------------METRICS-------------------------
+Overall Compression Ratio: 60.4377
+DCC: 0.350337
+DCR: 18.7751
+DCE: 54.6474
+-----------------Time------------------------------
+Version time: 0.181138s
+Throughput: 108.472MiB/s
+Reduce data speed: 9.71205e+13MiB/s
+SF generation time: 0.000382128s
+SF generation throughput: 51418.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.912682MiB
+FP Overhead: 0.538116MiB
+SF Overhead: 0.374565MiB
+Recipe Overhead: 1.19678MiB
+SF number: 9819
+-----------------END-------------------------------
+2026-01-13 17:03:29 <Chunker>: chunking done.
+total_size is 8
+Version: 102
+-----------------CHUNK NUM-----------------------
+logical chunk num: 39777
+unique chunk num: 5084
+base chunk num: 3312
+delta chunk num: 1772
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1326028800
+uniquechunkSize is 21651429
+base chunk size: 20752191
+delta chunk size: 899238
+-----------------METRICS-------------------------
+Overall Compression Ratio: 61.2444
+DCC: 0.348544
+DCR: 18.7295
+DCE: 54.5085
+-----------------Time------------------------------
+Version time: 0.174682s
+Throughput: 112.481MiB/s
+Reduce data speed: 1.0071e+14MiB/s
+SF generation time: 0.000268885s
+SF generation throughput: 73073.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.922058MiB
+FP Overhead: 0.54303MiB
+SF Overhead: 0.379028MiB
+Recipe Overhead: 1.2139MiB
+SF number: 9936
+-----------------END-------------------------------
+2026-01-13 17:03:29 <Chunker>: chunking done.
+total_size is 8
+Version: 103
+-----------------CHUNK NUM-----------------------
+logical chunk num: 40338
+unique chunk num: 5130
+base chunk num: 3347
+delta chunk num: 1783
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1346631680
+uniquechunkSize is 21690866
+base chunk size: 20777045
+delta chunk size: 913821
+-----------------METRICS-------------------------
+Overall Compression Ratio: 62.0829
+DCC: 0.347563
+DCR: 18.6491
+DCE: 54.6946
+-----------------Time------------------------------
+Version time: 0.171885s
+Throughput: 114.312MiB/s
+Reduce data speed: 1.02349e+14MiB/s
+SF generation time: 0.000266401s
+SF generation throughput: 73755.1MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.930977MiB
+FP Overhead: 0.547943MiB
+SF Overhead: 0.383034MiB
+Recipe Overhead: 1.23102MiB
+SF number: 10041
+-----------------END-------------------------------
+2026-01-13 17:03:30 <Chunker>: chunking done.
+total_size is 8
+Version: 104
+-----------------CHUNK NUM-----------------------
+logical chunk num: 40899
+unique chunk num: 5176
+base chunk num: 3383
+delta chunk num: 1793
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1367234560
+uniquechunkSize is 21752586
+base chunk size: 20826411
+delta chunk size: 926175
+-----------------METRICS-------------------------
+Overall Compression Ratio: 62.8539
+DCC: 0.346406
+DCR: 18.5767
+DCE: 54.501
+-----------------Time------------------------------
+Version time: 0.173476s
+Throughput: 113.263MiB/s
+Reduce data speed: 1.0141e+14MiB/s
+SF generation time: 0.000280489s
+SF generation throughput: 70050.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.94001MiB
+FP Overhead: 0.552856MiB
+SF Overhead: 0.387154MiB
+Recipe Overhead: 1.24814MiB
+SF number: 10149
+-----------------END-------------------------------
+2026-01-13 17:03:30 <Chunker>: chunking done.
+total_size is 8
+Version: 105
+-----------------CHUNK NUM-----------------------
+logical chunk num: 41459
+unique chunk num: 5227
+base chunk num: 3423
+delta chunk num: 1804
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1387837440
+uniquechunkSize is 21814504
+base chunk size: 20877861
+delta chunk size: 936643
+-----------------METRICS-------------------------
+Overall Compression Ratio: 63.6199
+DCC: 0.345131
+DCR: 18.5631
+DCE: 54.6343
+-----------------Time------------------------------
+Version time: 0.171935s
+Throughput: 114.278MiB/s
+Reduce data speed: 1.02319e+14MiB/s
+SF generation time: 0.000297245s
+SF generation throughput: 66101.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.950035MiB
+FP Overhead: 0.558304MiB
+SF Overhead: 0.391731MiB
+Recipe Overhead: 1.26523MiB
+SF number: 10269
+-----------------END-------------------------------
+2026-01-13 17:03:30 <Chunker>: chunking done.
+total_size is 8
+Version: 106
+-----------------CHUNK NUM-----------------------
+logical chunk num: 42054
+unique chunk num: 5315
+base chunk num: 3486
+delta chunk num: 1829
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1411123200
+uniquechunkSize is 24082988
+base chunk size: 23127870
+delta chunk size: 955118
+-----------------METRICS-------------------------
+Overall Compression Ratio: 58.5942
+DCC: 0.34412
+DCR: 18.5471
+DCE: 54.2543
+-----------------Time------------------------------
+Version time: 0.207799s
+Throughput: 106.868MiB/s
+Reduce data speed: 8.46596e+13MiB/s
+SF generation time: 0.00168389s
+SF generation throughput: 13188MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.966644MiB
+FP Overhead: 0.567703MiB
+SF Overhead: 0.398941MiB
+Recipe Overhead: 1.28339MiB
+SF number: 10458
+-----------------END-------------------------------
+2026-01-13 17:03:30 <Chunker>: chunking done.
+total_size is 8
+Version: 107
+-----------------CHUNK NUM-----------------------
+logical chunk num: 42650
+unique chunk num: 5371
+base chunk num: 3528
+delta chunk num: 1843
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1434419200
+uniquechunkSize is 24141281
+base chunk size: 23172550
+delta chunk size: 968731
+-----------------METRICS-------------------------
+Overall Compression Ratio: 59.4177
+DCC: 0.343139
+DCR: 18.4746
+DCE: 54.1771
+-----------------Time------------------------------
+Version time: 0.196197s
+Throughput: 113.237MiB/s
+Reduce data speed: 8.96659e+13MiB/s
+SF generation time: 0.00030338s
+SF generation throughput: 73230.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.977432MiB
+FP Overhead: 0.573685MiB
+SF Overhead: 0.403748MiB
+Recipe Overhead: 1.30157MiB
+SF number: 10584
+-----------------END-------------------------------
+2026-01-13 17:03:30 <Chunker>: chunking done.
+total_size is 8
+Version: 108
+-----------------CHUNK NUM-----------------------
+logical chunk num: 43246
+unique chunk num: 5417
+base chunk num: 3567
+delta chunk num: 1850
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1457715200
+uniquechunkSize is 24178992
+base chunk size: 23200603
+delta chunk size: 978389
+-----------------METRICS-------------------------
+Overall Compression Ratio: 60.2885
+DCC: 0.341517
+DCR: 18.4079
+DCE: 54.045
+-----------------Time------------------------------
+Version time: 0.186648s
+Throughput: 119.03MiB/s
+Reduce data speed: 9.4253e+13MiB/s
+SF generation time: 0.000232967s
+SF generation throughput: 95364.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.986809MiB
+FP Overhead: 0.578598MiB
+SF Overhead: 0.408211MiB
+Recipe Overhead: 1.31976MiB
+SF number: 10701
+-----------------END-------------------------------
+2026-01-13 17:03:31 <Chunker>: chunking done.
+total_size is 8
+Version: 109
+-----------------CHUNK NUM-----------------------
+logical chunk num: 43842
+unique chunk num: 5467
+base chunk num: 3606
+delta chunk num: 1861
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1481011200
+uniquechunkSize is 24225548
+base chunk size: 23238002
+delta chunk size: 987546
+-----------------METRICS-------------------------
+Overall Compression Ratio: 61.1343
+DCC: 0.340406
+DCR: 18.3679
+DCE: 53.9457
+-----------------Time------------------------------
+Version time: 0.188259s
+Throughput: 118.012MiB/s
+Reduce data speed: 9.34465e+13MiB/s
+SF generation time: 0.000258221s
+SF generation throughput: 86037.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 0.996613MiB
+FP Overhead: 0.583939MiB
+SF Overhead: 0.412674MiB
+Recipe Overhead: 1.33795MiB
+SF number: 10818
+-----------------END-------------------------------
+2026-01-13 17:03:31 <Chunker>: chunking done.
+total_size is 8
+Version: 110
+-----------------CHUNK NUM-----------------------
+logical chunk num: 44438
+unique chunk num: 5515
+base chunk num: 3644
+delta chunk num: 1871
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1504307200
+uniquechunkSize is 24266471
+base chunk size: 23265510
+delta chunk size: 1000961
+-----------------METRICS-------------------------
+Overall Compression Ratio: 61.9912
+DCC: 0.339257
+DCR: 18.3089
+DCE: 53.7913
+-----------------Time------------------------------
+Version time: 0.203419s
+Throughput: 109.217MiB/s
+Reduce data speed: 8.64825e+13MiB/s
+SF generation time: 0.000281214s
+SF generation throughput: 79003.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.00609MiB
+FP Overhead: 0.589066MiB
+SF Overhead: 0.417023MiB
+Recipe Overhead: 1.35614MiB
+SF number: 10932
+-----------------END-------------------------------
+2026-01-13 17:03:31 <Chunker>: chunking done.
+total_size is 8
+Version: 111
+-----------------CHUNK NUM-----------------------
+logical chunk num: 45042
+unique chunk num: 5580
+base chunk num: 3691
+delta chunk num: 1889
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1527838720
+uniquechunkSize is 24511375
+base chunk size: 23492299
+delta chunk size: 1019076
+-----------------METRICS-------------------------
+Overall Compression Ratio: 62.3318
+DCC: 0.33853
+DCR: 18.3221
+DCE: 53.538
+-----------------Time------------------------------
+Version time: 0.210561s
+Throughput: 106.579MiB/s
+Reduce data speed: 8.35493e+13MiB/s
+SF generation time: 0.000520159s
+SF generation throughput: 43143.4MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.01841MiB
+FP Overhead: 0.596008MiB
+SF Overhead: 0.422401MiB
+Recipe Overhead: 1.37457MiB
+SF number: 11073
+-----------------END-------------------------------
+2026-01-13 17:03:31 <Chunker>: chunking done.
+total_size is 8
+Version: 112
+-----------------CHUNK NUM-----------------------
+logical chunk num: 45646
+unique chunk num: 5635
+base chunk num: 3726
+delta chunk num: 1909
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1551380480
+uniquechunkSize is 24561478
+base chunk size: 23522657
+delta chunk size: 1038821
+-----------------METRICS-------------------------
+Overall Compression Ratio: 63.1632
+DCC: 0.338776
+DCR: 18.276
+DCE: 53.5381
+-----------------Time------------------------------
+Version time: 0.19498s
+Throughput: 115.146MiB/s
+Reduce data speed: 9.02257e+13MiB/s
+SF generation time: 0.000330378s
+SF generation throughput: 67956MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.02829MiB
+FP Overhead: 0.601883MiB
+SF Overhead: 0.426407MiB
+Recipe Overhead: 1.39301MiB
+SF number: 11178
+-----------------END-------------------------------
+2026-01-13 17:03:31 <Chunker>: chunking done.
+total_size is 8
+Version: 113
+-----------------CHUNK NUM-----------------------
+logical chunk num: 46252
+unique chunk num: 5699
+base chunk num: 3769
+delta chunk num: 1930
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1574952960
+uniquechunkSize is 24661609
+base chunk size: 23603943
+delta chunk size: 1057666
+-----------------METRICS-------------------------
+Overall Compression Ratio: 63.8625
+DCC: 0.338656
+DCR: 18.2127
+DCE: 53.2207
+-----------------Time------------------------------
+Version time: 0.195099s
+Throughput: 115.226MiB/s
+Reduce data speed: 9.01704e+13MiB/s
+SF generation time: 0.00039888s
+SF generation throughput: 56359MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.04005MiB
+FP Overhead: 0.608719MiB
+SF Overhead: 0.431328MiB
+Recipe Overhead: 1.4115MiB
+SF number: 11307
+-----------------END-------------------------------
+2026-01-13 17:03:32 <Chunker>: chunking done.
+total_size is 8
+Version: 114
+-----------------CHUNK NUM-----------------------
+logical chunk num: 46862
+unique chunk num: 5763
+base chunk num: 3813
+delta chunk num: 1950
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1598894080
+uniquechunkSize is 25052649
+base chunk size: 23979364
+delta chunk size: 1073285
+-----------------METRICS-------------------------
+Overall Compression Ratio: 63.8214
+DCC: 0.338365
+DCR: 18.2501
+DCE: 53.5357
+-----------------Time------------------------------
+Version time: 0.200367s
+Throughput: 113.951MiB/s
+Reduce data speed: 8.77996e+13MiB/s
+SF generation time: 0.000557723s
+SF generation throughput: 40937.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.05192MiB
+FP Overhead: 0.615555MiB
+SF Overhead: 0.436363MiB
+Recipe Overhead: 1.43011MiB
+SF number: 11439
+-----------------END-------------------------------
+2026-01-13 17:03:32 <Chunker>: chunking done.
+total_size is 8
+Version: 115
+-----------------CHUNK NUM-----------------------
+logical chunk num: 47479
+unique chunk num: 5817
+base chunk num: 3855
+delta chunk num: 1962
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1622896640
+uniquechunkSize is 25106724
+base chunk size: 24023181
+delta chunk size: 1083543
+-----------------METRICS-------------------------
+Overall Compression Ratio: 64.6399
+DCC: 0.337287
+DCR: 18.1922
+DCE: 53.4451
+-----------------Time------------------------------
+Version time: 0.200318s
+Throughput: 114.271MiB/s
+Reduce data speed: 8.78211e+13MiB/s
+SF generation time: 0.000261497s
+SF generation throughput: 87536.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.06249MiB
+FP Overhead: 0.621323MiB
+SF Overhead: 0.44117MiB
+Recipe Overhead: 1.44894MiB
+SF number: 11565
+-----------------END-------------------------------
+2026-01-13 17:03:32 <Chunker>: chunking done.
+total_size is 8
+Version: 116
+-----------------CHUNK NUM-----------------------
+logical chunk num: 48096
+unique chunk num: 5867
+base chunk num: 3899
+delta chunk num: 1968
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1646899200
+uniquechunkSize is 25152667
+base chunk size: 24058357
+delta chunk size: 1094310
+-----------------METRICS-------------------------
+Overall Compression Ratio: 65.4761
+DCC: 0.335435
+DCR: 18.1287
+DCE: 53.3443
+-----------------Time------------------------------
+Version time: 0.197534s
+Throughput: 115.882MiB/s
+Reduce data speed: 8.90589e+13MiB/s
+SF generation time: 0.000269648s
+SF generation throughput: 84890.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.07287MiB
+FP Overhead: 0.626663MiB
+SF Overhead: 0.446205MiB
+Recipe Overhead: 1.46777MiB
+SF number: 11697
+-----------------END-------------------------------
+2026-01-13 17:03:32 <Chunker>: chunking done.
+total_size is 8
+Version: 117
+-----------------CHUNK NUM-----------------------
+logical chunk num: 48718
+unique chunk num: 5924
+base chunk num: 3943
+delta chunk num: 1981
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1670922240
+uniquechunkSize is 25199381
+base chunk size: 24095075
+delta chunk size: 1104306
+-----------------METRICS-------------------------
+Overall Compression Ratio: 66.3081
+DCC: 0.334402
+DCR: 18.0662
+DCE: 53.151
+-----------------Time------------------------------
+Version time: 0.211158s
+Throughput: 108.498MiB/s
+Reduce data speed: 8.33131e+13MiB/s
+SF generation time: 0.000257922s
+SF generation throughput: 88825.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.08399MiB
+FP Overhead: 0.632751MiB
+SF Overhead: 0.451241MiB
+Recipe Overhead: 1.48676MiB
+SF number: 11829
+-----------------END-------------------------------
+2026-01-13 17:03:32 <Chunker>: chunking done.
+total_size is 8
+Version: 118
+-----------------CHUNK NUM-----------------------
+logical chunk num: 49342
+unique chunk num: 5975
+base chunk num: 3983
+delta chunk num: 1992
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1694955520
+uniquechunkSize is 25244598
+base chunk size: 24129676
+delta chunk size: 1114922
+-----------------METRICS-------------------------
+Overall Compression Ratio: 67.1413
+DCC: 0.333389
+DCR: 18.0007
+DCE: 52.9676
+-----------------Time------------------------------
+Version time: 0.193335s
+Throughput: 118.55MiB/s
+Reduce data speed: 9.09931e+13MiB/s
+SF generation time: 0.000241665s
+SF generation throughput: 94841.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.09402MiB
+FP Overhead: 0.638199MiB
+SF Overhead: 0.455818MiB
+Recipe Overhead: 1.5058MiB
+SF number: 11949
+-----------------END-------------------------------
+2026-01-13 17:03:33 <Chunker>: chunking done.
+total_size is 8
+Version: 119
+-----------------CHUNK NUM-----------------------
+logical chunk num: 49967
+unique chunk num: 6050
+base chunk num: 4033
+delta chunk num: 2017
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1719265280
+uniquechunkSize is 25791502
+base chunk size: 24664079
+delta chunk size: 1127423
+-----------------METRICS-------------------------
+Overall Compression Ratio: 66.6601
+DCC: 0.333388
+DCR: 18.0418
+DCE: 53.6172
+-----------------Time------------------------------
+Version time: 0.218815s
+Throughput: 105.951MiB/s
+Reduce data speed: 8.03976e+13MiB/s
+SF generation time: 0.000986276s
+SF generation throughput: 23506.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.10775MiB
+FP Overhead: 0.64621MiB
+SF Overhead: 0.46154MiB
+Recipe Overhead: 1.52487MiB
+SF number: 12099
+-----------------END-------------------------------
+2026-01-13 17:03:33 <Chunker>: chunking done.
+total_size is 8
+Version: 120
+-----------------CHUNK NUM-----------------------
+logical chunk num: 50604
+unique chunk num: 6125
+base chunk num: 4088
+delta chunk num: 2037
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1743616000
+uniquechunkSize is 25857203
+base chunk size: 24713240
+delta chunk size: 1143963
+-----------------METRICS-------------------------
+Overall Compression Ratio: 67.4325
+DCC: 0.332571
+DCR: 18.0204
+DCE: 53.6567
+-----------------Time------------------------------
+Version time: 0.206585s
+Throughput: 112.412MiB/s
+Reduce data speed: 8.5157e+13MiB/s
+SF generation time: 0.00038801s
+SF generation throughput: 59850.7MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.12206MiB
+FP Overhead: 0.654221MiB
+SF Overhead: 0.467834MiB
+Recipe Overhead: 1.54431MiB
+SF number: 12264
+-----------------END-------------------------------
+2026-01-13 17:03:33 <Chunker>: chunking done.
+total_size is 8
+Version: 121
+-----------------CHUNK NUM-----------------------
+logical chunk num: 51240
+unique chunk num: 6203
+base chunk num: 4142
+delta chunk num: 2061
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1768099840
+uniquechunkSize is 25940635
+base chunk size: 24769185
+delta chunk size: 1171450
+-----------------METRICS-------------------------
+Overall Compression Ratio: 68.1595
+DCC: 0.332259
+DCR: 18.1609
+DCE: 53.6328
+-----------------Time------------------------------
+Version time: 0.214445s
+Throughput: 108.884MiB/s
+Reduce data speed: 8.20359e+13MiB/s
+SF generation time: 0.000610183s
+SF generation throughput: 38266.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.13657MiB
+FP Overhead: 0.662552MiB
+SF Overhead: 0.474014MiB
+Recipe Overhead: 1.56372MiB
+SF number: 12426
+-----------------END-------------------------------
+2026-01-13 17:03:33 <Chunker>: chunking done.
+total_size is 8
+Version: 122
+-----------------CHUNK NUM-----------------------
+logical chunk num: 51876
+unique chunk num: 6252
+base chunk num: 4184
+delta chunk num: 2068
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1792583680
+uniquechunkSize is 25981290
+base chunk size: 24799197
+delta chunk size: 1182093
+-----------------METRICS-------------------------
+Overall Compression Ratio: 68.9952
+DCC: 0.330774
+DCR: 18.0754
+DCE: 53.5097
+-----------------Time------------------------------
+Version time: 0.198897s
+Throughput: 117.395MiB/s
+Reduce data speed: 8.84486e+13MiB/s
+SF generation time: 0.000239844s
+SF generation throughput: 97353.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.14661MiB
+FP Overhead: 0.667786MiB
+SF Overhead: 0.478821MiB
+Recipe Overhead: 1.58313MiB
+SF number: 12552
+-----------------END-------------------------------
+2026-01-13 17:03:33 <Chunker>: chunking done.
+total_size is 8
+Version: 123
+-----------------CHUNK NUM-----------------------
+logical chunk num: 52517
+unique chunk num: 6314
+base chunk num: 4232
+delta chunk num: 2082
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1817088000
+uniquechunkSize is 26046511
+base chunk size: 24850733
+delta chunk size: 1195778
+-----------------METRICS-------------------------
+Overall Compression Ratio: 69.7632
+DCC: 0.329743
+DCR: 18.0175
+DCE: 53.3059
+-----------------Time------------------------------
+Version time: 0.196945s
+Throughput: 118.658MiB/s
+Reduce data speed: 8.93254e+13MiB/s
+SF generation time: 0.000312295s
+SF generation throughput: 74830.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.15872MiB
+FP Overhead: 0.674408MiB
+SF Overhead: 0.484314MiB
+Recipe Overhead: 1.60269MiB
+SF number: 12696
+-----------------END-------------------------------
+2026-01-13 17:03:34 <Chunker>: chunking done.
+total_size is 8
+Version: 124
+-----------------CHUNK NUM-----------------------
+logical chunk num: 53160
+unique chunk num: 6374
+base chunk num: 4271
+delta chunk num: 2103
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1841612800
+uniquechunkSize is 26099251
+base chunk size: 24882501
+delta chunk size: 1216750
+-----------------METRICS-------------------------
+Overall Compression Ratio: 70.5619
+DCC: 0.329934
+DCR: 18.0293
+DCE: 53.3343
+-----------------Time------------------------------
+Version time: 0.203547s
+Throughput: 114.905MiB/s
+Reduce data speed: 8.6428e+13MiB/s
+SF generation time: 0.000391426s
+SF generation throughput: 59752.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.16959MiB
+FP Overhead: 0.680817MiB
+SF Overhead: 0.488777MiB
+Recipe Overhead: 1.62231MiB
+SF number: 12813
+-----------------END-------------------------------
+2026-01-13 17:03:34 <Chunker>: chunking done.
+total_size is 8
+Version: 125
+-----------------CHUNK NUM-----------------------
+logical chunk num: 53803
+unique chunk num: 6430
+base chunk num: 4310
+delta chunk num: 2120
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1866137600
+uniquechunkSize is 26147856
+base chunk size: 24911757
+delta chunk size: 1236099
+-----------------METRICS-------------------------
+Overall Compression Ratio: 71.3687
+DCC: 0.329705
+DCR: 18.0109
+DCE: 53.2081
+-----------------Time------------------------------
+Version time: 0.199132s
+Throughput: 117.453MiB/s
+Reduce data speed: 8.83443e+13MiB/s
+SF generation time: 0.000369339s
+SF generation throughput: 63325.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.18004MiB
+FP Overhead: 0.686798MiB
+SF Overhead: 0.49324MiB
+Recipe Overhead: 1.64194MiB
+SF number: 12930
+-----------------END-------------------------------
+2026-01-13 17:03:34 <Chunker>: chunking done.
+total_size is 8
+Version: 126
+-----------------CHUNK NUM-----------------------
+logical chunk num: 54446
+unique chunk num: 6496
+base chunk num: 4348
+delta chunk num: 2148
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1890662400
+uniquechunkSize is 26201575
+base chunk size: 24941395
+delta chunk size: 1260180
+-----------------METRICS-------------------------
+Overall Compression Ratio: 72.1583
+DCC: 0.330665
+DCR: 18.0361
+DCE: 53.2124
+-----------------Time------------------------------
+Version time: 0.203581s
+Throughput: 114.886MiB/s
+Reduce data speed: 8.64136e+13MiB/s
+SF generation time: 0.000458677s
+SF generation throughput: 50991.6MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.19144MiB
+FP Overhead: 0.693848MiB
+SF Overhead: 0.497589MiB
+Recipe Overhead: 1.66156MiB
+SF number: 13044
+-----------------END-------------------------------
+2026-01-13 17:03:34 <Chunker>: chunking done.
+total_size is 8
+Version: 127
+-----------------CHUNK NUM-----------------------
+logical chunk num: 54849
+unique chunk num: 6540
+base chunk num: 4373
+delta chunk num: 2167
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1897994240
+uniquechunkSize is 26234507
+base chunk size: 24960237
+delta chunk size: 1274270
+-----------------METRICS-------------------------
+Overall Compression Ratio: 72.3472
+DCC: 0.331346
+DCR: 17.9785
+DCE: 53.0828
+-----------------Time------------------------------
+Version time: 0.0916589s
+Throughput: 76.2849MiB/s
+Reduce data speed: 1.91931e+14MiB/s
+SF generation time: 0.000212013s
+SF generation throughput: 32980MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.199MiB
+FP Overhead: 0.698547MiB
+SF Overhead: 0.50045MiB
+Recipe Overhead: 1.67386MiB
+SF number: 13119
+-----------------END-------------------------------
+2026-01-13 17:03:34 <Chunker>: chunking done.
+total_size is 8
+Version: 128
+-----------------CHUNK NUM-----------------------
+logical chunk num: 55253
+unique chunk num: 6576
+base chunk num: 4399
+delta chunk num: 2177
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1905336320
+uniquechunkSize is 26270311
+base chunk size: 24981108
+delta chunk size: 1289203
+-----------------METRICS-------------------------
+Overall Compression Ratio: 72.5281
+DCC: 0.331052
+DCR: 17.9315
+DCE: 52.9765
+-----------------Time------------------------------
+Version time: 0.0758747s
+Throughput: 92.2831MiB/s
+Reduce data speed: 2.31858e+14MiB/s
+SF generation time: 0.000232036s
+SF generation throughput: 30176.1MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.20582MiB
+FP Overhead: 0.702393MiB
+SF Overhead: 0.503426MiB
+Recipe Overhead: 1.68619MiB
+SF number: 13197
+-----------------END-------------------------------
+2026-01-13 17:03:34 <Chunker>: chunking done.
+total_size is 8
+Version: 129
+-----------------CHUNK NUM-----------------------
+logical chunk num: 55657
+unique chunk num: 6611
+base chunk num: 4425
+delta chunk num: 2186
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1912678400
+uniquechunkSize is 26300389
+base chunk size: 24999061
+delta chunk size: 1301328
+-----------------METRICS-------------------------
+Overall Compression Ratio: 72.7243
+DCC: 0.330661
+DCR: 17.847
+DCE: 52.8555
+-----------------Time------------------------------
+Version time: 0.0649557s
+Throughput: 107.796MiB/s
+Reduce data speed: 2.70834e+14MiB/s
+SF generation time: 0.000174368s
+SF generation throughput: 40156.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.21253MiB
+FP Overhead: 0.706131MiB
+SF Overhead: 0.506401MiB
+Recipe Overhead: 1.69852MiB
+SF number: 13275
+-----------------END-------------------------------
+2026-01-13 17:03:34 <Chunker>: chunking done.
+total_size is 8
+Version: 130
+-----------------CHUNK NUM-----------------------
+logical chunk num: 56061
+unique chunk num: 6648
+base chunk num: 4454
+delta chunk num: 2194
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1920020480
+uniquechunkSize is 26332842
+base chunk size: 25019180
+delta chunk size: 1313662
+-----------------METRICS-------------------------
+Overall Compression Ratio: 72.9135
+DCC: 0.330024
+DCR: 17.8299
+DCE: 52.8155
+-----------------Time------------------------------
+Version time: 0.0729428s
+Throughput: 95.9923MiB/s
+Reduce data speed: 2.41178e+14MiB/s
+SF generation time: 0.0002432s
+SF generation throughput: 28790.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.2198MiB
+FP Overhead: 0.710083MiB
+SF Overhead: 0.50972MiB
+Recipe Overhead: 1.71085MiB
+SF number: 13362
+-----------------END-------------------------------
+2026-01-13 17:03:34 <Chunker>: chunking done.
+total_size is 8
+Version: 131
+-----------------CHUNK NUM-----------------------
+logical chunk num: 56465
+unique chunk num: 6684
+base chunk num: 4479
+delta chunk num: 2205
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1927362560
+uniquechunkSize is 26364063
+base chunk size: 25036513
+delta chunk size: 1327550
+-----------------METRICS-------------------------
+Overall Compression Ratio: 73.1057
+DCC: 0.329892
+DCR: 17.8189
+DCE: 52.7511
+-----------------Time------------------------------
+Version time: 0.0722726s
+Throughput: 96.8825MiB/s
+Reduce data speed: 2.43414e+14MiB/s
+SF generation time: 0.000242305s
+SF generation throughput: 28897.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.22651MiB
+FP Overhead: 0.713928MiB
+SF Overhead: 0.512581MiB
+Recipe Overhead: 1.72318MiB
+SF number: 13437
+-----------------END-------------------------------
+2026-01-13 17:03:35 <Chunker>: chunking done.
+total_size is 8
+Version: 132
+-----------------CHUNK NUM-----------------------
+logical chunk num: 56869
+unique chunk num: 6723
+base chunk num: 4505
+delta chunk num: 2218
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1934704640
+uniquechunkSize is 26401018
+base chunk size: 25054464
+delta chunk size: 1346554
+-----------------METRICS-------------------------
+Overall Compression Ratio: 73.2814
+DCC: 0.329912
+DCR: 17.7598
+DCE: 52.6748
+-----------------Time------------------------------
+Version time: 0.0671532s
+Throughput: 104.268MiB/s
+Reduce data speed: 2.61971e+14MiB/s
+SF generation time: 0.000268127s
+SF generation throughput: 26114.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.23365MiB
+FP Overhead: 0.718094MiB
+SF Overhead: 0.515556MiB
+Recipe Overhead: 1.7355MiB
+SF number: 13515
+-----------------END-------------------------------
+2026-01-13 17:03:35 <Chunker>: chunking done.
+total_size is 8
+Version: 133
+-----------------CHUNK NUM-----------------------
+logical chunk num: 57273
+unique chunk num: 6760
+base chunk num: 4533
+delta chunk num: 2227
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1942046720
+uniquechunkSize is 26433563
+base chunk size: 25073794
+delta chunk size: 1359769
+-----------------METRICS-------------------------
+Overall Compression Ratio: 73.469
+DCC: 0.329438
+DCR: 17.6802
+DCE: 52.6244
+-----------------Time------------------------------
+Version time: 0.0707058s
+Throughput: 99.0294MiB/s
+Reduce data speed: 2.48808e+14MiB/s
+SF generation time: 0.000194222s
+SF generation throughput: 36051.3MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.24081MiB
+FP Overhead: 0.722046MiB
+SF Overhead: 0.518761MiB
+Recipe Overhead: 1.74783MiB
+SF number: 13599
+-----------------END-------------------------------
+2026-01-13 17:03:35 <Chunker>: chunking done.
+total_size is 8
+Version: 134
+-----------------CHUNK NUM-----------------------
+logical chunk num: 57676
+unique chunk num: 6799
+base chunk num: 4562
+delta chunk num: 2237
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1949388800
+uniquechunkSize is 26478895
+base chunk size: 25104616
+delta chunk size: 1374279
+-----------------METRICS-------------------------
+Overall Compression Ratio: 73.6205
+DCC: 0.329019
+DCR: 17.6407
+DCE: 52.5536
+-----------------Time------------------------------
+Version time: 0.0733134s
+Throughput: 95.5072MiB/s
+Reduce data speed: 2.39959e+14MiB/s
+SF generation time: 0.000256464s
+SF generation throughput: 27301.9MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.24829MiB
+FP Overhead: 0.726212MiB
+SF Overhead: 0.522079MiB
+Recipe Overhead: 1.76013MiB
+SF number: 13686
+-----------------END-------------------------------
+2026-01-13 17:03:35 <Chunker>: chunking done.
+total_size is 8
+Version: 135
+-----------------CHUNK NUM-----------------------
+logical chunk num: 58080
+unique chunk num: 6853
+base chunk num: 4599
+delta chunk num: 2254
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1956720640
+uniquechunkSize is 27195686
+base chunk size: 25798187
+delta chunk size: 1397499
+-----------------METRICS-------------------------
+Overall Compression Ratio: 71.9497
+DCC: 0.328907
+DCR: 17.5564
+DCE: 52.589
+-----------------Time------------------------------
+Version time: 0.0777265s
+Throughput: 89.9588MiB/s
+Reduce data speed: 2.26334e+14MiB/s
+SF generation time: 0.00110865s
+SF generation throughput: 6306.93MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.25829MiB
+FP Overhead: 0.731979MiB
+SF Overhead: 0.526314MiB
+Recipe Overhead: 1.77246MiB
+SF number: 13797
+-----------------END-------------------------------
+2026-01-13 17:03:35 <Chunker>: chunking done.
+total_size is 8
+Version: 136
+-----------------CHUNK NUM-----------------------
+logical chunk num: 58483
+unique chunk num: 6887
+base chunk num: 4630
+delta chunk num: 2257
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1964052480
+uniquechunkSize is 27232243
+base chunk size: 25820610
+delta chunk size: 1411633
+-----------------METRICS-------------------------
+Overall Compression Ratio: 72.1223
+DCC: 0.327719
+DCR: 17.4506
+DCE: 52.5341
+-----------------Time------------------------------
+Version time: 0.0656139s
+Throughput: 106.566MiB/s
+Reduce data speed: 2.68117e+14MiB/s
+SF generation time: 0.000189397s
+SF generation throughput: 36918.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.26547MiB
+FP Overhead: 0.735611MiB
+SF Overhead: 0.529861MiB
+Recipe Overhead: 1.78476MiB
+SF number: 13890
+-----------------END-------------------------------
+2026-01-13 17:03:35 <Chunker>: chunking done.
+total_size is 8
+Version: 137
+-----------------CHUNK NUM-----------------------
+logical chunk num: 58886
+unique chunk num: 6922
+base chunk num: 4658
+delta chunk num: 2264
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1971384320
+uniquechunkSize is 27268154
+base chunk size: 25842243
+delta chunk size: 1425911
+-----------------METRICS-------------------------
+Overall Compression Ratio: 72.2962
+DCC: 0.327073
+DCR: 17.3549
+DCE: 52.4442
+-----------------Time------------------------------
+Version time: 0.0655854s
+Throughput: 106.612MiB/s
+Reduce data speed: 2.68233e+14MiB/s
+SF generation time: 0.000183685s
+SF generation throughput: 38066.2MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.27242MiB
+FP Overhead: 0.739349MiB
+SF Overhead: 0.533066MiB
+Recipe Overhead: 1.79706MiB
+SF number: 13974
+-----------------END-------------------------------
+2026-01-13 17:03:35 <Chunker>: chunking done.
+total_size is 8
+Version: 138
+-----------------CHUNK NUM-----------------------
+logical chunk num: 59289
+unique chunk num: 6961
+base chunk num: 4686
+delta chunk num: 2275
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1978716160
+uniquechunkSize is 27304890
+base chunk size: 25862766
+delta chunk size: 1442124
+-----------------METRICS-------------------------
+Overall Compression Ratio: 72.4675
+DCC: 0.326821
+DCR: 17.2631
+DCE: 52.371
+-----------------Time------------------------------
+Version time: 0.0659144s
+Throughput: 106.08MiB/s
+Reduce data speed: 2.66895e+14MiB/s
+SF generation time: 0.000202944s
+SF generation throughput: 34453.8MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.27979MiB
+FP Overhead: 0.743515MiB
+SF Overhead: 0.53627MiB
+Recipe Overhead: 1.80936MiB
+SF number: 14058
+-----------------END-------------------------------
+2026-01-13 17:03:35 <Chunker>: chunking done.
+total_size is 8
+Version: 139
+-----------------CHUNK NUM-----------------------
+logical chunk num: 59819
+unique chunk num: 7003
+base chunk num: 4713
+delta chunk num: 2290
+-----------------CHUNK SIZE-----------------------
+logicalchunkSize is 1999114240
+uniquechunkSize is 27334458
+base chunk size: 25882477
+delta chunk size: 1451981
+-----------------METRICS-------------------------
+Overall Compression Ratio: 73.1353
+DCC: 0.327003
+DCR: 17.2651
+DCE: 52.3653
+-----------------Time------------------------------
+Version time: 0.175798s
+Throughput: 110.656MiB/s
+Reduce data speed: 1.0007e+14MiB/s
+SF generation time: 0.000214744s
+SF generation throughput: 90587.5MiB/s
+-----------------OverHead--------------------------
+Index Overhead: 1.28736MiB
+FP Overhead: 0.748001MiB
+SF Overhead: 0.53936MiB
+Recipe Overhead: 1.82553MiB
+SF number: 14139
+-----------------END-------------------------------
+Time taken by for loop: 17 s 
+2026-01-13 17:03:35 <BiSearchSystem>: logical Chunk Num is 59819
+2026-01-13 17:03:35 <BiSearchSystem>: unique Chunk Num is 7003
+2026-01-13 17:03:35 <BiSearchSystem>: Total logical size is 1999114240
+2026-01-13 17:03:35 <BiSearchSystem>: Total compressed size is 27334458
+2026-01-13 17:03:35 <BiSearchSystem>: Compression ratio is 73.1353

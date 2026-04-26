@@ -31,25 +31,26 @@ run_method(){
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-./BiSearch -i $path -c 8 -m 3 -n $num  >OdessMTar$name.txt
-sudo rm -r mTarFile
-sudo mkdir mTarFile
-sudo rm -r mtarRestore
-sudo mkdir mtarRestore
-sudo rm -r restoreFile
-sudo mkdir restoreFile
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
 
-./BiSearch -i $path -c 8 -m 0 -n $num  >LZ4MTar$name.txt
-sudo rm -r mTarFile
-sudo mkdir mTarFile
-sudo rm -r mtarRestore
-sudo mkdir mtarRestore
-sudo rm -r restoreFile
-sudo mkdir restoreFile
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
+# ./BiSearch -i $path -c 8 -m 0 -n $num >LZ4MTar$name.txt
+# sudo rm -r mTarFile
+# sudo mkdir mTarFile
+# sudo rm -r mtarRestore
+# sudo mkdir mtarRestore
+# sudo rm -r restoreFile
+# sudo mkdir restoreFile
+# sudo rm Containers/*
+# sudo echo 3 > /proc/sys/vm/drop_caches
+
+# ./BiSearch -i $path -c 8 -m 3 -n $num >OdessMTar$name.txt
+# sudo rm -r mTarFile
+# sudo mkdir mTarFile
+# sudo rm -r mtarRestore
+# sudo mkdir mtarRestore
+# sudo rm -r restoreFile
+# sudo mkdir restoreFile
+# sudo rm Containers/*
+# sudo echo 3 > /proc/sys/vm/drop_caches
 # ./BiSearch -i $path -c 5 -m 4 -n $num  >PalantirMTar$name.txt
 # sudo rm -r mTarFile
 # sudo mkdir mTarFile
@@ -60,7 +61,7 @@ sudo echo 3 > /proc/sys/vm/drop_caches
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
+./BiSearch -i $path -c 4 -m 5 -n $num >SA_BiSearch$name.txt
 # ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Ode$name.txt
 sudo rm -r mtarRestore
 sudo mkdir mtarRestore
@@ -68,18 +69,35 @@ sudo rm -r restoreFile
 sudo mkdir restoreFile
 sudo rm Containers/*
 sudo echo 3 > /proc/sys/vm/drop_caches
+
+# ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_BiSearch$name.txt
+# # ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Ode$name.txt
+# sudo rm -r mtarRestore
+# sudo mkdir mtarRestore
+# sudo rm -r restoreFile
+# sudo mkdir restoreFile
+# sudo rm Containers/*
+# sudo echo 3 > /proc/sys/vm/drop_caches
 }
 
-run_method /mnt/dataset2/react _react 100
-run_method /mnt/dataset2/netty  _netty 99
-run_method /mnt/dataset2/Cpython _Cpython 100
-run_method /mnt/dataset2/automake_tarballs _automake 100
+# run_method /mnt/dataset2/react _react 100
+# run_method /mnt/dataset2/netty  _netty 99
+# run_method /mnt/dataset2/Cpython _Cpython 100
+# run_method /mnt/dataset2/automake_tarballs _automake 100
 
-run_method /mnt/dataset2/coreutils_tarballs _coreutils 28
-run_method /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
-run_method /mnt/dataset2/linux _linux 270
-run_method /mnt/dataset2/WEB _WEB 102
-
+# run_method /mnt/dataset2/coreutils_tarballs _coreutils 28
+# run_method /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
+# run_method /mnt/dataset2/linux _linux 270
+# run_method /mnt/dataset2/WEB _WEB 102
+run_method /mnt/dataset2/FinTech/ethereum _ethereum 222
+run_method /mnt/dataset2/FinTech/opa _opa 183
+run_method /mnt/dataset2/FinTech/strata _strata 158
+run_method /mnt/dataset2/FinTech/fabric _fabric 89
+run_method /mnt/dataset2/FinTech/bitcoin _bitcoin 60
+run_method /mnt/dataset2/FinTech/graphNode _graphnode 67
+run_method /mnt/dataset2/FinTech/backtrader _backtrader 139
+run_method /mnt/dataset2/FinTech/lean _lean 500
+# run_method /mnt/dataset2/linux _linux 270
 # run_method /mnt/dataset2/bash_tarballs _bash 44
 # run_method /mnt/dataset2/fdisk_tarballs _fdisk 22
 # run_method /mnt/dataset2/glibc_tarballs _glibc 100

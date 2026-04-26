@@ -1,4 +1,7 @@
 #include "../../include/bisearch.h"
+#include <algorithm>
+#include <cmath>
+#include <unordered_set>
 #define LOCAL_MAX_ERROR 2
 BiSearch::BiSearch(double ratio)
 {
@@ -46,6 +49,93 @@ bool BiSearch::estimateGain(uint64_t chunkSize, uint64_t deltaSize)
             return true;
         // If AcceptThreshold is 0, all are accepted.
     }
+}
+
+bool BiSearch::IsValidCandidate(const Chunk_t &target, const Chunk_t &cand) const
+{
+    if (target.typeflag != cand.typeflag)
+        return false;
+    if (!target.linkname.empty() || !cand.linkname.empty())
+    {
+        if (target.linkname != cand.linkname)
+            return false;
+    }
+    return true;
+}
+
+double BiSearch::ComputeCandidateScore(const Chunk_t &target, const Chunk_t &cand) const
+{
+    if (!IsValidCandidate(target, cand))
+        return 0.0;
+
+    double dtHour = 0.0;
+    if (target.mtime > 0 && cand.mtime > 0)
+        dtHour = std::abs(static_cast<double>(target.mtime) - static_cast<double>(cand.mtime)) / 3600.0;
+    double ftime = std::exp(-lambda_time * dtHour);
+
+    double maxSize = static_cast<double>(std::max<uint64_t>(target.chunkSize, cand.chunkSize));
+    double fsize = 0.0;
+    if (maxSize > 0)
+    {
+        double diff = std::abs(static_cast<double>(target.chunkSize) - static_cast<double>(cand.chunkSize));
+        fsize = std::max(0.0, 1.0 - diff / (maxSize * beta_size));
+    }
+
+    double fmeta = 0.0;
+    double modeScore = (target.mode == cand.mode) ? 1.0 : 0.0;
+    double ownerScore = (!target.uname.empty() && !cand.uname.empty() && target.uname == cand.uname && target.gname == cand.gname) ? 1.0 : 0.0;
+    fmeta = (modeScore + ownerScore) / 2.0;
+
+    return wt_time * ftime + ws_size * fsize + wm_meta * fmeta;
+}
+
+BiSearch::CandidateResult BiSearch::SelectCandidate(const Chunk_t &target)
+{
+    CandidateResult res;
+    std::vector<std::pair<uint32_t, double>> scored;
+    std::unordered_set<uint32_t> visited;
+
+    auto collect = [&](const std::unordered_multimap<uint64_t, uint32_t> &index, uint64_t key)
+    {
+        auto range = index.equal_range(key);
+        for (auto it = range.first; it != range.second; ++it)
+        {
+            if (!visited.insert(it->second).second)
+                continue;
+            auto meta = dataWrite_->Get_Chunk_MetaInfo(it->second);
+            // mtime size usergroup
+            double score = ComputeCandidateScore(target, meta);
+            if (score > 0.0)
+            {
+                scored.emplace_back(it->second, score);
+            }
+        }
+    };
+
+    if (target.parentDirName != 0)
+        collect(parentDirIndex, target.parentDirName);
+    if (target.fileName != 0)
+        collect(fileNameIndex, target.fileName);
+
+    if (scored.empty())
+        return res;
+
+    std::sort(scored.begin(), scored.end(), [](const auto &a, const auto &b)
+              { return a.second > b.second; });
+
+    if (scored.size() > candidateTopK)
+        scored.resize(candidateTopK);
+
+    res.found = true;
+    res.chunkId = scored.front().first;
+    res.score = scored.front().second;
+    return res;
+}
+
+void BiSearch::IndexChunkMetadata(const Chunk_t &chunk)
+{
+    parentDirIndex.emplace(chunk.parentDirName, chunk.chunkID);
+    fileNameIndex.emplace(chunk.fileName, chunk.chunkID);
 }
 
 void BiSearch::ProcessTrace()
@@ -106,6 +196,15 @@ void BiSearch::ProcessTrace()
                     if (SameName)
                         plchunk.chunkId = nameTable[tmpChunk.name];
                     SameName = SameName && TurnOnNameHash;
+                    if (!SameName)
+                    {
+                        auto candRes = SelectCandidate(tmpChunk);
+                        if (candRes.found)
+                        {
+                            plchunk.chunkId = candRes.chunkId;
+                            SameName = true;
+                        }
+                    }
                 }
                 // SameName = dataWrite_->chunklist[plchunk.chunkId + DedupGap].name == tmpChunk.name;
                 // unique chunk & locality try & in locality windows
@@ -574,9 +673,10 @@ void BiSearch::ProcessTrace()
                     }
                 }
                 // dataWrite_->Chunk_Insert(tmpChunk);
+                IndexChunkMetadata(tmpChunk);
                 uniquechunkSize += tmpChunk.saveSize;
                 uniquechunkNum++;
-                StatsFileHeaderCDC(tmpChunk);//breakdown header chunk CDC stats
+                StatsFileHeaderCDC(tmpChunk); // breakdown header chunk CDC stats
             }
             else
             {
@@ -614,6 +714,8 @@ void BiSearch::ProcessTrace()
         }
     }
     recieveQueue->done_ = false;
+    parentDirIndexSize = parentDirIndex.size() * 12;
+    fileNameIndexSize = fileNameIndex.size() * 12;
     return;
 }
 

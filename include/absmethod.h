@@ -114,6 +114,9 @@ public:
     uint64_t Header_chunk_saveSize = 0;
     uint64_t Header_chunk_reductSize = 0;
 
+    double parentDirIndexSize = 0;
+    double fileNameIndexSize = 0;
+
     uint64_t CDC_chunk_numbers = 0;
     uint64_t CDC_chunk_oriSize = 0;
     uint64_t CDC_chunk_saveSize = 0;

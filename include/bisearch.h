@@ -28,6 +28,20 @@ private:
     uint64_t sameContainerTimes = 0;
     uint64_t lastContainerId = 0;
 
+    // metadata-aware candidate indices
+    // parent dir/file name based indices (use parentDir hash extracted during chunking; depth reduction handled in chunker ExtractPath)
+    std::unordered_multimap<uint64_t, uint32_t> parentDirIndex; // parentDirHash -> chunkID
+    std::unordered_multimap<uint64_t, uint32_t> fileNameIndex;  // fileNameHash  -> chunkID
+
+    // scoring weights / params
+    // candidate scoring weights (S = wt*ftime + ws*fsize + wm*fmeta)
+    const double wt_time = 0.5;
+    const double ws_size = 0.4;
+    const double wm_meta = 0.1;
+    const double lambda_time = 0.01; // ftime decay per hour
+    const double beta_size = 2.0;    // size sensitivity in fsize denominator
+    const size_t candidateTopK = 8;
+
     // header chunk info
     uint64_t headerChunkLogicalSize = 0;
     uint64_t headerChunkUniqueSize = 0;
@@ -51,6 +65,18 @@ private:
     long errorCount = 0;
     double β = 0.1;
     int LOCAL_MAX_ERROR = 2;
+
+    struct CandidateResult
+    {
+        bool found = false;
+        uint32_t chunkId = 0;
+        double score = 0.0;
+    };
+
+    CandidateResult SelectCandidate(const Chunk_t &target);
+    double ComputeCandidateScore(const Chunk_t &target, const Chunk_t &cand) const;
+    bool IsValidCandidate(const Chunk_t &target, const Chunk_t &cand) const;
+    void IndexChunkMetadata(const Chunk_t &chunk);
 
 public:
     std::chrono::time_point<std::chrono::high_resolution_clock>
