@@ -1,0 +1,14 @@
+<EnclaveConfiguration>
+  <!-- Stack and heap for the Enclave.
+       Increase HeapMaxSize if index tables grow beyond 256 MiB. -->
+  <ProdID>0</ProdID>
+  <ISVSVN>0</ISVSVN>
+  <StackMaxSize>0x400000</StackMaxSize>     <!-- 4 MiB stack -->
+  <HeapMaxSize>0x10000000</HeapMaxSize>     <!-- 256 MiB heap for index tables -->
+  <TCSNum>1</TCSNum>
+  <TCSPolicy>1</TCSPolicy>
+  <!-- Debug=1: allows sgx-gdb attachment.  Set to 0 for production. -->
+  <DisableDebug>0</DisableDebug>
+  <MiscSelect>0</MiscSelect>
+  <MiscMask>0xFFFFFFFF</MiscMask>
+</EnclaveConfiguration>

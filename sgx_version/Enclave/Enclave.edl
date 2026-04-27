@@ -1,0 +1,82 @@
+/* Enclave.edl – Enclave Definition Language
+ *
+ * Defines the security boundary between the untrusted App and
+ * the trusted Enclave.  All data crosses this boundary via ECALL/OCALL.
+ */
+
+enclave {
+    include "../include/sgx_common.h"
+
+    trusted {
+        /*
+         * ecall_init_enclave
+         *   Initialise the data-reduction engine inside the Enclave.
+         *   @method       : compression method id (SGX_METHOD_BISEARCH etc.)
+         *   @ratio        : BiSearch false-filter ratio (β)
+         *   @accept_thr   : false filter fixed parameter
+         *   @turn_on_name : enable metadata-guided matching
+         *   @aes_key      : 16-byte symmetric key for decrypting client chunks
+         */
+        public int ecall_init_enclave(
+            int method,
+            double ratio,
+            double accept_thr,
+            int turn_on_name,
+            [in, size=16] uint8_t* aes_key
+        );
+
+        /*
+         * ecall_process_chunk
+         *   Receive one encrypted chunk from the untrusted host,
+         *   decrypt it inside the Enclave, then run dedup / delta / lz4.
+         */
+        public int ecall_process_chunk(
+            [in, size=enc_len] uint8_t* encrypted_data,
+            size_t enc_len,
+            [in] ChunkMeta_t* meta,
+            [in, size=16] uint8_t* mac,
+            [in, size=12] uint8_t* iv
+        );
+
+        /*
+         * ecall_version_done
+         *   Signal end of one backup version.  The Enclave flushes
+         *   any partial Container and updates version counters.
+         */
+        public int ecall_version_done();
+
+        /*
+         * ecall_get_stats
+         *   Retrieve final aggregated statistics from the Enclave.
+         */
+        public int ecall_get_stats(
+            [out] MethodStats_t* stats
+        );
+
+        /*
+         * ecall_destroy
+         *   Free all Enclave-internal resources.
+         */
+        public void ecall_destroy();
+    };
+
+    untrusted {
+        /*
+         * ocall_write_container
+         *   Enclave asks the host to persist a full (encrypted) container.
+         */
+        void ocall_write_container(
+            [in, size=data_len] uint8_t* data,
+            size_t data_len,
+            uint64_t container_id
+        );
+
+        /*
+         * ocall_print_string
+         *   Redirect Enclave log messages to the host console.
+         */
+        void ocall_print_string(
+            [in, string] const char* str
+        );
+    };
+};
