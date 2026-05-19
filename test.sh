@@ -56,11 +56,11 @@ run_method(){
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Odess$name.txt
+# ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Odess$name.txt
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
+# ./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
 ./BiSearch -i $path -c 4 -m 5 -n $num -b 0 >SA_Hybrid$name.txt
 # ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Ode$name.txt
 # sudo rm -r mtarRestore

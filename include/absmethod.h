@@ -163,5 +163,14 @@ public:
     uint64_t pathname_helped=0;
     uint64_t feature_helped=0;
     uint64_t same_helped=0;
+    //fast27 pathname match2 case
+    uint64_t case1=0;//Pathname能找到但Feature找不到 V
+    uint64_t case2=0;//Pathname找不到但Feature能找到 V
+    uint64_t case3=0;//Pathname和Feature都能找到
+    uint64_t case31=0;//Pathname比Feature找得好
+    uint64_t case32=0;//Feature比Pathname找得好
+    uint64_t case33=0;//Pathname和Feature找得一样
+    uint64_t case4=0;//Pathname和Feature都找不到
+    uint64_t totalcase=0;
 };
 #endif

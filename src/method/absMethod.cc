@@ -326,13 +326,20 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     out << "Header chunk num: " << Header_chunk_numbers << ", oriSize: " << (double)Header_chunk_oriSize / 1024 / 1024 << "MiB, saveSize: " << (double)Header_chunk_saveSize / 1024 / 1024 << "MiB, reduct: " << (double)Header_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
     out << "CDC chunk num: " << CDC_chunk_numbers << ", oriSize: " << (double)CDC_chunk_oriSize / 1024 / 1024 << "MiB, saveSize: " << (double)CDC_chunk_saveSize / 1024 / 1024 << "MiB, reduct: " << (double)CDC_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
     out << "-----------------FAST 27----------------------" << endl;
-    out << "Pathname helped: " << pathname_helped <<" percentage: "<< (double)pathname_helped / pathname_total * 100 << "%" << endl;
-    out << "Feature helped: " << feature_helped <<" percentage: "<< (double)feature_helped / pathname_total * 100 << "%" << endl;
-    out<< "Same helped: " << same_helped <<" percentage: "<< (double)same_helped / pathname_total * 100 << "%" << endl;
-    out<< "Pathname accepted: " << pathname_accepted <<" percentage: "<< (double)pathname_accepted / pathname_total * 100 << "%" << endl;
-    out<< "Pathname rejected: " << pathname_rejected <<" percentage: "<< (double)pathname_rejected / pathname_total * 100 << "%" << endl;
-    out<<"Pathname total: " << pathname_total << endl;
-        out << "-----------------END-------------------------------" << endl;
+    // 输出格式：数值  |  比例  |  百分比
+    out << "=========================================" << endl;
+    out << "totalcase: " << totalcase << endl;
+    out << "=========================================" << endl;
+
+    out << "case1:\t" << case1 << "\t" << (double)case1 / totalcase << "\t" << (double)case1 / totalcase * 100 << "%" << endl;
+    out << "case2:\t" << case2 << "\t" << (double)case2 / totalcase << "\t" << (double)case2 / totalcase * 100 << "%" << endl;
+    out << "case3:\t" << case3 << "\t" << (double)case3 / totalcase << "\t" << (double)case3 / totalcase * 100 << "%" << endl;
+    out << "case31:\t" << case31 << "\t" << (double)case31 / totalcase << "\t" << (double)case31 / totalcase * 100 << "%" << endl;
+    out << "case32:\t" << case32 << "\t" << (double)case32 / totalcase << "\t" << (double)case32 / totalcase * 100 << "%" << endl;
+    out << "case33:\t" << case33 << "\t" << (double)case33 / totalcase << "\t" << (double)case33 / totalcase * 100 << "%" << endl;
+    out << "case4:\t" << case4 << "\t" << (double)case4 / totalcase << "\t" << (double)case4 / totalcase * 100 << "%" << endl;
+
+    out << "-----------------END-------------------------------" << endl;
     out.close();
     return;
 }
@@ -448,12 +455,19 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Locality reduct size: " << LocalityReduct << endl;
     }
     out << "-----------------FAST 27----------------------" << endl;
-    out << "Pathname helped: " << pathname_helped <<" percentage: "<< (double)pathname_helped / pathname_total * 100 << "%" << endl;
-    out << "Feature helped: " << feature_helped <<" percentage: "<< (double)feature_helped / pathname_total * 100 << "%" << endl;
-    out<< "Same helped: " << same_helped <<" percentage: "<< (double)same_helped / pathname_total * 100 << "%" << endl;
-    out<< "Pathname accepted: " << pathname_accepted <<" percentage: "<< (double)pathname_accepted / pathname_total * 100 << "%" << endl;
-    out<< "Pathname rejected: " << pathname_rejected <<" percentage: "<< (double)pathname_rejected / pathname_total * 100 << "%" << endl;
-    out<<"Pathname total: " << pathname_total << endl;
+    // 输出格式：数值  |  比例  |  百分比
+    out << "=========================================" << endl;
+    out << "totalcase: " << totalcase << endl;
+    out << "=========================================" << endl;
+
+    out << "case1:\t" << case1 << "\t" << (double)case1 / totalcase << "\t" << (double)case1 / totalcase * 100 << "%" << endl;
+    out << "case2:\t" << case2 << "\t" << (double)case2 / totalcase << "\t" << (double)case2 / totalcase * 100 << "%" << endl;
+    out << "case3:\t" << case3 << "\t" << (double)case3 / totalcase << "\t" << (double)case3 / totalcase * 100 << "%" << endl;
+    out << "case31:\t" << case31 << "\t" << (double)case31 / totalcase << "\t" << (double)case31 / totalcase * 100 << "%" << endl;
+    out << "case32:\t" << case32 << "\t" << (double)case32 / totalcase << "\t" << (double)case32 / totalcase * 100 << "%" << endl;
+    out << "case33:\t" << case33 << "\t" << (double)case33 / totalcase << "\t" << (double)case33 / totalcase * 100 << "%" << endl;
+    out << "case4:\t" << case4 << "\t" << (double)case4 / totalcase << "\t" << (double)case4 / totalcase * 100 << "%" << endl;
+
     out << "-----------------END-------------------------------" << endl;
     out.close();
     return;

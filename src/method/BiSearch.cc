@@ -107,7 +107,86 @@ void BiSearch::ProcessTrace()
                         plchunk.chunkId = nameTable[tmpChunk.name];
                     SameName = SameName && TurnOnNameHash;
                 }
-                // SameName = dataWrite_->chunklist[plchunk.chunkId + DedupGap].name == tmpChunk.name;
+                //  fast27 pathname match2 case
+                {
+                    bool pathnameMatch = false;
+                    bool featureMatch = false;
+                    double pathnameRatio = 0;
+                    double featureRatio = 0;
+                    //pathname match try
+                    if (Version > 0 && SameName){
+                        pathnameMatch=true;
+                        //pathname match
+                        uint8_t *deltachunk;
+                        uint64_t tmpdeltachunksize = 0;
+                        Chunk_t tmpbaseChunkinfo;
+                        Chunk_t tmpLocalChunkInfo = dataWrite_->Get_Chunk_MetaInfo(plchunk.chunkId);
+                        if (tmpLocalChunkInfo.deltaFlag == FINESSE_DELTA || tmpLocalChunkInfo.deltaFlag == LOCAL_DELTA)
+                        {
+                            tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(tmpLocalChunkInfo.basechunkID);
+                            tmpChunk.basechunkID = tmpLocalChunkInfo.basechunkID;
+                        }
+                        // the chunk who locality find is basechunk, then turn again
+                        else
+                        {
+                            tmpbaseChunkinfo = dataWrite_->Get_Chunk_Info(plchunk.chunkId);
+                            tmpChunk.basechunkID = plchunk.chunkId;
+                        }
+                        deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, tmpbaseChunkinfo.chunkPtr, tmpbaseChunkinfo.chunkSize, &tmpdeltachunksize, deltaMaxChunkBuffer);
+                        free(deltachunk);
+                        if (tmpbaseChunkinfo.loadFromDisk)
+                        {
+                            free(tmpbaseChunkinfo.chunkPtr);
+                            tmpbaseChunkinfo.chunkPtr = nullptr;
+                        }
+
+                        pathnameRatio = (double)tmpChunk.chunkSize / (double) tmpdeltachunksize;
+                    }
+
+                    //feature match try
+                    uint64_t basechunkID = -1;
+                    auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
+                    basechunkID = table.SF_Find(superfeature);
+                    if(basechunkID != -1){
+                        featureMatch=true;
+                        //feature match
+                        Chunk_t basechunkinfo;
+                        uint8_t *deltachunk;
+                        uint64_t featureBasedSize = 0;
+                        basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkID);
+                        deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkinfo.chunkPtr, basechunkinfo.chunkSize, &featureBasedSize, deltaMaxChunkBuffer);
+                        free(deltachunk);
+                        featureRatio = (double)tmpChunk.chunkSize / (double)featureBasedSize;
+                    }
+                    totalcase++;
+                    if(pathnameMatch && featureMatch)
+                    {
+                        case3++;
+                        if(pathnameRatio==featureRatio)
+                        {
+                            case33++;
+                        }
+                        else if(pathnameRatio>featureRatio)
+                        {
+                            case31++;
+                        }
+                        else if(pathnameRatio<featureRatio)
+                        {
+                            case32++;
+                        }
+                    }
+                    else if(pathnameMatch && !featureMatch)
+                    {
+                        case1++;
+                    }
+                    else if(!pathnameMatch && featureMatch)
+                    {
+                        case2++;
+                    }else if(!pathnameMatch && !featureMatch)
+                    {
+                        case4++;
+                    }
+                }
                 // unique chunk & locality try & in locality windows
                 if (Version > 0 && SameName)
                 {
@@ -162,38 +241,38 @@ void BiSearch::ProcessTrace()
                     }
 
                     float tmpratio = tmpChunk.chunkSize / tmpdeltachunksize;
-                    //fast27
-                    {
-                        double pathnameRatio=(double)tmpChunk.chunkSize/(double)tmpdeltachunksize;
-                        uint64_t basechunkID = -1;
-                        auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
-                        basechunkID = table.SF_Find(superfeature);
-                        if(basechunkID==-1)
-                        {
-                            pathname_helped++;
-                        }
-                        else{
-                            Chunk_t basechunkinfo;
-                            uint8_t *deltachunk;
-                            uint64_t featureBasedSize = 0;
-                            basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkID);
-                            deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkinfo.chunkPtr, basechunkinfo.chunkSize, &featureBasedSize, deltaMaxChunkBuffer);
-                            free(deltachunk);
-                            double featureBasedRatio = (double)tmpChunk.chunkSize / (double)featureBasedSize;
-                            if(featureBasedRatio==pathnameRatio)
-                            {
-                                same_helped++;
-                            }
-                            else if(pathnameRatio>featureBasedRatio)
-                            {
-                                pathname_helped++;
-                            }
-                            else
-                            {
-                                feature_helped++;
-                            }
-                        }
-                    }
+                    //fast27 pathname count1
+                    // {
+                    //     double pathnameRatio=(double)tmpChunk.chunkSize/(double)tmpdeltachunksize;
+                    //     uint64_t basechunkID = -1;
+                    //     auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
+                    //     basechunkID = table.SF_Find(superfeature);
+                    //     if(basechunkID==-1)
+                    //     {
+                    //         pathname_helped++;
+                    //     }
+                    //     else{
+                    //         Chunk_t basechunkinfo;
+                    //         uint8_t *deltachunk;
+                    //         uint64_t featureBasedSize = 0;
+                    //         basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkID);
+                    //         deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkinfo.chunkPtr, basechunkinfo.chunkSize, &featureBasedSize, deltaMaxChunkBuffer);
+                    //         free(deltachunk);
+                    //         double featureBasedRatio = (double)tmpChunk.chunkSize / (double)featureBasedSize;
+                    //         if(featureBasedRatio==pathnameRatio)
+                    //         {
+                    //             same_helped++;
+                    //         }
+                    //         else if(pathnameRatio>featureBasedRatio)
+                    //         {
+                    //             pathname_helped++;
+                    //         }
+                    //         else
+                    //         {
+                    //             feature_helped++;
+                    //         }
+                    //     }
+                    // }
 
                     // unique chunk & locality hit &locality can be accept
                     // tmpratio > LZ4_RATIO && tmpChunk.deltaFlag != NO_DELTA
@@ -223,8 +302,6 @@ void BiSearch::ProcessTrace()
                         dataWrite_->Chunk_Insert(tmpChunk);
                         SetTime(endIOWrite);
                         IOWriteTime += endIOWrite - startIOWrite;
-                        pathname_accepted++;
-                        pathname_total++;
                     }
                     // unique chunk & locality can't be accept
                     else
@@ -266,14 +343,11 @@ void BiSearch::ProcessTrace()
                             dataWrite_->Chunk_Insert(tmpChunk);
                             SetTime(endIOWrite);
                             IOWriteTime += endIOWrite - startIOWrite;
-                            pathname_accepted++;
-                            pathname_total++;
                         }
                         // unique chunk & in locality windows & odess considered this is a base chunk
                         else if (basechunkID == -1)
                         {
-                            pathname_rejected++;
-                            pathname_total++;
+
                             if (deltachunk != nullptr)
                             {
                                 free(deltachunk);
@@ -333,8 +407,6 @@ void BiSearch::ProcessTrace()
                         // unique chunk & in locality windows & odess hits
                         else
                         {
-                            pathname_rejected++;
-                            pathname_total++;
                             if (deltachunk != nullptr)
                             {
                                 free(deltachunk);
