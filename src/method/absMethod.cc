@@ -325,7 +325,14 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     out << "File chunk num: " << File_chunk_numbers << ", oriSize: " << (double)File_chunk_oriSize / 1024 / 1024 << "MiB, saveSize: " << (double)File_chunk_saveSize / 1024 / 1024 << "MiB, reduct: " << (double)File_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
     out << "Header chunk num: " << Header_chunk_numbers << ", oriSize: " << (double)Header_chunk_oriSize / 1024 / 1024 << "MiB, saveSize: " << (double)Header_chunk_saveSize / 1024 / 1024 << "MiB, reduct: " << (double)Header_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
     out << "CDC chunk num: " << CDC_chunk_numbers << ", oriSize: " << (double)CDC_chunk_oriSize / 1024 / 1024 << "MiB, saveSize: " << (double)CDC_chunk_saveSize / 1024 / 1024 << "MiB, reduct: " << (double)CDC_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
-    out << "-----------------END-------------------------------" << endl;
+    out << "-----------------FAST 27----------------------" << endl;
+    out << "Pathname helped: " << pathname_helped <<" percentage: "<< (double)pathname_helped / pathname_total * 100 << "%" << endl;
+    out << "Feature helped: " << feature_helped <<" percentage: "<< (double)feature_helped / pathname_total * 100 << "%" << endl;
+    out<< "Same helped: " << same_helped <<" percentage: "<< (double)same_helped / pathname_total * 100 << "%" << endl;
+    out<< "Pathname accepted: " << pathname_accepted <<" percentage: "<< (double)pathname_accepted / pathname_total * 100 << "%" << endl;
+    out<< "Pathname rejected: " << pathname_rejected <<" percentage: "<< (double)pathname_rejected / pathname_total * 100 << "%" << endl;
+    out<<"Pathname total: " << pathname_total << endl;
+        out << "-----------------END-------------------------------" << endl;
     out.close();
     return;
 }
@@ -386,7 +393,6 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
-        out << "-----------------END-------------------------------" << endl;
     }
     else
     {
@@ -440,8 +446,15 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Odess LZ4 Ratio avg: " << LZ4RatioSum / basechunkNum << endl;
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
-        out << "-----------------END-------------------------------" << endl;
     }
+    out << "-----------------FAST 27----------------------" << endl;
+    out << "Pathname helped: " << pathname_helped <<" percentage: "<< (double)pathname_helped / pathname_total * 100 << "%" << endl;
+    out << "Feature helped: " << feature_helped <<" percentage: "<< (double)feature_helped / pathname_total * 100 << "%" << endl;
+    out<< "Same helped: " << same_helped <<" percentage: "<< (double)same_helped / pathname_total * 100 << "%" << endl;
+    out<< "Pathname accepted: " << pathname_accepted <<" percentage: "<< (double)pathname_accepted / pathname_total * 100 << "%" << endl;
+    out<< "Pathname rejected: " << pathname_rejected <<" percentage: "<< (double)pathname_rejected / pathname_total * 100 << "%" << endl;
+    out<<"Pathname total: " << pathname_total << endl;
+    out << "-----------------END-------------------------------" << endl;
     out.close();
     return;
 }

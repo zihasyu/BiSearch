@@ -156,5 +156,12 @@ public:
     virtual void Version_log(double time);
     virtual void Version_log(double time, double chunktime);
     void SetTime(std::chrono::time_point<std::chrono::high_resolution_clock> &atime);
+        //fast27 count pathname
+    uint64_t pathname_accepted=0;
+    uint64_t pathname_rejected=0;
+    uint64_t pathname_total=0;
+    uint64_t pathname_helped=0;
+    uint64_t feature_helped=0;
+    uint64_t same_helped=0;
 };
 #endif

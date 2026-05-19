@@ -162,6 +162,38 @@ void BiSearch::ProcessTrace()
                     }
 
                     float tmpratio = tmpChunk.chunkSize / tmpdeltachunksize;
+                    //fast27
+                    {
+                        double pathnameRatio=(double)tmpChunk.chunkSize/(double)tmpdeltachunksize;
+                        uint64_t basechunkID = -1;
+                        auto superfeature = table.feature_generator_.GenerateSuperFeatures(tmpChunkContent);
+                        basechunkID = table.SF_Find(superfeature);
+                        if(basechunkID==-1)
+                        {
+                            pathname_helped++;
+                        }
+                        else{
+                            Chunk_t basechunkinfo;
+                            uint8_t *deltachunk;
+                            uint64_t featureBasedSize = 0;
+                            basechunkinfo = dataWrite_->Get_Chunk_Info(basechunkID);
+                            deltachunk = xd3_encode(tmpChunk.chunkPtr, tmpChunk.chunkSize, basechunkinfo.chunkPtr, basechunkinfo.chunkSize, &featureBasedSize, deltaMaxChunkBuffer);
+                            free(deltachunk);
+                            double featureBasedRatio = (double)tmpChunk.chunkSize / (double)featureBasedSize;
+                            if(featureBasedRatio==pathnameRatio)
+                            {
+                                same_helped++;
+                            }
+                            else if(pathnameRatio>featureBasedRatio)
+                            {
+                                pathname_helped++;
+                            }
+                            else
+                            {
+                                feature_helped++;
+                            }
+                        }
+                    }
 
                     // unique chunk & locality hit &locality can be accept
                     // tmpratio > LZ4_RATIO && tmpChunk.deltaFlag != NO_DELTA
@@ -191,6 +223,8 @@ void BiSearch::ProcessTrace()
                         dataWrite_->Chunk_Insert(tmpChunk);
                         SetTime(endIOWrite);
                         IOWriteTime += endIOWrite - startIOWrite;
+                        pathname_accepted++;
+                        pathname_total++;
                     }
                     // unique chunk & locality can't be accept
                     else
@@ -232,10 +266,14 @@ void BiSearch::ProcessTrace()
                             dataWrite_->Chunk_Insert(tmpChunk);
                             SetTime(endIOWrite);
                             IOWriteTime += endIOWrite - startIOWrite;
+                            pathname_accepted++;
+                            pathname_total++;
                         }
                         // unique chunk & in locality windows & odess considered this is a base chunk
                         else if (basechunkID == -1)
                         {
+                            pathname_rejected++;
+                            pathname_total++;
                             if (deltachunk != nullptr)
                             {
                                 free(deltachunk);
@@ -295,6 +333,8 @@ void BiSearch::ProcessTrace()
                         // unique chunk & in locality windows & odess hits
                         else
                         {
+                            pathname_rejected++;
+                            pathname_total++;
                             if (deltachunk != nullptr)
                             {
                                 free(deltachunk);
@@ -769,6 +809,13 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
     out << "Feature reduct size: " << (double)FeatureReduct / 1024 / 1024 << "MiB" << endl;
     out << "Locality reduct size: " << (double)LocalityReduct / 1024 / 1024 << "MiB" << endl;
     out << "-----------------END-------------------------------" << endl;
+    out << "-----------------FAST 27----------------------" << endl;
+    out << "Pathname helped: " << pathname_helped <<" percentage: "<< (double)pathname_helped / pathname_total * 100 << "%" << endl;
+    out << "Feature helped: " << feature_helped <<" percentage: "<< (double)feature_helped / pathname_total * 100 << "%" << endl;
+    out<< "Same helped: " << same_helped <<" percentage: "<< (double)same_helped / pathname_total * 100 << "%" << endl;
+    out<< "Pathname accepted: " << pathname_accepted <<" percentage: "<< (double)pathname_accepted / pathname_total * 100 << "%" << endl;
+    out<< "Pathname rejected: " << pathname_rejected <<" percentage: "<< (double)pathname_rejected / pathname_total * 100 << "%" << endl;
+    out<<"Pathname total: " << pathname_total << endl;
 
     out.close();
     return;
@@ -848,6 +895,13 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
     out << "Feature reduct size: " << (double)FeatureReduct / 1024 / 1024 << "MiB" << endl;
     out << "Locality reduct size: " << (double)LocalityReduct / 1024 / 1024 << "MiB" << endl;
     out << "-----------------END-------------------------------" << endl;
+    out << "-----------------FAST 27----------------------" << endl;
+    out << "Pathname helped: " << pathname_helped <<" percentage: "<< (double)pathname_helped / pathname_total * 100 << "%" << endl;
+    out << "Feature helped: " << feature_helped <<" percentage: "<< (double)feature_helped / pathname_total * 100 << "%" << endl;
+    out<< "Same helped: " << same_helped <<" percentage: "<< (double)same_helped / pathname_total * 100 << "%" << endl;
+    out<< "Pathname accepted: " << pathname_accepted <<" percentage: "<< (double)pathname_accepted / pathname_total * 100 << "%" << endl;
+    out<< "Pathname rejected: " << pathname_rejected <<" percentage: "<< (double)pathname_rejected / pathname_total * 100 << "%" << endl;
+    out<<"Pathname total: " << pathname_total << endl;
     out.close();
     return;
 }
