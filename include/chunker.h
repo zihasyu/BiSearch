@@ -72,6 +72,12 @@ private:
     // std::vector<std::tuple<uint64_t, uint32_t, char>> boundaries_; // offset, size, type(H/D/B)
     // uint64_t current_offset_;
     // std::string input_file_path_;
+        // for file chunk size distribution
+    uint64_t sum_rounded = 0;       
+    uint64_t sum_squared_rounded = 0; 
+    std::vector<uint64_t> file_chunk_dist_count;
+    std::vector<uint64_t> all_rounded_sizes; 
+    std::vector<uint32_t> size_boundaries;
 
 public:
     vector<double> MTarTime;
@@ -103,6 +109,8 @@ public:
     uint32_t CutPointGear(const uint8_t *src, const uint64_t len);
     uint64_t CutPointTarFast(const uint8_t *src, const uint64_t len);
     uint64_t CutPointTarHeader(const uint8_t *src, const uint64_t len);
+    uint64_t CountFileSize(uint64_t roundedUp);
+    void PrintStatsToFile(string name);
     void MTar(vector<string> &readfileList, uint32_t backupNum);
     void MTarBIN(vector<string> &readfileList, uint32_t backupNum);
     // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it

@@ -60,8 +60,9 @@ run_method(){
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
+# ./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
 # ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Ode$name.txt
+./BiSearch -i $path -c 4 -m 0 -n $num  >SA_Dedup$name.txt
 # sudo rm -r mtarRestore
 # sudo mkdir mtarRestore
 # sudo rm -r restoreFile
@@ -70,14 +71,14 @@ run_method(){
 # sudo echo 3 > /proc/sys/vm/drop_caches
 }
 
-run_method /mnt/dataset2/react _react 100
-run_method /mnt/dataset2/netty  _netty 99
-run_method /mnt/dataset2/Cpython _Cpython 100
-run_method /mnt/dataset2/automake_tarballs _automake 100
+# run_method /mnt/dataset2/react _react 100
+# run_method /mnt/dataset2/netty  _netty 99
+# run_method /mnt/dataset2/Cpython _Cpython 100
+# run_method /mnt/dataset2/automake_tarballs _automake 100
 
-run_method /mnt/dataset2/coreutils_tarballs _coreutils 28
-run_method /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
-run_method /mnt/dataset2/linux _linux 270
+# run_method /mnt/dataset2/coreutils_tarballs _coreutils 28
+# run_method /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
+# run_method /mnt/dataset2/linux _linux 270
 run_method /mnt/dataset2/WEB _WEB 102
 
 # run_method /mnt/dataset2/bash_tarballs _bash 44

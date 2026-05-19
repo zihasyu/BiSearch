@@ -18,6 +18,13 @@ Chunker::Chunker(int chunkType_)
     name[100] = '\0';
     LongName[8196] = '\0';
     ChunkerInit();
+    // 初始化文件块大小分布的边界
+    size_boundaries = {4 * 1024, 8 * 1024, 16 * 1024, 32 * 1024, 64 * 1024, 128 * 1024, 256 * 1024, 512 * 1024,
+                       1 * 1024 * 1024, 2 * 1024 * 1024, 4 * 1024 * 1024, 8 * 1024 * 1024, 16 * 1024 * 1024};
+    // 为每个分箱（包括一个用于大于最大边界的）调整大小
+    size_t num_bins = size_boundaries.size() + 1;
+    file_chunk_dist_count.resize(num_bins, 0);
+
     // in different chunking method, the chunkBuffer is different
 }
 Chunker::~Chunker()
@@ -302,6 +309,7 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
                 // cout << "AREGTYPE BigChunkSize is " << Big_Chunk_Size << endl;
             }
         }
+        CountFileSize((Next_Chunk_Size + 511) / 512 * 512);
         if (*(src + 156) == 'x' || *(src + 156) == GNUTYPE_LONGNAME)
         {
             Next_Chunk_Type = FILE_CHUNK;
@@ -938,4 +946,149 @@ uint64_t Chunker::hashLongNameToUint64(const char *name)
     }
     // cout << "longname: " << name << "hash: " << hash << endl;
     return hash;
+}
+
+uint64_t Chunker::CountFileSize(uint64_t roundedUp){
+    if(roundedUp==0) 
+        return 0;
+    size_t bin_index = 0;
+    while (bin_index < size_boundaries.size() && roundedUp > size_boundaries[bin_index])
+    {
+        bin_index++;
+    }
+    file_chunk_dist_count[bin_index]++;
+    all_rounded_sizes.push_back(roundedUp);
+    sum_rounded += roundedUp;
+    sum_squared_rounded += roundedUp * roundedUp;
+    return 0;
+}
+
+void Chunker::PrintStatsToFile(string name) {
+    std::string final_name = name;
+    size_t last_slash = name.find_last_of("/\\");
+    if (last_slash != std::string::npos) {
+        final_name = name.substr(last_slash + 1);
+    }
+    std::string filename = "stats_" + final_name + ".txt";
+    std::ofstream outFile(filename);
+
+    if (!outFile.is_open()) {
+        std::cerr << "错误：无法创建日志文件 " << filename << std::endl;
+        return;
+    }
+
+    // 1. 计算基础统计指标
+    double mean = 0.0, median = 0.0, stddev = 0.0;
+    uint64_t max_val = 0; // 新增：最大值
+    size_t n = all_rounded_sizes.size();
+
+    if (n > 0) {
+        mean = static_cast<double>(sum_rounded) / n;
+
+        // 排序以计算中位数和最大值
+        std::vector<uint64_t> sorted_sizes = all_rounded_sizes;
+        std::sort(sorted_sizes.begin(), sorted_sizes.end());
+        
+        // 中位数
+        if (n % 2 == 0) {
+            median = (static_cast<double>(sorted_sizes[n / 2 - 1]) + sorted_sizes[n / 2]) / 2.0;
+        } else {
+            median = static_cast<double>(sorted_sizes[n / 2]);
+        }
+
+        // 最大值：排序后最后一个元素就是最大值
+        max_val = sorted_sizes[n - 1]; 
+
+        // 标准差
+        double variance = (static_cast<double>(sum_squared_rounded) / n) - (mean * mean);
+        if (variance < 0) variance = 0; 
+        stddev = std::sqrt(variance);
+    }
+
+    // 2. 输出基础统计指标
+    outFile << "========== 统计报告: " << name << " ==========\n";
+    outFile << "总样本数 (Total Count): " << n << "\n\n";
+    outFile << "--- 核心指标 (Bytes) ---\n";
+    outFile << "平均数 (Mean):   " << static_cast<uint64_t>(mean) << "\n";
+    outFile << "中位数 (Median): " << static_cast<uint64_t>(median) << "\n";
+    outFile << "标准差 (StdDev): " << static_cast<uint64_t>(stddev) << "\n";
+    outFile << "最大值 (Max):    " << max_val << "\n\n"; // 输出最大值
+
+    // 3. 输出细粒度的分箱统计（加上了百分比）
+    outFile << "--- 细粒度分箱统计 (Detailed Distribution) ---\n";
+    outFile << "区间范围 (Bytes)\t数量 (Count)\t占比 (Percentage)\n";
+    outFile << "------------------------------------------------\n";
+
+    for (size_t i = 0; i < size_boundaries.size(); ++i) {
+        uint64_t lower = (i == 0) ? 0 : size_boundaries[i - 1];
+        uint64_t upper = size_boundaries[i];
+        
+        // 计算当前箱子的百分比
+        double percentage = (n > 0) ? (static_cast<double>(file_chunk_dist_count[i]) / n * 100.0) : 0.0;
+        
+        outFile << lower << " - " << upper << "\t" 
+                << file_chunk_dist_count[i] << "\t\t" 
+                << percentage << "%\n";
+    }
+    
+    // 最后一个区间（大于最大边界的部分）
+    size_t lastIdx = size_boundaries.size();
+    // 同样计算最后一个箱子的百分比
+    double last_percentage = (n > 0) ? (static_cast<double>(file_chunk_dist_count[lastIdx]) / n * 100.0) : 0.0;
+    
+    outFile << size_boundaries.back() << " 以上\t" 
+            << file_chunk_dist_count[lastIdx] << "\t\t" 
+            << last_percentage << "%\n\n";
+        
+
+    // 4. 新增：输出聚合后的分箱统计（<8K, 8-16K, 16K-4M, >4M）
+    // 注意：这里假设你的 size_boundaries 里包含了 8192, 16384, ..., 4194304 这些边界
+    // 我们通过累加细粒度箱子的数量来得到聚合结果
+    uint64_t count_lt_8k = 0;      // < 8KiB
+    uint64_t count_8k_16k = 0;     // 8KiB - 16KiB
+    uint64_t count_16k_4m = 0;     // 16KiB - 4MiB
+    uint64_t count_gt_4m = 0;      // > 4MiB
+
+    const uint64_t B_8K = 8 * 1024;
+    const uint64_t B_16K = 16 * 1024;
+    const uint64_t B_4M = 4 * 1024 * 1024;
+
+    // 遍历所有细粒度的箱子，把它们归类到四个大箱子里
+    for (size_t i = 0; i <= size_boundaries.size(); ++i) {
+        uint64_t lower = (i == 0) ? 0 : size_boundaries[i - 1];
+        uint64_t upper = (i < size_boundaries.size()) ? size_boundaries[i] : UINT64_MAX; // 最后一个箱子设为无穷大
+        uint64_t count = file_chunk_dist_count[i];
+
+        if (upper <= B_8K) {
+            count_lt_8k += count;
+        } else if (lower >= B_8K && upper <= B_16K) {
+            count_8k_16k += count;
+        } else if (lower >= B_16K && upper <= B_4M) {
+            count_16k_4m += count;
+        } else if (lower >= B_4M) {
+            count_gt_4m += count;
+        }
+        // 处理跨越边界的细粒度箱子（如果你的 size_boundaries 很细，可能会存在这种情况）
+        // 这里为了简化，假设你的细粒度边界是能够被 8K, 16K, 4M 整除对齐的。
+    }
+
+    outFile << "--- 聚合分箱统计 (Aggregated Distribution) ---\n";
+    outFile << "区间范围\t\t数量 (Count)\t占比 (Percentage)\n";
+    outFile << "------------------------------------------------\n";
+
+    // 辅助打印函数（避免重复写计算百分比的代码）
+    auto print_agg_row = [&](const std::string& range, uint64_t count) {
+        double percentage = (n > 0) ? (static_cast<double>(count) / n * 100.0) : 0.0;
+        outFile << range << "\t" << count << "\t\t" << percentage << "%\n";
+    };
+
+    print_agg_row("< 8KiB", count_lt_8k);
+    print_agg_row("8KiB - 16KiB", count_8k_16k);
+    print_agg_row("16KiB - 4MiB", count_16k_4m);
+    print_agg_row("> 4MiB", count_gt_4m);
+
+    outFile << "========================================\n\n";
+    outFile.close();
+
+    std::cout << "统计日志已保存至: " << filename << std::endl;
 }

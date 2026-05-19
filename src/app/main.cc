@@ -211,6 +211,7 @@ int main(int argc, char **argv)
     //     absMethodObj->PrintChunkInfo(dirName, chunkingType, compressionMethod, backupNum, sumTimeInSeconds, ratio, chunkerObj->ChunkTime.count(), AcceptThreshold, IsFalseFilter);
 
     absMethodObj->PrintChunkInfo(sumTimeInSeconds, CmdLine);
+    chunkerObj->PrintStatsToFile(CmdLine.dirName);
 
     if (CmdLine.enableRestore)
     {
