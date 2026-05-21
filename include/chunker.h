@@ -4,6 +4,7 @@
 #include "define.h"
 #include "struct.h"
 #include "messageQueue.h"
+#include <cstdint>
 
 using namespace std;
 
@@ -75,6 +76,8 @@ private:
         // for file chunk size distribution
     uint64_t sum_rounded = 0;       
     uint64_t sum_squared_rounded = 0; 
+    uint64_t sum4MiB=0;
+    uint64_t sumfile=0;
     std::vector<uint64_t> file_chunk_dist_count;
     std::vector<uint64_t> all_rounded_sizes; 
     std::vector<uint32_t> size_boundaries;

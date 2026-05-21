@@ -1,1094 +1,997 @@
 #include "../../include/chunker.h"
 
-Chunker::Chunker(int chunkType_)
-{
+Chunker::Chunker(int chunkType_) {
 
-    FixedChunkSize = 8192;
-    // specifiy chunk type
-    chunkType = chunkType_;
-    if (chunkType == MTAROdess)
-    {
-        chunkType = GEARCDC;
-    }
-    else if (chunkType == MTARPalantir)
-    {
-        chunkType = FASTCDC;
-    }
-    // init chunker
-    name[100] = '\0';
-    LongName[8196] = '\0';
-    ChunkerInit();
-    // 初始化文件块大小分布的边界
-    size_boundaries = {4 * 1024, 8 * 1024, 16 * 1024, 32 * 1024, 64 * 1024, 128 * 1024, 256 * 1024, 512 * 1024,
-                       1 * 1024 * 1024, 2 * 1024 * 1024, 4 * 1024 * 1024, 8 * 1024 * 1024, 16 * 1024 * 1024};
-    // 为每个分箱（包括一个用于大于最大边界的）调整大小
-    size_t num_bins = size_boundaries.size() + 1;
-    file_chunk_dist_count.resize(num_bins, 0);
+  FixedChunkSize = 8192;
+  // specifiy chunk type
+  chunkType = chunkType_;
+  if (chunkType == MTAROdess) {
+    chunkType = GEARCDC;
+  } else if (chunkType == MTARPalantir) {
+    chunkType = FASTCDC;
+  }
+  // init chunker
+  name[100] = '\0';
+  LongName[8196] = '\0';
+  ChunkerInit();
+  // 初始化文件块大小分布的边界
+  size_boundaries = {4 * 1024,        8 * 1024,        16 * 1024,
+                     32 * 1024,       64 * 1024,       128 * 1024,
+                     256 * 1024,      512 * 1024,      1 * 1024 * 1024,
+                     2 * 1024 * 1024, 4 * 1024 * 1024, 8 * 1024 * 1024,
+                     16 * 1024 * 1024};
+  // 为每个分箱（包括一个用于大于最大边界的）调整大小
+  size_t num_bins = size_boundaries.size() + 1;
+  file_chunk_dist_count.resize(num_bins, 0);
 
-    // in different chunking method, the chunkBuffer is different
+  // in different chunking method, the chunkBuffer is different
 }
-Chunker::~Chunker()
-{
-    free(readFileBuffer);
-    free(chunkBuffer);
+Chunker::~Chunker() {
+  free(readFileBuffer);
+  free(chunkBuffer);
 
-    if (chunkType == TAR_MultiHeader)
-        free(headerBuffer);
+  if (chunkType == TAR_MultiHeader)
+    free(headerBuffer);
 }
 
-void Chunker::LoadChunkFile(string path)
-{
-    if (inputFile.is_open())
-    {
-        inputFile.close();
+void Chunker::LoadChunkFile(string path) {
+  if (inputFile.is_open()) {
+    inputFile.close();
+  }
+  // input_file_path_ = path; // 保存输入文件路径
+  inputFile.open(path, ios_base::in | ios::binary);
+  if (!inputFile.is_open()) {
+    tool::Logging(myName_.c_str(), "open file: %s error.\n", path.c_str());
+    exit(EXIT_FAILURE);
+  }
+  return;
+}
+
+void Chunker::ChunkerInit() {
+  switch (chunkType) {
+  case FIXED_SIZE: {
+    // fixed size chunking]
+    readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE +
+                                       MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+    chunkBuffer = (uint8_t *)malloc(FixedChunkSize);
+    break;
+  }
+  case MTAR:
+  case MTARBIN:
+  case FASTCDC: // FastCDC chunking
+  {
+    readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE +
+                                       MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+    chunkBuffer = (uint8_t *)malloc(MAX_CHUNK_SIZE);
+    normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
+    bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
+    maskS = GenerateFastCDCMask(bits + 1);
+    maskL = GenerateFastCDCMask(bits - 1);
+    break;
+  }
+  case GEARCDC: // Gear chunking
+  {
+    readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE +
+                                       MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+    chunkBuffer = (uint8_t *)malloc(MAX_CHUNK_SIZE);
+    break;
+  }
+  case TAR: {
+
+    readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE +
+                                       MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+    chunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE); // 4MB
+    normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
+    bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
+    maskS = GenerateFastCDCMask(bits + 1);
+    maskL = GenerateFastCDCMask(bits - 1);
+    break;
+  }
+  case TAR_MultiHeader: {
+    readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE +
+                                       MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+    headerBuffer = (uint8_t *)malloc(512 * (MULTI_HEADER_CHUNK + 1));
+    chunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE); // 4MB
+    // dataBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * 16); // 64MB
+    normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
+    bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
+    maskS = GenerateFastCDCMask(bits + 1);
+    maskL = GenerateFastCDCMask(bits - 1);
+    break;
+  }
+
+  default:
+    tool::Logging(myName_.c_str(), "chunk type error.\n");
+    exit(EXIT_FAILURE);
+    break;
+  }
+  return;
+}
+
+void Chunker::Chunking() {
+  bool end = false;
+  uint64_t totalOffset = 0;
+
+  while (!end) {
+    memset((char *)readFileBuffer, 0,
+           sizeof(uint8_t) * READ_FILE_SIZE +
+               MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+    inputFile.read((char *)readFileBuffer,
+                   sizeof(uint8_t) * READ_FILE_SIZE +
+                       MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+    end = inputFile.eof();
+    size_t len = inputFile.gcount();
+    if (len == 0) {
+      break;
     }
-    // input_file_path_ = path; // 保存输入文件路径
-    inputFile.open(path, ios_base::in | ios::binary);
-    if (!inputFile.is_open())
-    {
-        tool::Logging(myName_.c_str(), "open file: %s error.\n",
-                      path.c_str());
+    localOffset = 0;
+    while (((len - localOffset) >= CONTAINER_MAX_SIZE * MULTI_HEADER_CHUNK) ||
+           (end && (localOffset < len))) {
+      // cout << " len is " << len << " localOffset is " << localOffset << endl;
+      Chunk_t chunk;
+      // compute cutPoint
+      uint64_t cp = 0;
+      switch (chunkType) {
+      case FIXED_SIZE: {
+        cp = avgChunkSize; // 8KB
+        break;
+      }
+      case FASTCDC: {
+        cp = CutPointFastCDC(readFileBuffer + localOffset, len - localOffset);
+        break;
+      }
+      case GEARCDC: {
+        cp = CutPointGear(readFileBuffer + localOffset, len - localOffset);
+        break;
+      }
+      case TAR: {
+        cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
+        break;
+      }
+      case TAR_MultiHeader: {
+        SetTime(startChunk);
+        size_t cpOffset =
+            CutPointTarHeader(readFileBuffer + localOffset, len - localOffset);
+        localOffset += cpOffset;
+        SetTime(endChunk);
+        ChunkTime += (endChunk - startChunk);
+        continue;
+      }
+      default:
+        cout << "chunkType error" << endl;
+        break;
+      }
+      chunk.chunkPtr = (uint8_t *)malloc(cp);
+      memcpy(chunk.chunkPtr, readFileBuffer + localOffset, cp);
+      chunk.chunkSize = cp;
+      // chunk.chunkID = chunkID++;太早了
+      if (cp == 0) {
+        // cout << "cp is 0" << endl; // debug
+        continue;
+      }
+      localOffset += cp;
+      chunk.NameExist = true;
+      if (!outputMQ_->Push(chunk)) {
+        tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
         exit(EXIT_FAILURE);
+      }
     }
-    return;
+    totalOffset += localOffset;
+    inputFile.seekg(totalOffset, ios_base::beg);
+  }
+  // cout << "chunking done." << endl;
+
+  outputMQ_->done_ = true;
+  tool::Logging(myName_.c_str(), "chunking done.\n");
+
+  size_t element_size = sizeof(std::string);
+  size_t num_elements = nameHashSet.size();
+  size_t bucket_count = nameHashSet.bucket_count();
+  size_t bucket_size = sizeof(void *); // 每个桶的指针大小
+
+  size_t total_size =
+      (element_size * num_elements) + (bucket_size * bucket_count);
+  cout << "total_size is " << total_size << endl;
+  return;
 }
 
-void Chunker::ChunkerInit()
-{
-    switch (chunkType)
-    {
-    case FIXED_SIZE:
-    {
-        // fixed size chunking]
-        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
-        chunkBuffer = (uint8_t *)malloc(FixedChunkSize);
-        break;
+uint64_t Chunker::CutPointFastCDC(const uint8_t *src, const uint64_t len) {
+  uint64_t n;
+  uint32_t fp = 0;
+  uint64_t i;
+  i = min(len, static_cast<uint64_t>(minChunkSize));
+  n = min(normalSize, len);
+  for (; i < n; i++) {
+    fp = (fp >> 1) + GEAR[src[i]];
+    if (!(fp & maskS)) {
+      return (i + 1);
     }
-    case MTAR:
-    case MTARBIN:
-    case FASTCDC: // FastCDC chunking
-    {
-        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
-        chunkBuffer = (uint8_t *)malloc(MAX_CHUNK_SIZE);
-        normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
-        bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
-        maskS = GenerateFastCDCMask(bits + 1);
-        maskL = GenerateFastCDCMask(bits - 1);
-        break;
+  }
+
+  n = min(static_cast<uint64_t>(maxChunkSize), len);
+  for (; i < n; i++) {
+    fp = (fp >> 1) + GEAR[src[i]];
+    if (!(fp & maskL)) {
+      return (i + 1);
     }
-    case GEARCDC: // Gear chunking
-    {
-        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
-        chunkBuffer = (uint8_t *)malloc(MAX_CHUNK_SIZE);
-        break;
-    }
-    case TAR:
-    {
-
-        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
-        chunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE); // 4MB
-        normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
-        bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
-        maskS = GenerateFastCDCMask(bits + 1);
-        maskL = GenerateFastCDCMask(bits - 1);
-        break;
-    }
-    case TAR_MultiHeader:
-    {
-        readFileBuffer = (uint8_t *)malloc(READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
-        headerBuffer = (uint8_t *)malloc(512 * (MULTI_HEADER_CHUNK + 1));
-        chunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE); // 4MB
-        // dataBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * 16); // 64MB
-        normalSize = CalNormalSize(minChunkSize, avgChunkSize, maxChunkSize);
-        bits = (uint32_t)round(log2(static_cast<double>(avgChunkSize)));
-        maskS = GenerateFastCDCMask(bits + 1);
-        maskL = GenerateFastCDCMask(bits - 1);
-        break;
-    }
-
-    default:
-        tool::Logging(myName_.c_str(), "chunk type error.\n");
-        exit(EXIT_FAILURE);
-        break;
-    }
-    return;
-}
-
-void Chunker::Chunking()
-{
-    bool end = false;
-    uint64_t totalOffset = 0;
-
-    while (!end)
-    {
-        memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
-        inputFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
-        end = inputFile.eof();
-        size_t len = inputFile.gcount();
-        if (len == 0)
-        {
-            break;
-        }
-        localOffset = 0;
-        while (((len - localOffset) >= CONTAINER_MAX_SIZE * MULTI_HEADER_CHUNK) || (end && (localOffset < len)))
-        {
-            // cout << " len is " << len << " localOffset is " << localOffset << endl;
-            Chunk_t chunk;
-            // compute cutPoint
-            uint64_t cp = 0;
-            switch (chunkType)
-            {
-            case FIXED_SIZE:
-            {
-                cp = avgChunkSize; // 8KB
-                break;
-            }
-            case FASTCDC:
-            {
-                cp = CutPointFastCDC(readFileBuffer + localOffset, len - localOffset);
-                break;
-            }
-            case GEARCDC:
-            {
-                cp = CutPointGear(readFileBuffer + localOffset, len - localOffset);
-                break;
-            }
-            case TAR:
-            {
-                cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
-                break;
-            }
-            case TAR_MultiHeader:
-            {
-                SetTime(startChunk);
-                size_t cpOffset = CutPointTarHeader(readFileBuffer + localOffset, len - localOffset);
-                localOffset += cpOffset;
-                SetTime(endChunk);
-                ChunkTime += (endChunk - startChunk);
-                continue;
-            }
-            default:
-                cout << "chunkType error" << endl;
-                break;
-            }
-            chunk.chunkPtr = (uint8_t *)malloc(cp);
-            memcpy(chunk.chunkPtr, readFileBuffer + localOffset, cp);
-            chunk.chunkSize = cp;
-            // chunk.chunkID = chunkID++;太早了
-            if (cp == 0)
-            {
-                // cout << "cp is 0" << endl; // debug
-                continue;
-            }
-            localOffset += cp;
-            chunk.NameExist = true;
-            if (!outputMQ_->Push(chunk))
-            {
-                tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-                exit(EXIT_FAILURE);
-            }
-        }
-        totalOffset += localOffset;
-        inputFile.seekg(totalOffset, ios_base::beg);
-    }
-    // cout << "chunking done." << endl;
-
-    outputMQ_->done_ = true;
-    tool::Logging(myName_.c_str(), "chunking done.\n");
-
-    size_t element_size = sizeof(std::string);
-    size_t num_elements = nameHashSet.size();
-    size_t bucket_count = nameHashSet.bucket_count();
-    size_t bucket_size = sizeof(void *); // 每个桶的指针大小
-
-    size_t total_size = (element_size * num_elements) + (bucket_size * bucket_count);
-    cout << "total_size is " << total_size << endl;
-    return;
-}
-
-uint64_t Chunker::CutPointFastCDC(const uint8_t *src, const uint64_t len)
-{
-    uint64_t n;
-    uint32_t fp = 0;
-    uint64_t i;
-    i = min(len, static_cast<uint64_t>(minChunkSize));
-    n = min(normalSize, len);
-    for (; i < n; i++)
-    {
-        fp = (fp >> 1) + GEAR[src[i]];
-        if (!(fp & maskS))
-        {
-            return (i + 1);
-        }
-    }
-
-    n = min(static_cast<uint64_t>(maxChunkSize), len);
-    for (; i < n; i++)
-    {
-        fp = (fp >> 1) + GEAR[src[i]];
-        if (!(fp & maskL))
-        {
-            return (i + 1);
-        }
-    }
-    return i;
+  }
+  return i;
 };
-uint32_t Chunker::CutPointGear(const uint8_t *src, const uint64_t len)
-{
-    uint32_t fp = 0;
-    uint64_t i = 0;
-    for (; i < len; i++)
-    {
-        fp = (fp >> 1) + GEAR[src[i]];
-        if (!(fp & MASK_GEAR))
-        {
-            return (i + 1);
-        }
+uint32_t Chunker::CutPointGear(const uint8_t *src, const uint64_t len) {
+  uint32_t fp = 0;
+  uint64_t i = 0;
+  for (; i < len; i++) {
+    fp = (fp >> 1) + GEAR[src[i]];
+    if (!(fp & MASK_GEAR)) {
+      return (i + 1);
     }
-    return i;
+  }
+  return i;
 };
-uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
-{
-    switch (Next_Chunk_Type)
-    {
-    case FILE_HEADER:
-    {
-        uint8_t data[12];
-        std::memcpy(data, src + 124, 12);
+uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len) {
+  switch (Next_Chunk_Type) {
+  case FILE_HEADER: {
+    uint8_t data[12];
+    std::memcpy(data, src + 124, 12);
 
+    Next_Chunk_Size = 0;
+    for (int i = 0; i < 11; i++) {
+      Next_Chunk_Size = Next_Chunk_Size * 8 + data[i] - 48;
+    }
+    if (*(src + 156) == REGTYPE) {
+      // edit: CONTAINER_MAX_SIZE
+      if (Next_Chunk_Size <= BigChunkSize) {
+        Next_Chunk_Type = FILE_CHUNK;
+        FindName((char *)src);
+        ExtractPath((char *)src);
+      } else {
+        Next_Chunk_Type = BIG_CHUNK;
+        NameExist = true;
+        Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
+        Big_Chunk_Offset = 0;
+      }
+    }
+    if (*(src + 156) == AREGTYPE) {
+      Next_Chunk_Size = 0;
+      for (int i = 0; i < 11; i++) {
+        Next_Chunk_Size = Next_Chunk_Size * 8 + data[i];
+      }
+      // cout << "AREGTYPE ChunkSize is " << Next_Chunk_Size << endl;
+      Next_Chunk_Size = 0;
+      // edit: CONTAINER_MAX_SIZE
+      if (Next_Chunk_Size <= BigChunkSize) {
+        Next_Chunk_Type = FILE_CHUNK;
+        FindName((char *)src);
+        ExtractPath((char *)src);
+      } else {
+        Next_Chunk_Type = BIG_CHUNK;
+        NameExist = true;
         Next_Chunk_Size = 0;
-        for (int i = 0; i < 11; i++)
-        {
-            Next_Chunk_Size = Next_Chunk_Size * 8 + data[i] - 48;
+        for (int i = 0; i < 11; i++) {
+          Next_Chunk_Size = Next_Chunk_Size * 8 + data[i] - 48;
+          cout << data[i];
         }
-        if (*(src + 156) == REGTYPE)
-        {
-            // edit: CONTAINER_MAX_SIZE
-            if (Next_Chunk_Size <= BigChunkSize)
-            {
-                Next_Chunk_Type = FILE_CHUNK;
-                FindName((char *)src);
-                ExtractPath((char *)src);
-            }
-            else
-            {
-                Next_Chunk_Type = BIG_CHUNK;
-                NameExist = true;
-                Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
-                Big_Chunk_Offset = 0;
-            }
-        }
-        if (*(src + 156) == AREGTYPE)
-        {
-            Next_Chunk_Size = 0;
-            for (int i = 0; i < 11; i++)
-            {
-                Next_Chunk_Size = Next_Chunk_Size * 8 + data[i];
-            }
-            // cout << "AREGTYPE ChunkSize is " << Next_Chunk_Size << endl;
-            Next_Chunk_Size = 0;
-            // edit: CONTAINER_MAX_SIZE
-            if (Next_Chunk_Size <= BigChunkSize)
-            {
-                Next_Chunk_Type = FILE_CHUNK;
-                FindName((char *)src);
-                ExtractPath((char *)src);
-            }
-            else
-            {
-                Next_Chunk_Type = BIG_CHUNK;
-                NameExist = true;
-                Next_Chunk_Size = 0;
-                for (int i = 0; i < 11; i++)
-                {
-                    Next_Chunk_Size = Next_Chunk_Size * 8 + data[i] - 48;
-                    cout << data[i];
-                }
-                Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
-                Big_Chunk_Offset = 0;
-                // cout << "AREGTYPE BigChunkSize is " << Big_Chunk_Size << endl;
-            }
-        }
-        CountFileSize((Next_Chunk_Size + 511) / 512 * 512);
-        if (*(src + 156) == 'x' || *(src + 156) == GNUTYPE_LONGNAME)
-        {
-            Next_Chunk_Type = FILE_CHUNK;
-            IsLongNameChunk1 = true;
-            FindName((char *)src);
-            ExtractPath((char *)src);
-        }
-        /*use to debug*/
-        // cout<<"Next_Chunk_Flag: " <<int(*(src + 156));
-        // cout<<"Next_Chunk_Type: " <<Next_Chunk_Type;
-        // cout<<"Next_Chunk_Size: "<<Next_Chunk_Size<<endl;
-        // if(int(*(src + 156)) == 32||int(*(src + 156)) == 0){
-        //     for(int i=0;i<512;i++)
-        //     cout<<src[i]<<" ";
-        //     cout<<endl;
-        // }
+        Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
+        Big_Chunk_Offset = 0;
+        // cout << "AREGTYPE BigChunkSize is " << Big_Chunk_Size << endl;
+      }
+    }
+    CountFileSize((Next_Chunk_Size + 511) / 512 * 512);
+    if (*(src + 156) == 'x' || *(src + 156) == GNUTYPE_LONGNAME) {
+      Next_Chunk_Type = FILE_CHUNK;
+      IsLongNameChunk1 = true;
+      FindName((char *)src);
+      ExtractPath((char *)src);
+    }
+    /*use to debug*/
+    // cout<<"Next_Chunk_Flag: " <<int(*(src + 156));
+    // cout<<"Next_Chunk_Type: " <<Next_Chunk_Type;
+    // cout<<"Next_Chunk_Size: "<<Next_Chunk_Size<<endl;
+    // if(int(*(src + 156)) == 32||int(*(src + 156)) == 0){
+    //     for(int i=0;i<512;i++)
+    //     cout<<src[i]<<" ";
+    //     cout<<endl;
+    // }
 
-        if (len >= 512)
-            return 512;
-        else
-        {
-            return len;
-        }
-        break;
+    if (len >= 512)
+      return 512;
+    else {
+      return len;
     }
-    case FILE_CHUNK:
-    {
+    break;
+  }
+  case FILE_CHUNK: {
 
-        uint64_t roundedUp = (Next_Chunk_Size + 511) / 512 * 512;
-        if (IsLongNameChunk1)
-        {
-            FindLongName((char *)src, Next_Chunk_Size);
-        }
-        Next_Chunk_Type = FILE_HEADER;
-        Next_Chunk_Size = 512;
-        if (roundedUp < len)
-            return roundedUp;
-        else
-            return len;
-        break;
+    uint64_t roundedUp = (Next_Chunk_Size + 511) / 512 * 512;
+    if (IsLongNameChunk1) {
+      FindLongName((char *)src, Next_Chunk_Size);
     }
-    case BIG_CHUNK:
-    {
-        if (Big_Chunk_Size - Big_Chunk_Offset > maxChunkSize)
-        {
-            // Big_Chunk_Allowance--;
-            // cout << " BigChunkSize is " << Big_Chunk_Size << " BigChunkOffset is" << Big_Chunk_Offset << endl;
-            uint64_t cp = CutPointFastCDC(src,
-                                          Big_Chunk_Size - Big_Chunk_Offset);
-            Big_Chunk_Offset += cp;
-            // cout << "offset is " << Big_Chunk_Offset << " cp is " << cp << endl;
-            return cp;
-            // return CONTAINER_MAX_SIZE;
-        }
-        else
-        {
-            Next_Chunk_Type = FILE_HEADER;
-            return Big_Chunk_Size - Big_Chunk_Offset;
-        }
-        break;
+    Next_Chunk_Type = FILE_HEADER;
+    Next_Chunk_Size = 512;
+    if (roundedUp < len)
+      return roundedUp;
+    else
+      return len;
+    break;
+  }
+  case BIG_CHUNK: {
+    if (Big_Chunk_Size - Big_Chunk_Offset > maxChunkSize) {
+      // Big_Chunk_Allowance--;
+      // cout << " BigChunkSize is " << Big_Chunk_Size << " BigChunkOffset is"
+      // << Big_Chunk_Offset << endl;
+      uint64_t cp = CutPointFastCDC(src, Big_Chunk_Size - Big_Chunk_Offset);
+      Big_Chunk_Offset += cp;
+      // cout << "offset is " << Big_Chunk_Offset << " cp is " << cp << endl;
+      return cp;
+      // return CONTAINER_MAX_SIZE;
+    } else {
+      Next_Chunk_Type = FILE_HEADER;
+      return Big_Chunk_Size - Big_Chunk_Offset;
     }
-    }
+    break;
+  }
+  }
 };
-uint32_t Chunker::GenerateFastCDCMask(uint32_t bits)
-{
-    uint32_t tmp;
-    tmp = (1 << CompareLimit(bits, 1, 31)) - 1;
+uint32_t Chunker::GenerateFastCDCMask(uint32_t bits) {
+  uint32_t tmp;
+  tmp = (1 << CompareLimit(bits, 1, 31)) - 1;
+  return tmp;
+}
+inline uint32_t Chunker::CompareLimit(uint32_t input, uint32_t lower,
+                                      uint32_t upper) {
+  if (input <= lower) {
+    return lower;
+  } else if (input >= upper) {
+    return upper;
+  } else {
+    return input;
+  }
+}
+uint32_t Chunker::CalNormalSize(const uint32_t min, const uint32_t av,
+                                const uint32_t max) {
+  uint32_t off = min + DivCeil(min, 2);
+  if (off > av) {
+    off = av;
+  }
+  uint32_t diff = av - off;
+  if (diff > max) {
+    return max;
+  }
+  return diff;
+}
+inline uint32_t Chunker::DivCeil(uint32_t a, uint32_t b) {
+  uint32_t tmp = a / b;
+  if (a % b == 0) {
     return tmp;
-}
-inline uint32_t Chunker::CompareLimit(uint32_t input, uint32_t lower, uint32_t upper)
-{
-    if (input <= lower)
-    {
-        return lower;
-    }
-    else if (input >= upper)
-    {
-        return upper;
-    }
-    else
-    {
-        return input;
-    }
-}
-uint32_t Chunker::CalNormalSize(const uint32_t min, const uint32_t av, const uint32_t max)
-{
-    uint32_t off = min + DivCeil(min, 2);
-    if (off > av)
-    {
-        off = av;
-    }
-    uint32_t diff = av - off;
-    if (diff > max)
-    {
-        return max;
-    }
-    return diff;
-}
-inline uint32_t Chunker::DivCeil(uint32_t a, uint32_t b)
-{
-    uint32_t tmp = a / b;
-    if (a % b == 0)
-    {
-        return tmp;
-    }
-    else
-    {
-        return (tmp + 1);
-    }
+  } else {
+    return (tmp + 1);
+  }
 }
 
 uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
 // 调用CutPointTarFast，因为有NextChunkType的全局变量，所以断在哪里都没关系。但是为了减少recipe压力（一对segment可恢复），满足结尾时下一个type还是header即可。
 {
-    uint64_t blockTypeMask;
-    uint64_t cpSum = 0;
-    uint64_t loopTime = 1;
-    if (Next_Chunk_Type == FILE_HEADER)
+  uint64_t blockTypeMask;
+  uint64_t cpSum = 0;
+  uint64_t loopTime = 1;
+  if (Next_Chunk_Type == FILE_HEADER) {
+    while ((HeaderCp < MULTI_HEADER_CHUNK * 512 ||
+            (localType == FILE_HEADER && Next_Chunk_Type == FILE_CHUNK)) &&
+           Next_Chunk_Type != BIG_CHUNK)
+    // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
+    // 当前是D下一个块也是D时，应该是大块，也是可以断的。
+    // 当前是D下一个块是H时，是正常的HD组合，也可以断。
+    // 总结一下就是，当前为H，下一块为D时不可以断
+    // 附加一条，下一个块是大块内容的时候也不在当前seg里切了
     {
-        while ((HeaderCp < MULTI_HEADER_CHUNK * 512 || (localType == FILE_HEADER && Next_Chunk_Type == FILE_CHUNK)) && Next_Chunk_Type != BIG_CHUNK)
-        // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
-        // 当前是D下一个块也是D时，应该是大块，也是可以断的。
-        // 当前是D下一个块是H时，是正常的HD组合，也可以断。
-        // 总结一下就是，当前为H，下一块为D时不可以断
-        // 附加一条，下一个块是大块内容的时候也不在当前seg里切了
-        {
-            localType = Next_Chunk_Type;
-            uint32_t cp = CutPointTarFast(src + cpSum, len - cpSum);
+      localType = Next_Chunk_Type;
+      uint32_t cp = CutPointTarFast(src + cpSum, len - cpSum);
 
-            if (localType == FILE_HEADER)
-            {
-                // ignore timestamp
-                // uint8_t zero[12] = {0};
-                // boundaries_.push_back({current_offset_ + cpSum, cp, 'H'});
-                memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
-                HeaderCp += cp;
-                // blockTypeMask = blockTypeMask;
-            }
-            else
-            {
-                if (cp == 0)
-                {
-                    // cout << "data cp is 0" << endl; // debug
-                    continue;
-                }
-                // data chunking
-                Chunk_t chunk;
-                chunk.chunkPtr = (uint8_t *)malloc(cp);
-                memcpy(chunk.chunkPtr, src + cpSum, cp);
-                chunk.chunkSize = cp;
-                chunk.NameExist = NameExist;
-                if (!IsLongNameChunk1 && !IsLongNameChunk2)
-                    chunk.name = hashNameToUint64(name);
-                else if (IsLongNameChunk1)
-                {
-                    chunk.name = hashLongNameToUint64(LongName) - 1;
-                    IsLongNameChunk1 = false;
-                    IsLongNameChunk2 = true;
-                }
-                else
-                {
-                    chunk.name = hashLongNameToUint64(LongName);
-                    IsLongNameChunk2 = false;
-                } // 记录data边界
-                // boundaries_.push_back({current_offset_ + cpSum, cp, 'D'});
-                // input MQ
-                if (!outputMQ_->Push(chunk)) // file-chunks
-                {
-                    tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-                    exit(EXIT_FAILURE);
-                }
-                // mask
-                blockTypeMask = blockTypeMask + loopTime;
-                if (loopTime > UINT32_MAX)
-                {
-                    cout << "loopTime overflow is" << loopTime << endl;
-                }
-            }
-            // local offset
-            cpSum += cp;
-            if (cpSum == len)
-            {
-                Next_Chunk_Type = FILE_HEADER;
-                break; // 同时，这个backup结束了，可能要设计个flag
-            }
-            loopTime *= 2;
+      if (localType == FILE_HEADER) {
+        // ignore timestamp
+        // uint8_t zero[12] = {0};
+        // boundaries_.push_back({current_offset_ + cpSum, cp, 'H'});
+        memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
+        HeaderCp += cp;
+        // blockTypeMask = blockTypeMask;
+      } else {
+        if (cp == 0) {
+          // cout << "data cp is 0" << endl; // debug
+          continue;
         }
-        // input recipe MQ
-        // if (!MaskoutputMQ_->Push(blockTypeMask))
-        // {
-        //     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-        //     exit(EXIT_FAILURE);
-        // }
-        // multi header
+        // data chunking
         Chunk_t chunk;
-        chunk.chunkPtr = (uint8_t *)malloc(HeaderCp);
-        memcpy(chunk.chunkPtr, headerBuffer, HeaderCp);
-        chunk.chunkSize = HeaderCp;
-        chunk.HeaderFlag = true;
-        chunk.NameExist = true;
-        chunk.name = hashNameToUint64(path);
-        // cout << "path is " << path << " namehash is " << chunk.name << endl;
-        // reset
-        HeaderCp = 0;
-        // input chunk MQ
-        if (!outputMQ_->Push(chunk)) // header-chunks
+        chunk.chunkPtr = (uint8_t *)malloc(cp);
+        memcpy(chunk.chunkPtr, src + cpSum, cp);
+        chunk.chunkSize = cp;
+        chunk.NameExist = NameExist;
+        if (!IsLongNameChunk1 && !IsLongNameChunk2)
+          chunk.name = hashNameToUint64(name);
+        else if (IsLongNameChunk1) {
+          chunk.name = hashLongNameToUint64(LongName) - 1;
+          IsLongNameChunk1 = false;
+          IsLongNameChunk2 = true;
+        } else {
+          chunk.name = hashLongNameToUint64(LongName);
+          IsLongNameChunk2 = false;
+        } // 记录data边界
+        // boundaries_.push_back({current_offset_ + cpSum, cp, 'D'});
+        // input MQ
+        if (!outputMQ_->Push(chunk)) // file-chunks
         {
-            tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-            exit(EXIT_FAILURE);
+          tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+          exit(EXIT_FAILURE);
         }
+        // mask
+        blockTypeMask = blockTypeMask + loopTime;
+        if (loopTime > UINT32_MAX) {
+          cout << "loopTime overflow is" << loopTime << endl;
+        }
+      }
+      // local offset
+      cpSum += cp;
+      if (cpSum == len) {
+        Next_Chunk_Type = FILE_HEADER;
+        break; // 同时，这个backup结束了，可能要设计个flag
+      }
+      loopTime *= 2;
     }
-    else
+    // input recipe MQ
+    // if (!MaskoutputMQ_->Push(blockTypeMask))
+    // {
+    //     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+    //     exit(EXIT_FAILURE);
+    // }
+    // multi header
+    Chunk_t chunk;
+    chunk.chunkPtr = (uint8_t *)malloc(HeaderCp);
+    memcpy(chunk.chunkPtr, headerBuffer, HeaderCp);
+    chunk.chunkSize = HeaderCp;
+    chunk.HeaderFlag = true;
+    chunk.NameExist = true;
+    chunk.name = hashNameToUint64(path);
+    // cout << "path is " << path << " namehash is " << chunk.name << endl;
+    // reset
+    HeaderCp = 0;
+    // input chunk MQ
+    if (!outputMQ_->Push(chunk)) // header-chunks
     {
-        // cout << " Next_Chunk_Type is " << Next_Chunk_Type << endl;
-        //  不以header为开头只可能是bigchunk，这里想要的处理的bigchunk开头时
-        // boundaries_.push_back({current_offset_, len, 'B'});
-        while (Next_Chunk_Type != FILE_HEADER && cpSum < CONTAINER_MAX_SIZE - MAX_CHUNK_SIZE)
-        // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
-        // 当前是D下一个块也是D时，应该是大块，也是可以断的。
-        // 当前是D下一个块是H时，是正常的HD组合，也可以断。
-        // 总结一下就是，当前为H，下一块为D时不可以断
-        {
-            localType = Next_Chunk_Type;
-            uint32_t cp = CutPointTarFast(src + cpSum, len - cpSum);
-            // cout << "big cdc size is " << cp << endl;
-            if (localType == FILE_HEADER)
-            {
-                std::cout << "cut_bug";
-                // memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
-                // HeaderCp += cp;
-                // blockTypeMask = blockTypeMask;
-            }
-            else
-            {
-                Chunk_t chunk;
-                chunk.chunkPtr = (uint8_t *)malloc(cp);
-                memcpy(chunk.chunkPtr, src + cpSum, cp);
-                chunk.chunkSize = cp;
-                chunk.NameExist = true;
-                chunk.CDCFlag = true;
-                // chunk.name = name;
-                if (!outputMQ_->Push(chunk)) // cdc-chunks
-                {
-                    tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
-                    exit(EXIT_FAILURE);
-                }
-            }
-            cpSum += cp;
-            if (cpSum == len)
-            {
-                break; // 同时，这个backup结束了，可能要设计个flag
-            }
-        }
-        if (IsLongNameChunk1 || IsLongNameChunk2)
-        {
-            IsLongNameChunk1 = false;
-            IsLongNameChunk2 = false;
-        }
+      tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+      exit(EXIT_FAILURE);
     }
+  } else {
+    // cout << " Next_Chunk_Type is " << Next_Chunk_Type << endl;
+    //  不以header为开头只可能是bigchunk，这里想要的处理的bigchunk开头时
+    // boundaries_.push_back({current_offset_, len, 'B'});
+    while (Next_Chunk_Type != FILE_HEADER &&
+           cpSum < CONTAINER_MAX_SIZE - MAX_CHUNK_SIZE)
+    // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
+    // 当前是D下一个块也是D时，应该是大块，也是可以断的。
+    // 当前是D下一个块是H时，是正常的HD组合，也可以断。
+    // 总结一下就是，当前为H，下一块为D时不可以断
+    {
+      localType = Next_Chunk_Type;
+      uint32_t cp = CutPointTarFast(src + cpSum, len - cpSum);
+      // cout << "big cdc size is " << cp << endl;
+      if (localType == FILE_HEADER) {
+        std::cout << "cut_bug";
+        // memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
+        // HeaderCp += cp;
+        // blockTypeMask = blockTypeMask;
+      } else {
+        Chunk_t chunk;
+        chunk.chunkPtr = (uint8_t *)malloc(cp);
+        memcpy(chunk.chunkPtr, src + cpSum, cp);
+        chunk.chunkSize = cp;
+        chunk.NameExist = true;
+        chunk.CDCFlag = true;
+        // chunk.name = name;
+        if (!outputMQ_->Push(chunk)) // cdc-chunks
+        {
+          tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
+          exit(EXIT_FAILURE);
+        }
+      }
+      cpSum += cp;
+      if (cpSum == len) {
+        break; // 同时，这个backup结束了，可能要设计个flag
+      }
+    }
+    if (IsLongNameChunk1 || IsLongNameChunk2) {
+      IsLongNameChunk1 = false;
+      IsLongNameChunk2 = false;
+    }
+  }
 
-    // cout << "HeaderCp is " << HeaderCp << endl;
-    // cout << "DataCp is " << DataCp << endl;
-    return cpSum;
+  // cout << "HeaderCp is " << HeaderCp << endl;
+  // cout << "DataCp is " << DataCp << endl;
+  return cpSum;
 }
 
-void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum)
-{
+void Chunker::MTar(vector<string> &readfileList, uint32_t backupNum) {
 
-    for (int i = 0; i < backupNum; i++)
-    {
-        auto startTmp = std::chrono::high_resolution_clock::now();
-        string name;
-        size_t pos = readfileList[i].find_last_of('/');
-        if (pos != std::string::npos)
-        {
-            name = readfileList[i].substr(pos + 1);
-        }
-        else
-        {
-            name = readfileList[i];
-        }
-        string writePath = "./mTarFile/" + name + ".m";
-        cout << "write path is " << writePath << endl;
-        // stream set
-        ifstream inFile(readfileList[i]);
-        ofstream outFile(writePath);
-
-        // 预留data_size空间
-        uint64_t dataSize = 0;
-        outFile.write((char *)&dataSize, sizeof(dataSize));
-
-        // 记录data blocks起始位置
-        std::streampos dataStart = outFile.tellp();
-        // data chunk rewrite
-        bool end = false;
-        uint64_t totalOffset = 0;
-        while (!end)
-        {
-            memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
-            inFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE);
-            end = inFile.eof();
-            size_t len = inFile.gcount();
-            if (len == 0)
-            {
-                break;
-            }
-            localOffset = 0;
-            while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
-            {
-                // cout << " len is " << len << " localOffset is " << localOffset << endl;
-                // compute cutPoint
-                localType = Next_Chunk_Type;
-                uint32_t cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
-                if (cp == 0)
-                {
-                    continue;
-                }
-                if (localType != FILE_HEADER)
-                {
-                    outFile.write((char *)readFileBuffer + localOffset, cp);
-                }
-
-                localOffset += cp;
-            }
-            totalOffset += localOffset;
-            inFile.seekg(totalOffset, ios_base::beg);
-        }
-
-        // 记录data blocks结束位置并计算大小
-        std::streampos dataEnd = outFile.tellp();
-        dataSize = dataEnd - dataStart;
-
-        // reset
-        localType = FILE_HEADER;
-        Next_Chunk_Type = FILE_HEADER;
-        ifstream inHeaderFile(readfileList[i]);
-        // header chunk rewrite
-        inHeaderFile.seekg(0, ios_base::beg);
-        end = false;
-        totalOffset = 0;
-        while (!end)
-        {
-            memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
-            inHeaderFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE + MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
-            end = inHeaderFile.eof();
-            size_t len = inHeaderFile.gcount();
-            if (len == 0)
-            {
-                break;
-            }
-            localOffset = 0;
-            while (((len - localOffset) >= CONTAINER_MAX_SIZE) || (end && (localOffset < len)))
-            {
-                // cout << " len is " << len << " localOffset is " << localOffset << endl;
-                // compute cutPoint
-                localType = Next_Chunk_Type;
-                uint32_t cp = CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
-                if (cp == 0)
-                {
-                    continue;
-                }
-                if (localType == FILE_HEADER)
-                {
-                    outFile.write((char *)readFileBuffer + localOffset, cp);
-                }
-
-                localOffset += cp;
-            }
-            totalOffset += localOffset;
-            inHeaderFile.seekg(totalOffset, ios_base::beg);
-        }
-
-        // 回写data_size
-        outFile.seekp(0);
-        outFile.write((char *)&dataSize, sizeof(dataSize));
-        cout << "offset is " << dataSize << endl;
-        // reset
-        localType = FILE_HEADER;
-        Next_Chunk_Type = FILE_HEADER;
-        inFile.close();
-        inHeaderFile.close();
-        outFile.close();
-        // mtar overwrite the readfileList
-        readfileList[i] = writePath;
-        auto endTmp = std::chrono::high_resolution_clock::now();
-        auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
-        MTarTime.push_back(TimeTmp);
+  for (int i = 0; i < backupNum; i++) {
+    auto startTmp = std::chrono::high_resolution_clock::now();
+    string name;
+    size_t pos = readfileList[i].find_last_of('/');
+    if (pos != std::string::npos) {
+      name = readfileList[i].substr(pos + 1);
+    } else {
+      name = readfileList[i];
     }
+    string writePath = "./mTarFile/" + name + ".m";
+    cout << "write path is " << writePath << endl;
+    // stream set
+    ifstream inFile(readfileList[i]);
+    ofstream outFile(writePath);
+
+    // 预留data_size空间
+    uint64_t dataSize = 0;
+    outFile.write((char *)&dataSize, sizeof(dataSize));
+
+    // 记录data blocks起始位置
+    std::streampos dataStart = outFile.tellp();
+    // data chunk rewrite
+    bool end = false;
+    uint64_t totalOffset = 0;
+    while (!end) {
+      memset((char *)readFileBuffer, 0, sizeof(uint8_t) * READ_FILE_SIZE);
+      inFile.read((char *)readFileBuffer, sizeof(uint8_t) * READ_FILE_SIZE);
+      end = inFile.eof();
+      size_t len = inFile.gcount();
+      if (len == 0) {
+        break;
+      }
+      localOffset = 0;
+      while (((len - localOffset) >= CONTAINER_MAX_SIZE) ||
+             (end && (localOffset < len))) {
+        // cout << " len is " << len << " localOffset is " << localOffset <<
+        // endl; compute cutPoint
+        localType = Next_Chunk_Type;
+        uint32_t cp =
+            CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
+        if (cp == 0) {
+          continue;
+        }
+        if (localType != FILE_HEADER) {
+          outFile.write((char *)readFileBuffer + localOffset, cp);
+        }
+
+        localOffset += cp;
+      }
+      totalOffset += localOffset;
+      inFile.seekg(totalOffset, ios_base::beg);
+    }
+
+    // 记录data blocks结束位置并计算大小
+    std::streampos dataEnd = outFile.tellp();
+    dataSize = dataEnd - dataStart;
+
     // reset
-    chunkType = FASTCDC;
     localType = FILE_HEADER;
     Next_Chunk_Type = FILE_HEADER;
-    return;
+    ifstream inHeaderFile(readfileList[i]);
+    // header chunk rewrite
+    inHeaderFile.seekg(0, ios_base::beg);
+    end = false;
+    totalOffset = 0;
+    while (!end) {
+      memset((char *)readFileBuffer, 0,
+             sizeof(uint8_t) * READ_FILE_SIZE +
+                 MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+      inHeaderFile.read((char *)readFileBuffer,
+                        sizeof(uint8_t) * READ_FILE_SIZE +
+                            MULTI_HEADER_CHUNK * CONTAINER_MAX_SIZE);
+      end = inHeaderFile.eof();
+      size_t len = inHeaderFile.gcount();
+      if (len == 0) {
+        break;
+      }
+      localOffset = 0;
+      while (((len - localOffset) >= CONTAINER_MAX_SIZE) ||
+             (end && (localOffset < len))) {
+        // cout << " len is " << len << " localOffset is " << localOffset <<
+        // endl; compute cutPoint
+        localType = Next_Chunk_Type;
+        uint32_t cp =
+            CutPointTarFast(readFileBuffer + localOffset, len - localOffset);
+        if (cp == 0) {
+          continue;
+        }
+        if (localType == FILE_HEADER) {
+          outFile.write((char *)readFileBuffer + localOffset, cp);
+        }
+
+        localOffset += cp;
+      }
+      totalOffset += localOffset;
+      inHeaderFile.seekg(totalOffset, ios_base::beg);
+    }
+
+    // 回写data_size
+    outFile.seekp(0);
+    outFile.write((char *)&dataSize, sizeof(dataSize));
+    cout << "offset is " << dataSize << endl;
+    // reset
+    localType = FILE_HEADER;
+    Next_Chunk_Type = FILE_HEADER;
+    inFile.close();
+    inHeaderFile.close();
+    outFile.close();
+    // mtar overwrite the readfileList
+    readfileList[i] = writePath;
+    auto endTmp = std::chrono::high_resolution_clock::now();
+    auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(
+                       endTmp - startTmp)
+                       .count();
+    MTarTime.push_back(TimeTmp);
+  }
+  // reset
+  chunkType = FASTCDC;
+  localType = FILE_HEADER;
+  Next_Chunk_Type = FILE_HEADER;
+  return;
 }
 
-void Chunker::MTarBIN(vector<string> &readfileList, uint32_t backupNum)
-{
+void Chunker::MTarBIN(vector<string> &readfileList, uint32_t backupNum) {
 
-    for (int i = 0; i < backupNum; i++)
-    {
-        auto startTmp = std::chrono::high_resolution_clock::now();
-        string name;
-        string bin_path = "../mtarbin/mtar";
-        size_t pos = readfileList[i].find_last_of('/');
-        if (pos != std::string::npos)
-        {
-            name = readfileList[i].substr(pos + 1);
-        }
-        else
-        {
-            name = readfileList[i];
-        }
-        string copiedFile = "./mTarFile/" + name;
-        string filteredFile = "./mTarFile/" + name + ".f";
-        string finalPath = "./mTarFile/" + name + ".f.m";
-        // 使用系统调用 cp 复制文件
-        string cpCommand = "cp " + readfileList[i] + " " + copiedFile;
-
-        int result = system(cpCommand.c_str());
-        if (result != 0)
-        {
-            cout << "Failed to copy file: " << readfileList[i] << " to " << copiedFile << endl;
-            continue;
-        }
-
-        // 1. filterToFile 操作
-        string filterCmd = bin_path + " --filter -f " + copiedFile;
-        result = system(filterCmd.c_str());
-        if (result != 0)
-        {
-            cout << "Failed to filter file: " << copiedFile << endl;
-            continue;
-        }
-
-        // 2. migrate 操作
-        string migrateCmd = bin_path + " --migrate -f " + filteredFile;
-        result = system(migrateCmd.c_str());
-        if (result != 0)
-        {
-            cout << "Failed to migrate file: " << filteredFile << endl;
-            continue;
-        }
-
-        cout << "write path is " << finalPath << endl;
-
-        // mtar overwrite the readfileList
-        readfileList[i] = finalPath;
-        auto endTmp = std::chrono::high_resolution_clock::now();
-        auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(endTmp - startTmp).count();
-        MTarTime.push_back(TimeTmp);
-        string rmCopiedCmd = "rm " + copiedFile;
-        string rmFilteredCmd = "rm " + filteredFile;
-        system(rmCopiedCmd.c_str());
-        system(rmFilteredCmd.c_str());
+  for (int i = 0; i < backupNum; i++) {
+    auto startTmp = std::chrono::high_resolution_clock::now();
+    string name;
+    string bin_path = "../mtarbin/mtar";
+    size_t pos = readfileList[i].find_last_of('/');
+    if (pos != std::string::npos) {
+      name = readfileList[i].substr(pos + 1);
+    } else {
+      name = readfileList[i];
     }
-    // reset
-    chunkType = FASTCDC;
-    return;
+    string copiedFile = "./mTarFile/" + name;
+    string filteredFile = "./mTarFile/" + name + ".f";
+    string finalPath = "./mTarFile/" + name + ".f.m";
+    // 使用系统调用 cp 复制文件
+    string cpCommand = "cp " + readfileList[i] + " " + copiedFile;
+
+    int result = system(cpCommand.c_str());
+    if (result != 0) {
+      cout << "Failed to copy file: " << readfileList[i] << " to " << copiedFile
+           << endl;
+      continue;
+    }
+
+    // 1. filterToFile 操作
+    string filterCmd = bin_path + " --filter -f " + copiedFile;
+    result = system(filterCmd.c_str());
+    if (result != 0) {
+      cout << "Failed to filter file: " << copiedFile << endl;
+      continue;
+    }
+
+    // 2. migrate 操作
+    string migrateCmd = bin_path + " --migrate -f " + filteredFile;
+    result = system(migrateCmd.c_str());
+    if (result != 0) {
+      cout << "Failed to migrate file: " << filteredFile << endl;
+      continue;
+    }
+
+    cout << "write path is " << finalPath << endl;
+
+    // mtar overwrite the readfileList
+    readfileList[i] = finalPath;
+    auto endTmp = std::chrono::high_resolution_clock::now();
+    auto TimeTmp = std::chrono::duration_cast<std::chrono::duration<double>>(
+                       endTmp - startTmp)
+                       .count();
+    MTarTime.push_back(TimeTmp);
+    string rmCopiedCmd = "rm " + copiedFile;
+    string rmFilteredCmd = "rm " + filteredFile;
+    system(rmCopiedCmd.c_str());
+    system(rmFilteredCmd.c_str());
+  }
+  // reset
+  chunkType = FASTCDC;
+  return;
 }
 
 // For next data blocks
-bool Chunker::FindName(const char *src)
-{
-    // 提取文件名
-    const char *end = src + 100;
-    const char *relativePath = std::find(src, end, '/');
+bool Chunker::FindName(const char *src) {
+  // 提取文件名
+  const char *end = src + 100;
+  const char *relativePath = std::find(src, end, '/');
 
-    // 如果找到了'/'，则剔除其之前的内容
-    if (relativePath != end)
-    {
-        relativePath++; // 跳过第一个'/'
-    }
-    else
-    {
-        relativePath = src; // 如果没有找到'/'，则使用原始src
-    }
-    std::copy(relativePath, src + 100, name);
+  // 如果找到了'/'，则剔除其之前的内容
+  if (relativePath != end) {
+    relativePath++; // 跳过第一个'/'
+  } else {
+    relativePath = src; // 如果没有找到'/'，则使用原始src
+  }
+  std::copy(relativePath, src + 100, name);
 
-    return 1;
+  return 1;
 }
 // For header block
-bool Chunker::ExtractPath(const char *full)
-{
-    // 假定 full 为 "版本号/目录.../filename"
-    // 并且成员变量 path 已经足够大（例如：char path[512];）
+bool Chunker::ExtractPath(const char *full) {
+  // 假定 full 为 "版本号/目录.../filename"
+  // 并且成员变量 path 已经足够大（例如：char path[512];）
 
-    // 找到第一个 '/'，版本号部分忽略
-    const char *firstSlash = std::strchr(full, '/');
-    if (!firstSlash)
-    {
-        // path[0] = '\0';
-        return false;
-    }
-    // 从第一个 '/' 开始
-    const char *remainder = firstSlash;
+  // 找到第一个 '/'，版本号部分忽略
+  const char *firstSlash = std::strchr(full, '/');
+  if (!firstSlash) {
+    // path[0] = '\0';
+    return false;
+  }
+  // 从第一个 '/' 开始
+  const char *remainder = firstSlash;
 
-    // 找到最后一个 '/'（即分隔目录和文件名的 '/')
-    const char *lastSlash = std::strrchr(remainder, '/');
-    if (!lastSlash)
-    {
-        // 不可能发生，因为 firstSlash 一定存在
-        std::strcpy(path, remainder);
-        return true;
-    }
-
-    // 统计从 remainder 到 lastSlash 之间的 '/' 个数
-    int slashCount = 0;
-    const char *p = remainder;
-    while (p < lastSlash)
-    {
-        if (*p == '/')
-            ++slashCount;
-        ++p;
-    }
-
-    if (slashCount == 1)
-    {
-        // 仅剩1个 '/'，舍弃最后一个 '/' 后的内容
-        size_t len = lastSlash - remainder;
-        std::strncpy(path, remainder, len);
-        path[len] = '\0';
-    }
-    else if (slashCount > 2)
-    {
-        // 剩余 '/' 大于2，则舍弃倒数第二个 '/' 之后的内容
-        const char *secondLast = nullptr;
-        p = lastSlash - 1;
-        while (p >= remainder)
-        {
-            if (*p == '/')
-            {
-                secondLast = p;
-                break;
-            }
-            p--;
-        }
-        if (secondLast)
-        {
-            size_t len = secondLast - remainder;
-            std::strncpy(path, remainder, len);
-            path[len] = '\0';
-        }
-        else
-        {
-            std::strcpy(path, remainder);
-        }
-    }
-    else
-    {
-        // 其他情况默认舍弃最后一个 '/' 后的内容
-        size_t len = lastSlash - remainder;
-        std::strncpy(path, remainder, len);
-        path[len] = '\0';
-    }
-
+  // 找到最后一个 '/'（即分隔目录和文件名的 '/')
+  const char *lastSlash = std::strrchr(remainder, '/');
+  if (!lastSlash) {
+    // 不可能发生，因为 firstSlash 一定存在
+    std::strcpy(path, remainder);
     return true;
-}
-bool Chunker::FindLongName(const char *src, uint64_t roundedUp)
-{
-    const char *end = src + roundedUp;
-    const char *relativePath = std::find(src, end, '/');
+  }
 
-    // 如果找到了'/'，则剔除其之前的内容
-    if (relativePath != nullptr)
-    {
-        relativePath++; // 跳过第一个'/'
-    }
-    else
-    {
-        relativePath = src; // 如果没有找到'/'，则使用原始src
-    }
-    std::copy(relativePath, src + roundedUp, LongName);
-    return 1;
-}
-const char *Chunker::FindNameBegin(const char *src)
-{
-    const char *end = src + 100;
-    const char *relativePath = std::find(src, end, '/');
+  // 统计从 remainder 到 lastSlash 之间的 '/' 个数
+  int slashCount = 0;
+  const char *p = remainder;
+  while (p < lastSlash) {
+    if (*p == '/')
+      ++slashCount;
+    ++p;
+  }
 
-    // 如果找到了'/'，则剔除其之前的内容
-    if (relativePath != end)
-    {
-        relativePath++; // 跳过第一个'/'
+  if (slashCount == 1) {
+    // 仅剩1个 '/'，舍弃最后一个 '/' 后的内容
+    size_t len = lastSlash - remainder;
+    std::strncpy(path, remainder, len);
+    path[len] = '\0';
+  } else if (slashCount > 2) {
+    // 剩余 '/' 大于2，则舍弃倒数第二个 '/' 之后的内容
+    const char *secondLast = nullptr;
+    p = lastSlash - 1;
+    while (p >= remainder) {
+      if (*p == '/') {
+        secondLast = p;
+        break;
+      }
+      p--;
     }
-    else
-    {
-        relativePath = src; // 如果没有找到'/'，则使用原始src
+    if (secondLast) {
+      size_t len = secondLast - remainder;
+      std::strncpy(path, remainder, len);
+      path[len] = '\0';
+    } else {
+      std::strcpy(path, remainder);
     }
-    return relativePath;
-}
-const char *Chunker::FindLongNameBegin(const char *src)
-{
-    const char *end = src + 512;
-    const char *relativePath = std::find(src, end, '/');
+  } else {
+    // 其他情况默认舍弃最后一个 '/' 后的内容
+    size_t len = lastSlash - remainder;
+    std::strncpy(path, remainder, len);
+    path[len] = '\0';
+  }
 
-    // 如果找到了'/'，则剔除其之前的内容
-    if (relativePath != end)
-    {
-        relativePath++; // 跳过第一个'/'
-    }
-    else
-    {
-        relativePath = src; // 如果没有找到'/'，则使用原始src
-    }
-    return relativePath;
+  return true;
+}
+bool Chunker::FindLongName(const char *src, uint64_t roundedUp) {
+  const char *end = src + roundedUp;
+  const char *relativePath = std::find(src, end, '/');
+
+  // 如果找到了'/'，则剔除其之前的内容
+  if (relativePath != nullptr) {
+    relativePath++; // 跳过第一个'/'
+  } else {
+    relativePath = src; // 如果没有找到'/'，则使用原始src
+  }
+  std::copy(relativePath, src + roundedUp, LongName);
+  return 1;
+}
+const char *Chunker::FindNameBegin(const char *src) {
+  const char *end = src + 100;
+  const char *relativePath = std::find(src, end, '/');
+
+  // 如果找到了'/'，则剔除其之前的内容
+  if (relativePath != end) {
+    relativePath++; // 跳过第一个'/'
+  } else {
+    relativePath = src; // 如果没有找到'/'，则使用原始src
+  }
+  return relativePath;
+}
+const char *Chunker::FindLongNameBegin(const char *src) {
+  const char *end = src + 512;
+  const char *relativePath = std::find(src, end, '/');
+
+  // 如果找到了'/'，则剔除其之前的内容
+  if (relativePath != end) {
+    relativePath++; // 跳过第一个'/'
+  } else {
+    relativePath = src; // 如果没有找到'/'，则使用原始src
+  }
+  return relativePath;
 }
 
-uint16_t Chunker::hashNameToUint16(const char *name)
-{
-    uint16_t hash = 0;
-    for (int i = 0; i < 101 && name[i] != '\0'; ++i)
-    {
-        hash = hash * 31 + name[i];
-    }
-    return hash;
+uint16_t Chunker::hashNameToUint16(const char *name) {
+  uint16_t hash = 0;
+  for (int i = 0; i < 101 && name[i] != '\0'; ++i) {
+    hash = hash * 31 + name[i];
+  }
+  return hash;
 }
 
-uint64_t Chunker::hashNameToUint64(const char *name)
-{
-    uint64_t hash = 0;
-    for (int i = 0; i < 101 && name[i] != '\0'; ++i)
-    {
-        hash = hash * prime + name[i];
-    }
-    return hash;
+uint64_t Chunker::hashNameToUint64(const char *name) {
+  uint64_t hash = 0;
+  for (int i = 0; i < 101 && name[i] != '\0'; ++i) {
+    hash = hash * prime + name[i];
+  }
+  return hash;
 }
 
-uint64_t Chunker::hashLongNameToUint64(const char *name)
-{
-    uint64_t hash = 0;
-    for (int i = 0; i < 8197 && name[i] != '\0'; ++i)
-    {
-        hash = hash * prime + name[i];
-    }
-    // cout << "longname: " << name << "hash: " << hash << endl;
-    return hash;
+uint64_t Chunker::hashLongNameToUint64(const char *name) {
+  uint64_t hash = 0;
+  for (int i = 0; i < 8197 && name[i] != '\0'; ++i) {
+    hash = hash * prime + name[i];
+  }
+  // cout << "longname: " << name << "hash: " << hash << endl;
+  return hash;
 }
 
-uint64_t Chunker::CountFileSize(uint64_t roundedUp){
-    if(roundedUp==0) 
-        return 0;
-    size_t bin_index = 0;
-    while (bin_index < size_boundaries.size() && roundedUp > size_boundaries[bin_index])
-    {
-        bin_index++;
-    }
-    file_chunk_dist_count[bin_index]++;
-    all_rounded_sizes.push_back(roundedUp);
-    sum_rounded += roundedUp;
-    sum_squared_rounded += roundedUp * roundedUp;
+uint64_t Chunker::CountFileSize(uint64_t roundedUp) {
+  if (roundedUp == 0)
     return 0;
+  size_t bin_index = 0;
+  while (bin_index < size_boundaries.size() &&
+         roundedUp > size_boundaries[bin_index]) {
+    bin_index++;
+  }
+  file_chunk_dist_count[bin_index]++;
+  all_rounded_sizes.push_back(roundedUp);
+  sum_rounded += roundedUp;
+  sum_squared_rounded += roundedUp * roundedUp;
+  if (roundedUp >= 4 * 1024 * 1024) {
+    sum4MiB += roundedUp;
+  }
+  sumfile += roundedUp;
+  return 0;
 }
 
 void Chunker::PrintStatsToFile(string name) {
-    std::string final_name = name;
-    size_t last_slash = name.find_last_of("/\\");
-    if (last_slash != std::string::npos) {
-        final_name = name.substr(last_slash + 1);
-    }
-    std::string filename = "stats_" + final_name + ".txt";
-    std::ofstream outFile(filename);
+  std::string final_name = name;
+  size_t last_slash = name.find_last_of("/\\");
+  if (last_slash != std::string::npos) {
+    final_name = name.substr(last_slash + 1);
+  }
+  std::string filename = "stats_" + final_name + ".txt";
+  std::ofstream outFile(filename);
 
-    if (!outFile.is_open()) {
-        std::cerr << "错误：无法创建日志文件 " << filename << std::endl;
-        return;
-    }
+  if (!outFile.is_open()) {
+    std::cerr << "错误：无法创建日志文件 " << filename << std::endl;
+    return;
+  }
 
-    // 1. 计算基础统计指标
-    double mean = 0.0, median = 0.0, stddev = 0.0;
-    uint64_t max_val = 0; // 新增：最大值
-    size_t n = all_rounded_sizes.size();
+  // 1. 计算基础统计指标
+  double mean = 0.0, median = 0.0, stddev = 0.0;
+  uint64_t max_val = 0; // 新增：最大值
+  size_t n = all_rounded_sizes.size();
 
-    if (n > 0) {
-        mean = static_cast<double>(sum_rounded) / n;
+  if (n > 0) {
+    mean = static_cast<double>(sum_rounded) / n;
 
-        // 排序以计算中位数和最大值
-        std::vector<uint64_t> sorted_sizes = all_rounded_sizes;
-        std::sort(sorted_sizes.begin(), sorted_sizes.end());
-        
-        // 中位数
-        if (n % 2 == 0) {
-            median = (static_cast<double>(sorted_sizes[n / 2 - 1]) + sorted_sizes[n / 2]) / 2.0;
-        } else {
-            median = static_cast<double>(sorted_sizes[n / 2]);
-        }
+    // 排序以计算中位数和最大值
+    std::vector<uint64_t> sorted_sizes = all_rounded_sizes;
+    std::sort(sorted_sizes.begin(), sorted_sizes.end());
 
-        // 最大值：排序后最后一个元素就是最大值
-        max_val = sorted_sizes[n - 1]; 
-
-        // 标准差
-        double variance = (static_cast<double>(sum_squared_rounded) / n) - (mean * mean);
-        if (variance < 0) variance = 0; 
-        stddev = std::sqrt(variance);
+    // 中位数
+    if (n % 2 == 0) {
+      median =
+          (static_cast<double>(sorted_sizes[n / 2 - 1]) + sorted_sizes[n / 2]) /
+          2.0;
+    } else {
+      median = static_cast<double>(sorted_sizes[n / 2]);
     }
 
-    // 2. 输出基础统计指标
-    outFile << "========== 统计报告: " << name << " ==========\n";
-    outFile << "总样本数 (Total Count): " << n << "\n\n";
-    outFile << "--- 核心指标 (Bytes) ---\n";
-    outFile << "平均数 (Mean):   " << static_cast<uint64_t>(mean) << "\n";
-    outFile << "中位数 (Median): " << static_cast<uint64_t>(median) << "\n";
-    outFile << "标准差 (StdDev): " << static_cast<uint64_t>(stddev) << "\n";
-    outFile << "最大值 (Max):    " << max_val << "\n\n"; // 输出最大值
+    // 最大值：排序后最后一个元素就是最大值
+    max_val = sorted_sizes[n - 1];
 
-    // 3. 输出细粒度的分箱统计（加上了百分比）
-    outFile << "--- 细粒度分箱统计 (Detailed Distribution) ---\n";
-    outFile << "区间范围 (Bytes)\t数量 (Count)\t占比 (Percentage)\n";
-    outFile << "------------------------------------------------\n";
+    // 标准差
+    double variance =
+        (static_cast<double>(sum_squared_rounded) / n) - (mean * mean);
+    if (variance < 0)
+      variance = 0;
+    stddev = std::sqrt(variance);
+  }
 
-    for (size_t i = 0; i < size_boundaries.size(); ++i) {
-        uint64_t lower = (i == 0) ? 0 : size_boundaries[i - 1];
-        uint64_t upper = size_boundaries[i];
-        
-        // 计算当前箱子的百分比
-        double percentage = (n > 0) ? (static_cast<double>(file_chunk_dist_count[i]) / n * 100.0) : 0.0;
-        
-        outFile << lower << " - " << upper << "\t" 
-                << file_chunk_dist_count[i] << "\t\t" 
-                << percentage << "%\n";
+  // 2. 输出基础统计指标
+  outFile << "========== 统计报告: " << name << " ==========\n";
+  outFile << "总样本数 (Total Count): " << n << "\n\n";
+  outFile << "--- 核心指标 (Bytes) ---\n";
+  outFile << "平均数 (Mean):   " << static_cast<uint64_t>(mean) << "\n";
+  outFile << "中位数 (Median): " << static_cast<uint64_t>(median) << "\n";
+  outFile << "标准差 (StdDev): " << static_cast<uint64_t>(stddev) << "\n";
+  outFile << "最大值 (Max):    " << max_val << "\n\n"; // 输出最大值
+
+  // 3. 输出细粒度的分箱统计（加上了百分比）
+  outFile << "--- 细粒度分箱统计 (Detailed Distribution) ---\n";
+  outFile << "区间范围 (Bytes)\t数量 (Count)\t占比 (Percentage)\n";
+  outFile << "------------------------------------------------\n";
+
+  for (size_t i = 0; i < size_boundaries.size(); ++i) {
+    uint64_t lower = (i == 0) ? 0 : size_boundaries[i - 1];
+    uint64_t upper = size_boundaries[i];
+
+    // 计算当前箱子的百分比
+    double percentage =
+        (n > 0) ? (static_cast<double>(file_chunk_dist_count[i]) / n * 100.0)
+                : 0.0;
+
+    outFile << lower << " - " << upper << "\t" << file_chunk_dist_count[i]
+            << "\t\t" << percentage << "%\n";
+  }
+
+  // 最后一个区间（大于最大边界的部分）
+  size_t lastIdx = size_boundaries.size();
+  // 同样计算最后一个箱子的百分比
+  double last_percentage =
+      (n > 0)
+          ? (static_cast<double>(file_chunk_dist_count[lastIdx]) / n * 100.0)
+          : 0.0;
+
+  outFile << size_boundaries.back() << " 以上\t"
+          << file_chunk_dist_count[lastIdx] << "\t\t" << last_percentage
+          << "%\n\n";
+
+  // 4. 新增：输出聚合后的分箱统计（<8K, 8-16K, 16K-4M, >4M）
+  // 注意：这里假设你的 size_boundaries 里包含了 8192, 16384, ..., 4194304
+  // 这些边界 我们通过累加细粒度箱子的数量来得到聚合结果
+  uint64_t count_lt_8k = 0;  // < 8KiB
+  uint64_t count_8k_16k = 0; // 8KiB - 16KiB
+  uint64_t count_16k_4m = 0; // 16KiB - 4MiB
+  uint64_t count_gt_4m = 0;  // > 4MiB
+
+  const uint64_t B_8K = 8 * 1024;
+  const uint64_t B_16K = 16 * 1024;
+  const uint64_t B_4M = 4 * 1024 * 1024;
+
+  // 遍历所有细粒度的箱子，把它们归类到四个大箱子里
+  for (size_t i = 0; i <= size_boundaries.size(); ++i) {
+    uint64_t lower = (i == 0) ? 0 : size_boundaries[i - 1];
+    uint64_t upper = (i < size_boundaries.size())
+                         ? size_boundaries[i]
+                         : UINT64_MAX; // 最后一个箱子设为无穷大
+    uint64_t count = file_chunk_dist_count[i];
+
+    if (upper <= B_8K) {
+      count_lt_8k += count;
+    } else if (lower >= B_8K && upper <= B_16K) {
+      count_8k_16k += count;
+    } else if (lower >= B_16K && upper <= B_4M) {
+      count_16k_4m += count;
+    } else if (lower >= B_4M) {
+      count_gt_4m += count;
     }
-    
-    // 最后一个区间（大于最大边界的部分）
-    size_t lastIdx = size_boundaries.size();
-    // 同样计算最后一个箱子的百分比
-    double last_percentage = (n > 0) ? (static_cast<double>(file_chunk_dist_count[lastIdx]) / n * 100.0) : 0.0;
-    
-    outFile << size_boundaries.back() << " 以上\t" 
-            << file_chunk_dist_count[lastIdx] << "\t\t" 
-            << last_percentage << "%\n\n";
-        
+    // 处理跨越边界的细粒度箱子（如果你的 size_boundaries
+    // 很细，可能会存在这种情况） 这里为了简化，假设你的细粒度边界是能够被 8K,
+    // 16K, 4M 整除对齐的。
+  }
 
-    // 4. 新增：输出聚合后的分箱统计（<8K, 8-16K, 16K-4M, >4M）
-    // 注意：这里假设你的 size_boundaries 里包含了 8192, 16384, ..., 4194304 这些边界
-    // 我们通过累加细粒度箱子的数量来得到聚合结果
-    uint64_t count_lt_8k = 0;      // < 8KiB
-    uint64_t count_8k_16k = 0;     // 8KiB - 16KiB
-    uint64_t count_16k_4m = 0;     // 16KiB - 4MiB
-    uint64_t count_gt_4m = 0;      // > 4MiB
+  outFile << "--- 聚合分箱统计 (Aggregated Distribution) ---\n";
+  outFile << "区间范围\t\t数量 (Count)\t占比 (Percentage)\n";
+  outFile << "------------------------------------------------\n";
 
-    const uint64_t B_8K = 8 * 1024;
-    const uint64_t B_16K = 16 * 1024;
-    const uint64_t B_4M = 4 * 1024 * 1024;
+  // 辅助打印函数（避免重复写计算百分比的代码）
+  auto print_agg_row = [&](const std::string &range, uint64_t count) {
+    double percentage =
+        (n > 0) ? (static_cast<double>(count) / n * 100.0) : 0.0;
+    outFile << range << "\t" << count << "\t\t" << percentage << "%\n";
+  };
 
-    // 遍历所有细粒度的箱子，把它们归类到四个大箱子里
-    for (size_t i = 0; i <= size_boundaries.size(); ++i) {
-        uint64_t lower = (i == 0) ? 0 : size_boundaries[i - 1];
-        uint64_t upper = (i < size_boundaries.size()) ? size_boundaries[i] : UINT64_MAX; // 最后一个箱子设为无穷大
-        uint64_t count = file_chunk_dist_count[i];
+  print_agg_row("< 8KiB", count_lt_8k);
+  print_agg_row("8KiB - 16KiB", count_8k_16k);
+  print_agg_row("16KiB - 4MiB", count_16k_4m);
+  print_agg_row("> 4MiB", count_gt_4m);
 
-        if (upper <= B_8K) {
-            count_lt_8k += count;
-        } else if (lower >= B_8K && upper <= B_16K) {
-            count_8k_16k += count;
-        } else if (lower >= B_16K && upper <= B_4M) {
-            count_16k_4m += count;
-        } else if (lower >= B_4M) {
-            count_gt_4m += count;
-        }
-        // 处理跨越边界的细粒度箱子（如果你的 size_boundaries 很细，可能会存在这种情况）
-        // 这里为了简化，假设你的细粒度边界是能够被 8K, 16K, 4M 整除对齐的。
-    }
+  outFile << "========================================\n\n";
+  outFile << ">=4MiB file size占比: " << (double)sum4MiB / (double)sumfile;
+  outFile.close();
 
-    outFile << "--- 聚合分箱统计 (Aggregated Distribution) ---\n";
-    outFile << "区间范围\t\t数量 (Count)\t占比 (Percentage)\n";
-    outFile << "------------------------------------------------\n";
-
-    // 辅助打印函数（避免重复写计算百分比的代码）
-    auto print_agg_row = [&](const std::string& range, uint64_t count) {
-        double percentage = (n > 0) ? (static_cast<double>(count) / n * 100.0) : 0.0;
-        outFile << range << "\t" << count << "\t\t" << percentage << "%\n";
-    };
-
-    print_agg_row("< 8KiB", count_lt_8k);
-    print_agg_row("8KiB - 16KiB", count_8k_16k);
-    print_agg_row("16KiB - 4MiB", count_16k_4m);
-    print_agg_row("> 4MiB", count_gt_4m);
-
-    outFile << "========================================\n\n";
-    outFile.close();
-
-    std::cout << "统计日志已保存至: " << filename << std::endl;
+  std::cout << "统计日志已保存至: " << filename << std::endl;
 }
