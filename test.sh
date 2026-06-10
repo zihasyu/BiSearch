@@ -31,25 +31,25 @@ run_method(){
 # sudo rm Containers/*
 # sudo echo 3 > /proc/sys/vm/drop_caches
 
-# ./BiSearch -i $path -c 8 -m 3 -n $num  >OdessMTar$name.txt
-# sudo rm -r mTarFile
-# sudo mkdir mTarFile
-# sudo rm -r mtarRestore
-# sudo mkdir mtarRestore
-# sudo rm -r restoreFile
-# sudo mkdir restoreFile
-# sudo rm Containers/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
+./BiSearch -i $path -c 8 -m 3 -n $num  >OdessMTar$name.txt
+sudo rm -r mTarFile
+sudo mkdir mTarFile
+sudo rm -r mtarRestore
+sudo mkdir mtarRestore
+sudo rm -r restoreFile
+sudo mkdir restoreFile
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
 
-# ./BiSearch -i $path -c 8 -m 0 -n $num  >LZ4MTar$name.txt
-# sudo rm -r mTarFile
-# sudo mkdir mTarFile
-# sudo rm -r mtarRestore
-# sudo mkdir mtarRestore
-# sudo rm -r restoreFile
-# sudo mkdir restoreFile
-# sudo rm Containers/*
-# sudo echo 3 > /proc/sys/vm/drop_caches
+./BiSearch -i $path -c 8 -m 0 -n $num  >LZ4MTar$name.txt
+sudo rm -r mTarFile
+sudo mkdir mTarFile
+sudo rm -r mtarRestore
+sudo mkdir mtarRestore
+sudo rm -r restoreFile
+sudo mkdir restoreFile
+sudo rm Containers/*
+sudo echo 3 > /proc/sys/vm/drop_caches
 # ./BiSearch -i $path -c 5 -m 4 -n $num  >PalantirMTar$name.txt
 # sudo rm -r mTarFile
 # sudo mkdir mTarFile

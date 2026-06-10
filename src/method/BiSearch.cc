@@ -611,8 +611,10 @@ void BiSearch::ProcessTrace()
 
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;
+            UpdateDRRPerMiB(tmpChunk.chunkSize, tmpChunk.saveSize);
         }
     }
+    FlushDRRPerMiB();
     recieveQueue->done_ = false;
     return;
 }
@@ -689,6 +691,7 @@ void BiSearch::Version_log(double time, double chunktime)
     cout << "File chunk num: " << File_chunk_numbers << ", reduct: " << File_chunk_reductSize << endl;
     cout << "Header chunk num: " << Header_chunk_numbers << ", reduct: " << Header_chunk_reductSize << endl;
     cout << "CDC chunk num: " << CDC_chunk_numbers << ", reduct: " << CDC_chunk_reductSize << endl;
+    PrintDRRPerMiBStatsCout();
     cout << "-----------------END-------------------------------" << endl;
     VersionLogicalSize.push_back(logicalchunkSize - preLogicalchunkiSize);
     preLogicalchunkiSize = logicalchunkSize;
@@ -732,6 +735,8 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
     out << "Header chunk delta unique size: " << headerDeltaChunkUniqueSize << endl;
     out << "-----------------METRICS-------------------------" << endl;
     out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    out << "drr2: " << (double)uniquechunkSize / (double)logicalchunkSize << endl;
+    out << "drr3: " << 1 - ((double)uniquechunkSize / (double)logicalchunkSize) << endl;
     out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
     out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
     out << "DCE: " << DCESum / (double)deltachunkNum << endl;
@@ -768,6 +773,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
     out << "local reduct size : " << (double)LocalReduct / 1024 / 1024 << "MiB" << endl;
     out << "Feature reduct size: " << (double)FeatureReduct / 1024 / 1024 << "MiB" << endl;
     out << "Locality reduct size: " << (double)LocalityReduct / 1024 / 1024 << "MiB" << endl;
+    PrintDRRPerMiBStats(out);
     out << "-----------------END-------------------------------" << endl;
 
     out.close();
@@ -810,6 +816,8 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
     out << "Header chunk delta unique size: " << headerDeltaChunkUniqueSize << endl;
     out << "-----------------METRICS-------------------------" << endl;
     out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    out << "drr2: " << (double)uniquechunkSize / (double)logicalchunkSize << endl;
+    out << "drr3: " << 1 - ((double)uniquechunkSize / (double)logicalchunkSize) << endl;
     out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
     out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
     out << "DCE: " << DCESum / (double)deltachunkNum << endl;
@@ -847,6 +855,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
     out << "local reduct size : " << (double)LocalReduct / 1024 / 1024 << "MiB" << endl;
     out << "Feature reduct size: " << (double)FeatureReduct / 1024 / 1024 << "MiB" << endl;
     out << "Locality reduct size: " << (double)LocalityReduct / 1024 / 1024 << "MiB" << endl;
+    PrintDRRPerMiBStats(out);
     out << "-----------------END-------------------------------" << endl;
     out.close();
     return;

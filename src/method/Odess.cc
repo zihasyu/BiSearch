@@ -193,8 +193,10 @@ void Odess::ProcessTrace()
                 dataWrite_->Recipe_Header_Insert(tmpChunk.chunkID);
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;
+            UpdateDRRPerMiB(tmpChunk.chunkSize, tmpChunk.saveSize);
         }
     }
+    FlushDRRPerMiB();
     recieveQueue->done_ = false;
     return;
 }

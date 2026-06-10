@@ -84,8 +84,10 @@ void Dedup::ProcessTrace()
                 dataWrite_->Recipe_Header_Insert(tmpChunk.chunkID);
             logicalchunkNum++;
             logicalchunkSize += tmpChunk.chunkSize;
+            UpdateDRRPerMiB(tmpChunk.chunkSize, tmpChunk.saveSize);
         }
     }
+    FlushDRRPerMiB();
     cout << "logicalchunkSize is " << logicalchunkSize << endl;
     cout << "uniquechunkSize is " << uniquechunkSize << endl;
     cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;

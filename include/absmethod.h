@@ -127,6 +127,10 @@ public:
     long OnlyFeature = 0;
     long OnlyMeta = 0;
     long differentCount = 0;
+    // DRR per MiB tracking
+    vector<double> drr2PerMiB;
+    uint64_t segmentLogicalSize = 0;
+    uint64_t segmentUniqueSize = 0;
     AbsMethod();
     ~AbsMethod();
     void SetFilename(string name);
@@ -156,5 +160,9 @@ public:
     virtual void Version_log(double time);
     virtual void Version_log(double time, double chunktime);
     void SetTime(std::chrono::time_point<std::chrono::high_resolution_clock> &atime);
+    void UpdateDRRPerMiB(uint64_t chunkLogicalSize, uint64_t chunkUniqueSize);
+    void FlushDRRPerMiB();
+    void PrintDRRPerMiBStats(ofstream &out);
+    void PrintDRRPerMiBStatsCout();
 };
 #endif

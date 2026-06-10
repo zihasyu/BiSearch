@@ -1,4 +1,5 @@
 #include "../../include/absmethod.h"
+#include <cmath>
 
 AbsMethod::AbsMethod()
 {
@@ -19,6 +20,88 @@ void AbsMethod::SetFilename(string name)
 void AbsMethod::SetTime(std::chrono::time_point<std::chrono::high_resolution_clock> &atime)
 {
     atime = std::chrono::high_resolution_clock::now();
+}
+
+void AbsMethod::UpdateDRRPerMiB(uint64_t chunkLogicalSize, uint64_t chunkUniqueSize)
+{
+    segmentLogicalSize += chunkLogicalSize;
+    segmentUniqueSize += chunkUniqueSize;
+    if (segmentLogicalSize >= 1 * 1024 * 1024)
+    {
+        double drr2 = (double)segmentUniqueSize / (double)segmentLogicalSize;
+        drr2PerMiB.push_back(drr2);
+        segmentLogicalSize = 0;
+        segmentUniqueSize = 0;
+    }
+}
+
+void AbsMethod::FlushDRRPerMiB()
+{
+    if (segmentLogicalSize > 0)
+    {
+        double drr2 = (double)segmentUniqueSize / (double)segmentLogicalSize;
+        drr2PerMiB.push_back(drr2);
+        segmentLogicalSize = 0;
+        segmentUniqueSize = 0;
+    }
+}
+
+void AbsMethod::PrintDRRPerMiBStats(ofstream &out)
+{
+    if (drr2PerMiB.empty())
+    {
+        out << "drr2_per_MiB mean: N/A (no segments)" << endl;
+        out << "drr3_per_MiB mean: N/A (no segments)" << endl;
+        return;
+    }
+    int n = drr2PerMiB.size();
+    double sum2 = 0, sum3 = 0;
+    for (double d : drr2PerMiB)
+    {
+        sum2 += d;
+        sum3 += (1.0 - d);
+    }
+    double mean2 = sum2 / n;
+    double mean3 = sum3 / n;
+    double var2 = 0, var3 = 0;
+    for (double d : drr2PerMiB)
+    {
+        var2 += (d - mean2) * (d - mean2);
+        var3 += ((1.0 - d) - mean3) * ((1.0 - d) - mean3);
+    }
+    double stddev2 = sqrt(var2 / n);
+    double stddev3 = sqrt(var3 / n);
+    out << "drr2_per_MiB mean: " << mean2 << ", stddev: " << stddev2 << endl;
+    out << "drr3_per_MiB mean: " << mean3 << ", stddev: " << stddev3 << endl;
+}
+
+void AbsMethod::PrintDRRPerMiBStatsCout()
+{
+    if (drr2PerMiB.empty())
+    {
+        cout << "drr2_per_MiB mean: N/A (no segments)" << endl;
+        cout << "drr3_per_MiB mean: N/A (no segments)" << endl;
+        return;
+    }
+    int n = drr2PerMiB.size();
+    double sum2 = 0, sum3 = 0;
+    for (double d : drr2PerMiB)
+    {
+        sum2 += d;
+        sum3 += (1.0 - d);
+    }
+    double mean2 = sum2 / n;
+    double mean3 = sum3 / n;
+    double var2 = 0, var3 = 0;
+    for (double d : drr2PerMiB)
+    {
+        var2 += (d - mean2) * (d - mean2);
+        var3 += ((1.0 - d) - mean3) * ((1.0 - d) - mean3);
+    }
+    double stddev2 = sqrt(var2 / n);
+    double stddev3 = sqrt(var3 / n);
+    cout << "drr2_per_MiB mean: " << mean2 << ", stddev: " << stddev2 << endl;
+    cout << "drr3_per_MiB mean: " << mean3 << ", stddev: " << stddev3 << endl;
 }
 bool AbsMethod::compareNat(const std::string &a, const std::string &b)
 {
@@ -284,6 +367,8 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     out << "delta chunk size: " << deltachunkSize << endl;
     out << "-----------------Delta METRICS-------------------------" << endl;
     out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    out << "drr2: " << (double)uniquechunkSize / (double)logicalchunkSize << endl;
+    out << "drr3: " << 1 - ((double)uniquechunkSize / (double)logicalchunkSize) << endl;
     out << "OCR(+Recipe): " << (double)logicalchunkSize / (double)(uniquechunkSize + logicalchunkNum * 32) << endl;
     out << "OCR(vsGit): " << (double)(logicalchunkSize - Header_chunk_oriSize) / (double)(uniquechunkSize - Header_chunk_saveSize) << endl;
     out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
@@ -326,6 +411,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine)
     out << "Header chunk num: " << Header_chunk_numbers << ", oriSize: " << (double)Header_chunk_oriSize / 1024 / 1024 << "MiB, saveSize: " << (double)Header_chunk_saveSize / 1024 / 1024 << "MiB, reduct: " << (double)Header_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
     out << "CDC chunk num: " << CDC_chunk_numbers << ", oriSize: " << (double)CDC_chunk_oriSize / 1024 / 1024 << "MiB, saveSize: " << (double)CDC_chunk_saveSize / 1024 / 1024 << "MiB, reduct: " << (double)CDC_chunk_reductSize / 1024 / 1024 << "MiB" << endl;
     out << "-----------------END-------------------------------" << endl;
+    PrintDRRPerMiBStats(out);
     out.close();
     return;
 }
@@ -352,6 +438,8 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "delta chunk size: " << deltachunkSize << endl;
         out << "-----------------METRICS-------------------------" << endl;
         out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+        out << "drr2: " << (double)uniquechunkSize / (double)logicalchunkSize << endl;
+        out << "drr3: " << 1 - ((double)uniquechunkSize / (double)logicalchunkSize) << endl;
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
@@ -387,6 +475,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
         out << "-----------------END-------------------------------" << endl;
+        PrintDRRPerMiBStats(out);
     }
     else
     {
@@ -406,6 +495,8 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "delta chunk size: " << deltachunkSize << endl;
         out << "-----------------METRICS-------------------------" << endl;
         out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+        out << "drr2: " << (double)uniquechunkSize / (double)logicalchunkSize << endl;
+        out << "drr3: " << 1 - ((double)uniquechunkSize / (double)logicalchunkSize) << endl;
         out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
         out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
         out << "DCE: " << DCESum / (double)deltachunkNum << endl;
@@ -441,6 +532,7 @@ void AbsMethod::PrintChunkInfo(int64_t time, CommandLine_t CmdLine, double chunk
         out << "Feature reduct size: " << FeatureReduct << endl;
         out << "Locality reduct size: " << LocalityReduct << endl;
         out << "-----------------END-------------------------------" << endl;
+        PrintDRRPerMiBStats(out);
     }
     out.close();
     return;
@@ -541,6 +633,7 @@ void AbsMethod::Version_log(double time)
     cout << "SF Overhead: " << (double)(basechunkNum * 120) / 1024 / 1024 << "MiB" << endl; //(3*(8+32)=120B)
     cout << "Recipe Overhead: " << (double)logicalchunkNum * 32 / 1024 / 1024 << "MiB" << endl;
     cout << "SF number: " << SFnum << endl;
+    PrintDRRPerMiBStatsCout();
     cout << "-----------------END-------------------------------" << endl;
     VersionLogicalSize.push_back(logicalchunkSize - preLogicalchunkiSize);
     preLogicalchunkiSize = logicalchunkSize;
@@ -600,6 +693,7 @@ void AbsMethod::Version_log(double time, double chunktime)
     cout << "case 2 SameCount:" << sameCount << endl;
     cout << "case 3 OnlyMeta: " << OnlyMeta << endl;
     cout << "case 4 DifferentCount: " << differentCount << endl;
+    PrintDRRPerMiBStatsCout();
     cout << "-----------------END-------------------------------" << endl;
     VersionLogicalSize.push_back(logicalchunkSize - preLogicalchunkiSize);
     preLogicalchunkiSize = logicalchunkSize;
