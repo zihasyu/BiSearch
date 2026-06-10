@@ -61,6 +61,7 @@ process_dataset() {
         total_logical_size=$((total_logical_size + current_logical_size))
         
         # 添加并提交
+        git add -A
         # 使用固定的时间戳和作者信息，确保可复现性
         GIT_AUTHOR_DATE="2000-01-01T00:00:00+00:00" \
         GIT_COMMITTER_DATE="2000-01-01T00:00:00+00:00" \
