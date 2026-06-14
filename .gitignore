@@ -4,4 +4,4 @@ build/
 .vscode/
 .history/
 TosGit/
-*.csv
+TosGit_restore_delta1/

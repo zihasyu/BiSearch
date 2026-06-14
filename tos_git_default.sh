@@ -68,7 +68,7 @@ process_dataset() {
         GIT_AUTHOR_NAME="x" GIT_AUTHOR_EMAIL="x@x" \
         GIT_COMMITTER_NAME="x" GIT_COMMITTER_EMAIL="x@x" \
         git commit -m "v$version_num" --no-gpg-sign > /dev/null
-        
+        git repack  -d -l 
         local end_time
         end_time=$(date +%s.%N)
         local time_taken
