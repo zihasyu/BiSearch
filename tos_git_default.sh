@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --- 配置 ---
-EXPERIMENT_BASE_DIR="./TosGit"
+EXPERIMENT_BASE_DIR="./TosGit_chain50"
 
 # --- 函数定义 ---
 # 参数1: 数据集名称
@@ -184,7 +184,6 @@ run_git_experiment() {
 }
 
 # 这里保持了与 tos_git_restore.sh 一致的测试列表
-run_git_experiment /mnt/dataset2/cross_c++_tar _cross_c++_tar 317
 run_git_experiment /mnt/dataset2/linux _linux 270
 run_git_experiment /mnt/dataset2/WEB _WEB 102
 run_git_experiment /mnt/dataset2/automake_tarballs _automake 100

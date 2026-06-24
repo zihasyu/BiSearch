@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --- 配置 ---
-EXPERIMENT_BASE_DIR="./TosGit"
+EXPERIMENT_BASE_DIR="./TosGit_chain1"
 
 # --- 函数定义 ---
 
@@ -206,7 +206,6 @@ run_git_experiment() {
     local num=$3
     process_dataset "$name" "$path" "$num"
 }
-# run_git_experiment /mnt/dataset2/cross_c++_tar _cross_c++_tar 5
 run_git_experiment /mnt/dataset2/cross_c++_tar _cross_c++_tar 317
 run_git_experiment /mnt/dataset2/linux _linux 270
 run_git_experiment /mnt/dataset2/WEB _WEB 102
@@ -217,7 +216,6 @@ run_git_experiment /mnt/dataset2/react _react 100
 run_git_experiment /mnt/dataset2/netty _netty 99
 run_git_experiment /mnt/dataset2/Cpython _Cpython 100
 
-# run_git_experiment /mnt/dataset2/cross_gcc _cross_gcc 212
 
 cd ..
 
