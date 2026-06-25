@@ -168,7 +168,7 @@ process_dataset() {
 
 # --- 主程序 ---
 echo "正在设置实验环境于 $(pwd)/$EXPERIMENT_BASE_DIR..."
-rm -rf "$EXPERIMENT_BASE_DIR"
+# rm -rf "$EXPERIMENT_BASE_DIR"
 mkdir -p "$EXPERIMENT_BASE_DIR"
 cd "$EXPERIMENT_BASE_DIR" || exit
 

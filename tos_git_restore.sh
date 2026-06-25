@@ -183,18 +183,17 @@ process_dataset() {
         echo "    [Restore $version_num/${#commit_hashes[@]}] 恢复耗时: ${restore_time}s, 吞吐量: ${restore_throughput} MB/s"
         echo "$version_num,$commit_hash,$restored_size,$restore_time,$restore_throughput" >> "$restore_log_file"
         sudo echo 3 > /proc/sys/vm/drop_caches
-
     done
-    
     echo "--- 数据集 '$name' 处理完成 ---"
     cd ..
     echo "  [清理] 正在删除仓库目录: $repo_path"
     rm -rf "$repo_path"
+    # sudo echo 3 > /proc/sys/vm/drop_caches
 }
 
 # --- 主程序 ---
 echo "正在设置实验环境于 $(pwd)/$EXPERIMENT_BASE_DIR..."
-rm -rf "$EXPERIMENT_BASE_DIR"
+# rm -rf "$EXPERIMENT_BASE_DIR"
 mkdir -p "$EXPERIMENT_BASE_DIR"
 cd "$EXPERIMENT_BASE_DIR" || exit
 echo "Dataset,TotalLogicalSize_Bytes,GitObjectsSize_Bytes,GitMetadataSize_Bytes,TotalPhysicalSize_Bytes,OCR,ERR,CommitTime_Seconds,RepackTime_Seconds,TotalTime_Seconds" > "summary_results.csv"
@@ -206,7 +205,7 @@ run_git_experiment() {
     local num=$3
     process_dataset "$name" "$path" "$num"
 }
-run_git_experiment /mnt/dataset2/cross_c++_tar _cross_c++_tar 317
+
 run_git_experiment /mnt/dataset2/linux _linux 270
 run_git_experiment /mnt/dataset2/WEB _WEB 102
 run_git_experiment /mnt/dataset2/automake_tarballs _automake 100

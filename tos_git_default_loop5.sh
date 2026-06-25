@@ -19,7 +19,7 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
-NUM_RUNS=5
+NUM_RUNS=4
 METHOD_NAME="chain=50"
 RESULT_DIR="./TosGit_default_loop5"
 SRC_DIR="./TosGit_chain50"   # 与 tos_git_default.sh 中 EXPERIMENT_BASE_DIR 一致
@@ -29,7 +29,7 @@ DATASETS=(linux WEB automake coreutils gcc react netty Cpython)
 # ===========================
 #  主流程
 # ===========================
-rm -rf "$RESULT_DIR"
+# rm -rf "$RESULT_DIR"
 mkdir -p "$RESULT_DIR"
 
 for run in $(seq 1 $NUM_RUNS); do
