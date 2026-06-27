@@ -21,6 +21,7 @@ process_dataset() {
     cd "$repo_path" || { echo "错误: 无法进入目录 $repo_path"; exit 1; }
     git init
     git config --local pack.threads 1
+    git config --local checkout.workers 1
     # 【关键修改】不再设置任何 git config
     # Git 将使用系统默认配置 (默认会启用 autoGC, 默认压缩级别等)
     # 例如: gc.auto, gc.autoPackLimit 等均保持默认行为
@@ -184,14 +185,15 @@ run_git_experiment() {
 }
 
 # 这里保持了与 tos_git_restore.sh 一致的测试列表
-run_git_experiment /mnt/dataset2/linux _linux 270
-run_git_experiment /mnt/dataset2/WEB _WEB 102
+
 run_git_experiment /mnt/dataset2/automake_tarballs _automake 100
 run_git_experiment /mnt/dataset2/coreutils_tarballs _coreutils 28
 run_git_experiment /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
 run_git_experiment /mnt/dataset2/react _react 100
 run_git_experiment /mnt/dataset2/netty _netty 99
 run_git_experiment /mnt/dataset2/Cpython _Cpython 100
+run_git_experiment /mnt/dataset2/linux _linux 270
+run_git_experiment /mnt/dataset2/WEB _WEB 102
 
 cd ..
 echo "--- 所有实验已完成 ---"

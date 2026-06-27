@@ -26,6 +26,7 @@ process_dataset() {
     git config pack.windowMemory 8m
     git config pack.window 2
     git config --local pack.threads 1
+    # git config --local checkout.workers 1
     # 2. 设置 loose 对象压缩级别
     # git config core.looseCompression 6
 
@@ -206,15 +207,15 @@ run_git_experiment() {
     process_dataset "$name" "$path" "$num"
 }
 
-run_git_experiment /mnt/dataset2/linux _linux 270
-run_git_experiment /mnt/dataset2/WEB _WEB 102
+
 run_git_experiment /mnt/dataset2/automake_tarballs _automake 100
 run_git_experiment /mnt/dataset2/coreutils_tarballs _coreutils 28
 run_git_experiment /mnt/dataset2/GNU_GCC/gcc-packed/tar _gcc 117
 run_git_experiment /mnt/dataset2/react _react 100
 run_git_experiment /mnt/dataset2/netty _netty 99
 run_git_experiment /mnt/dataset2/Cpython _Cpython 100
-
+run_git_experiment /mnt/dataset2/linux _linux 270
+run_git_experiment /mnt/dataset2/WEB _WEB 102
 
 cd ..
 
