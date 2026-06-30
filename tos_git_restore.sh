@@ -26,7 +26,7 @@ process_dataset() {
     git config pack.windowMemory 8m
     git config pack.window 2
     git config --local pack.threads 1
-    # git config --local checkout.workers 1
+    git config --local checkout.workers 1
     # 2. 设置 loose 对象压缩级别
     # git config core.looseCompression 6
 
@@ -183,6 +183,8 @@ process_dataset() {
 
         echo "    [Restore $version_num/${#commit_hashes[@]}] 恢复耗时: ${restore_time}s, 吞吐量: ${restore_throughput} MB/s"
         echo "$version_num,$commit_hash,$restored_size,$restore_time,$restore_throughput" >> "$restore_log_file"
+        # 清理工作区（保留 .git），避免两次恢复之间文件冗余
+        find . -maxdepth 1 ! -name '.' ! -name '.git' -exec rm -rf {} +
         sudo echo 3 > /proc/sys/vm/drop_caches
     done
     echo "--- 数据集 '$name' 处理完成 ---"

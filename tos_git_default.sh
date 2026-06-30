@@ -157,6 +157,9 @@ process_dataset() {
         echo " [Restore $version_num/${#commit_hashes[@]}] 恢复耗时: ${restore_time}s, 吞吐量: ${restore_throughput} MB/s"
         echo "$version_num,$commit_hash,$restored_size,$restore_time,$restore_throughput" >> "$restore_log_file"
         
+
+        # 清理工作区（保留 .git），避免两次恢复之间文件冗余
+        find . -maxdepth 1 ! -name '.' ! -name '.git' -exec rm -rf {} +
         # 每次恢复后清理缓存
         sudo echo 3 > /proc/sys/vm/drop_caches
     done
