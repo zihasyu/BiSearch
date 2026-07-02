@@ -1,0 +1,8 @@
+
+=== linux  (chain=50, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=1080 Mean=68.6222 StdDev=36.2126 CI95=2.1598
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=1080 Mean=94.6311 StdDev=87.8073 CI95=5.2369

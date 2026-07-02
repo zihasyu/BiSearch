@@ -1,0 +1,64 @@
+
+=== automake  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=400 Mean=13.4805 StdDev=6.1881 CI95=0.6064
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=400 Mean=43.3292 StdDev=24.6524 CI95=2.4159
+
+=== coreutils  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=112 Mean=17.9538 StdDev=7.1909 CI95=1.3318
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=112 Mean=83.8098 StdDev=49.0263 CI95=9.0798
+
+=== Cpython  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=400 Mean=52.6603 StdDev=19.9931 CI95=1.9593
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=400 Mean=208.3085 StdDev=178.6960 CI95=17.5122
+
+=== gcc  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=468 Mean=41.6218 StdDev=14.4499 CI95=1.3092
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=468 Mean=122.3546 StdDev=68.6489 CI95=6.2197
+
+=== linux  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=1080 Mean=70.8642 StdDev=34.0795 CI95=2.0325
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=1080 Mean=89.7285 StdDev=36.3249 CI95=2.1665
+
+=== netty  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=396 Mean=36.0728 StdDev=7.3928 CI95=0.7281
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=396 Mean=141.3501 StdDev=61.6342 CI95=6.0706
+
+=== react  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=400 Mean=49.8570 StdDev=27.0054 CI95=2.6465
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=400 Mean=120.5458 StdDev=72.8125 CI95=7.1356
+
+=== WEB  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=408 Mean=87.8683 StdDev=13.7531 CI95=1.3345
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=408 Mean=172.2576 StdDev=154.0992 CI95=14.9529

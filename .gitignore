@@ -3,6 +3,6 @@ bin/
 build/
 .vscode/
 .history/
-TosGit/
-TosGit_restore_delta1/
-TosGit*/
+# TosGit/
+# TosGit_restore_delta1/
+# TosGit*/

@@ -1,0 +1,8 @@
+
+=== netty  (chain=50, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=396 Mean=35.3153 StdDev=8.0410 CI95=0.7920
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=396 Mean=135.2291 StdDev=64.2947 CI95=6.3326

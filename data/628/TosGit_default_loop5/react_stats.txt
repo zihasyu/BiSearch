@@ -1,0 +1,8 @@
+
+=== react  (chain=50, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=400 Mean=48.3809 StdDev=27.0273 CI95=2.6487
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=400 Mean=106.3989 StdDev=67.6143 CI95=6.6262

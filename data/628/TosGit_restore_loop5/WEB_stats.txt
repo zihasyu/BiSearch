@@ -1,0 +1,8 @@
+
+=== WEB  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=408 Mean=87.7864 StdDev=13.5645 CI95=1.3162
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=408 Mean=175.2000 StdDev=163.7416 CI95=15.8886

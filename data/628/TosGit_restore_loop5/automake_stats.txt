@@ -1,0 +1,8 @@
+
+=== automake  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=400 Mean=12.2750 StdDev=5.8008 CI95=0.5685
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=400 Mean=34.6466 StdDev=25.4399 CI95=2.4931

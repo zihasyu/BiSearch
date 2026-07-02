@@ -1,0 +1,8 @@
+
+=== gcc  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=468 Mean=41.6218 StdDev=14.4499 CI95=1.3092
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=468 Mean=122.3546 StdDev=68.6489 CI95=6.2197

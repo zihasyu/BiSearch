@@ -1,0 +1,8 @@
+
+=== coreutils  (chain=1, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=112 Mean=17.7246 StdDev=6.8467 CI95=1.2680
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=112 Mean=51.3720 StdDev=25.4096 CI95=4.7059

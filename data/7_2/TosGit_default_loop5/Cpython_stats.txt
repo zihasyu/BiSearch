@@ -1,0 +1,8 @@
+
+=== Cpython  (chain=50, 4 runs) ===
+
+Throughput_MB/s (detailed, col 4):
+  N=400 Mean=45.6590 StdDev=20.8129 CI95=2.0397
+
+RestoreThroughput_MB/s (restore, col 5):
+  N=400 Mean=80.3911 StdDev=56.6404 CI95=5.5508
