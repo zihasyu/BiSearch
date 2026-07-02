@@ -1,0 +1,18 @@
+Dataset         | Metric                    |  Depth1 Mean        ±CI | Depth50 Mean        ±CI
+---------------------------------------------------------------------------------------------------------
+Cpython         | Commit Throughput         |        52.51       1.76 |        45.04       1.80
+Cpython         | Restore Throughput        |       203.97      14.98 |        65.89       5.14
+WEB             | Commit Throughput         |        87.36       1.20 |        77.52       1.22
+WEB             | Restore Throughput        |       155.55      12.90 |       114.76       5.83
+automake        | Commit Throughput         |        13.36       0.54 |        12.32       0.55
+automake        | Restore Throughput        |        43.02       2.12 |        26.41       1.52
+coreutils       | Commit Throughput         |        17.95       1.19 |        15.77       1.01
+coreutils       | Restore Throughput        |        85.04       8.12 |        37.78       3.82
+gcc             | Commit Throughput         |        41.46       1.17 |        36.68       1.12
+gcc             | Restore Throughput        |       115.33       5.49 |        35.15       2.33
+linux           | Commit Throughput         |        70.53       1.81 |        66.56       1.91
+linux           | Restore Throughput        |        83.82       1.98 |        54.86       2.75
+netty           | Commit Throughput         |        36.10       0.66 |        32.87       0.72
+netty           | Restore Throughput        |       140.78       5.28 |        52.66       3.53
+react           | Commit Throughput         |        49.81       2.38 |        44.77       2.29
+react           | Restore Throughput        |       118.04       6.33 |        44.55       3.49
