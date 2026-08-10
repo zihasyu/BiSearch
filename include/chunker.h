@@ -81,6 +81,17 @@ private:
     std::vector<uint64_t> file_chunk_dist_count;
     std::vector<uint64_t> all_rounded_sizes; 
     std::vector<uint32_t> size_boundaries;
+    // 增量新增: 导师补充表用的五档分布 + 逐 version 中间结果 (不影响旧统计输出)
+    static const int ADVISOR_BINS = 5; // (0,4K],(4K,8K],(8K,16K],(16K,4M],(4M,+inf)
+    std::vector<uint64_t> advisor_bin_count; // 全局五档计数
+    std::vector<uint64_t> cur_version_bin;   // 当前 version 五档计数
+    uint64_t cur_version_file_count = 0;     // 当前 version 文件数
+    struct VersionStat {
+        std::string name;
+        uint64_t fileCount = 0;
+        std::vector<uint64_t> bins; // 逐 version 五档计数 (中间结果)
+    };
+    std::vector<VersionStat> versionStats_;
 
 public:
     vector<double> MTarTime;
@@ -113,7 +124,9 @@ public:
     uint64_t CutPointTarFast(const uint8_t *src, const uint64_t len);
     uint64_t CutPointTarHeader(const uint8_t *src, const uint64_t len);
     uint64_t CountFileSize(uint64_t roundedUp);
+    void FinishVersion(const string &name);
     void PrintStatsToFile(string name);
+    void PrintSuppStatsToFile(string name);
     void MTar(vector<string> &readfileList, uint32_t backupNum);
     void MTarBIN(vector<string> &readfileList, uint32_t backupNum);
     // uint32_t CutPoint(const uint8_t *src, const uint32_t len); // TarSegment is going to use it

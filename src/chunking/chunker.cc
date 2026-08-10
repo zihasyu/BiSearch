@@ -23,6 +23,8 @@ Chunker::Chunker(int chunkType_) {
   // 为每个分箱（包括一个用于大于最大边界的）调整大小
   size_t num_bins = size_boundaries.size() + 1;
   file_chunk_dist_count.resize(num_bins, 0);
+  advisor_bin_count.assign(ADVISOR_BINS, 0);
+  cur_version_bin.assign(ADVISOR_BINS, 0);
 
   // in different chunking method, the chunkBuffer is different
 }
@@ -851,7 +853,35 @@ uint64_t Chunker::CountFileSize(uint64_t roundedUp) {
     sum4MiB += roundedUp;
   }
   sumfile += roundedUp;
+  // 增量新增: 导师补充表五档计数 (与旧统计同口径, 不改动旧输出)
+  {
+    int ab;
+    if (roundedUp <= 4 * 1024)
+      ab = 0;
+    else if (roundedUp <= 8 * 1024)
+      ab = 1;
+    else if (roundedUp <= 16 * 1024)
+      ab = 2;
+    else if (roundedUp <= 4 * 1024 * 1024)
+      ab = 3;
+    else
+      ab = 4;
+    advisor_bin_count[ab]++;
+    cur_version_bin[ab]++;
+    cur_version_file_count++;
+  }
   return 0;
+}
+
+void Chunker::FinishVersion(const string &name) {
+  VersionStat vs;
+  vs.name = name;
+  vs.fileCount = cur_version_file_count;
+  vs.bins = cur_version_bin;
+  versionStats_.push_back(vs);
+  // reset for next version
+  cur_version_file_count = 0;
+  std::fill(cur_version_bin.begin(), cur_version_bin.end(), 0);
 }
 
 void Chunker::PrintStatsToFile(string name) {
@@ -994,4 +1024,115 @@ void Chunker::PrintStatsToFile(string name) {
   outFile.close();
 
   std::cout << "统计日志已保存至: " << filename << std::endl;
+}
+
+// 增量新增: 导师补充表 (写到独立新文件, 旧 stats_xxx.txt 不受影响)
+void Chunker::PrintSuppStatsToFile(string name) {
+  std::string final_name = name;
+  size_t last_slash = name.find_last_of("/\\");
+  if (last_slash != std::string::npos) {
+    final_name = name.substr(last_slash + 1);
+  }
+  std::string filename = "stats_" + final_name + "_supp.txt";
+  std::ofstream outFile(filename);
+  if (!outFile.is_open()) {
+    std::cerr << "错误：无法创建日志文件 " << filename << std::endl;
+    return;
+  }
+
+  // 占比分母 = 所有 version 的总文件数
+  size_t n = 0;
+  for (int b = 0; b < ADVISOR_BINS; b++)
+    n += advisor_bin_count[b];
+
+  // 每个 version 文件数量的 min / median / max
+  size_t vCount = versionStats_.size();
+  uint64_t vMin = 0, vMax = 0;
+  double vMedian = 0.0;
+  if (vCount > 0) {
+    std::vector<uint64_t> vCounts;
+    vCounts.reserve(vCount);
+    for (auto &vs : versionStats_)
+      vCounts.push_back(vs.fileCount);
+    std::sort(vCounts.begin(), vCounts.end());
+    vMin = vCounts.front();
+    vMax = vCounts.back();
+    vMedian = (vCount % 2 == 1)
+                  ? static_cast<double>(vCounts[vCount / 2])
+                  : (static_cast<double>(vCounts[vCount / 2 - 1]) +
+                     static_cast<double>(vCounts[vCount / 2])) /
+                        2.0;
+  }
+
+  const char *binLabel[ADVISOR_BINS] = {
+      "(0, 4 KiB]", "(4 KiB, 8 KiB]", "(8 KiB, 16 KiB]", "(16 KiB, 4 MiB]",
+      "(4 MiB, +inf)"};
+  const char *binLabelTex[ADVISOR_BINS] = {
+      "$\\leq 4$ KiB", "4--8 KiB", "8--16 KiB", "16 KiB--4 MiB",
+      "$\\geq 4$ MiB"};
+  auto pct = [&](uint64_t c) {
+    return (n > 0) ? (static_cast<double>(c) / n * 100.0) : 0.0;
+  };
+
+  // [表1] 文件大小分布
+  outFile << "========== 补充统计表: " << name << " ==========\n";
+  outFile << "[表1] 文件大小分布 (所有 version 汇总, 共 " << n << " 个文件)\n";
+  outFile << "大小区间\t\t文件数\t占比\n";
+  outFile << "------------------------------------------------\n";
+  for (int b = 0; b < ADVISOR_BINS; b++) {
+    outFile << binLabel[b] << "\t" << advisor_bin_count[b] << "\t\t"
+            << std::fixed << std::setprecision(2) << pct(advisor_bin_count[b])
+            << "%\n";
+  }
+  outFile << "Total\t\t" << n << "\t\t100.00%\n\n";
+
+  // [表2] 每 version 文件数量统计
+  outFile << "[表2] 每 version 文件数量统计 (共 " << vCount << " 个 version)\n";
+  outFile << "Min: " << vMin << "\tMedian: " << std::fixed
+          << std::setprecision(1) << vMedian << "\tMax: " << vMax << "\n\n";
+
+  // [LaTeX] 可直接粘贴的 supplementary table
+  outFile << "[LaTeX] 可直接粘贴的补充表:\n";
+  outFile << "\\begin{table}[t]\n";
+  outFile << "\\centering\n";
+  outFile << "\\caption{File size distribution and per-version file counts ("
+          << final_name << ".)}\n";
+  outFile << "\\begin{tabular}{lr}\n";
+  outFile << "\\hline\n";
+  outFile << "Metric & Value \\\\\n";
+  outFile << "\\hline\n";
+  for (int b = 0; b < ADVISOR_BINS; b++) {
+    outFile << "Fraction of files, " << binLabelTex[b] << " & " << std::fixed
+            << std::setprecision(2) << pct(advisor_bin_count[b])
+            << "\\% \\\\\n";
+  }
+  outFile << "\\hline\n";
+  outFile << "Per-version file count (min/median/max) & " << vMin << " / "
+          << std::fixed << std::setprecision(1) << vMedian << " / " << vMax
+          << " \\\\\n";
+  outFile << "\\hline\n";
+  outFile << "\\end{tabular}\n";
+  outFile << "\\end{table}\n\n";
+
+  std::string csvName = "stats_" + final_name + "_perversion.csv";
+  outFile << "(逐 version 中间结果见: " << csvName << ")\n";
+  outFile.close();
+
+  // 中间结果: 逐 version 计数, 便于之后换口径重新聚合
+  std::ofstream csv(csvName);
+  if (csv.is_open()) {
+    csv << "version,file_count,le_4KiB,4KiB_8KiB,8KiB_16KiB,16KiB_4MiB,ge_4MiB\n";
+    for (auto &vs : versionStats_) {
+      csv << vs.name << "," << vs.fileCount;
+      for (int b = 0; b < ADVISOR_BINS; b++)
+        csv << "," << vs.bins[b];
+      csv << "\n";
+    }
+    csv.close();
+  } else {
+    std::cerr << "错误：无法创建 CSV 文件 " << csvName << std::endl;
+  }
+
+  std::cout << "补充统计表已保存至: " << filename << " 和 " << csvName
+            << std::endl;
 }

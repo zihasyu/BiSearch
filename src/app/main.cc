@@ -191,6 +191,7 @@ int main(int argc, char **argv)
         }
         else
             absMethodObj->Version_log(TimeTmp, chunkerObj->ChunkTime.count()); // for BiSearch
+        chunkerObj->FinishVersion(readfileList[i]); // 增量新增: 记录该 version 的文件数中间结果
         absMethodObj->dataWrite_->ClearAllCache();                             // clear all chunk in queue
     }
 
@@ -212,6 +213,7 @@ int main(int argc, char **argv)
 
     absMethodObj->PrintChunkInfo(sumTimeInSeconds, CmdLine);
     chunkerObj->PrintStatsToFile(CmdLine.dirName);
+    chunkerObj->PrintSuppStatsToFile(CmdLine.dirName); // 增量新增: 导师补充表
 
     if (CmdLine.enableRestore)
     {
