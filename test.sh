@@ -63,42 +63,42 @@ run_method(){
 # ./BiSearch -i $path -c 4 -m 5 -n $num  >SA_BiSearch$name.txt
 # ./BiSearch -i $path -c 4 -m 3 -n $num  >SA_Ode$name.txt
 ./BiSearch -i $path -c 4 -m 0 -n $num  >SA_Dedup$name.txt
-sudo echo 3 > /proc/sys/vm/drop_caches
+# sudo echo 3 > /proc/sys/vm/drop_caches
 # 8K
-./BiSearch -i $path -c 4 -m 5 -n $num -B 8192 -R 1>SA_BiSearch_B8K$name.txt
-sudo rm -r mtarRestore
-sudo mkdir mtarRestore
-sudo rm -r restoreFile
-sudo mkdir restoreFile
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
+# ./BiSearch -i $path -c 4 -m 5 -n $num -B 8192 -R 1 >SA_BiSearch_B8K$name.txt
+# sudo rm -r mtarRestore
+# sudo mkdir mtarRestore
+# sudo rm -r restoreFile
+# sudo mkdir restoreFile
+# sudo rm Containers/*
+# sudo echo 3 > /proc/sys/vm/drop_caches
 
-# 64K
-./BiSearch -i $path -c 4 -m 5 -n $num -B 65536 -R 1>SA_BiSearch_B64K$name.txt
-sudo rm -r mtarRestore
-sudo mkdir mtarRestore
-sudo rm -r restoreFile
-sudo mkdir restoreFile
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
+# # 64K
+# ./BiSearch -i $path -c 4 -m 5 -n $num -B 65536 -R 1 >SA_BiSearch_B64K$name.txt
+# sudo rm -r mtarRestore
+# sudo mkdir mtarRestore
+# sudo rm -r restoreFile
+# sudo mkdir restoreFile
+# sudo rm Containers/*
+# sudo echo 3 > /proc/sys/vm/drop_caches
 
-# 512K
-./BiSearch -i $path -c 4 -m 5 -n $num -B 524288 -R 1>SA_BiSearch_B512K$name.txt
-sudo rm -r mtarRestore
-sudo mkdir mtarRestore
-sudo rm -r restoreFile
-sudo mkdir restoreFile
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
+# # 512K
+# ./BiSearch -i $path -c 4 -m 5 -n $num -B 524288 -R 1 >SA_BiSearch_B512K$name.txt
+# sudo rm -r mtarRestore
+# sudo mkdir mtarRestore
+# sudo rm -r restoreFile
+# sudo mkdir restoreFile
+# sudo rm Containers/*
+# sudo echo 3 > /proc/sys/vm/drop_caches
 
 # 4M
-./BiSearch -i $path -c 4 -m 5 -n $num -B 4194304 -R 1>SA_BiSearch_B4M$name.txt
-sudo rm -r mtarRestore
-sudo mkdir mtarRestore
-sudo rm -r restoreFile
-sudo mkdir restoreFile
-sudo rm Containers/*
-sudo echo 3 > /proc/sys/vm/drop_caches
+# ./BiSearch -i $path -c 4 -m 5 -n $num -B 4194304 -R 1 >SA_BiSearch_B4M$name.txt
+# sudo rm -r mtarRestore
+# sudo mkdir mtarRestore
+# sudo rm -r restoreFile
+# sudo mkdir restoreFile
+# sudo rm Containers/*
+# sudo echo 3 > /proc/sys/vm/drop_caches
 
 # sudo rm -r mtarRestore
 # sudo mkdir mtarRestore
