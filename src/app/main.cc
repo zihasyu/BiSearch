@@ -67,6 +67,8 @@ int main(int argc, char **argv)
             break;
         }
     }
+
+    cout << "AccectThreshold is " << CmdLine.AcceptThreshold << endl;
     if (CmdLine.dirName.empty() || CmdLine.chunkingType == -1 || CmdLine.compressionMethod == -1 || CmdLine.backupNum == -1)
     {
         cout << "argc is " << argc << endl;

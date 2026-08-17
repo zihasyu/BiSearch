@@ -5,7 +5,7 @@ BiSearch::BiSearch(double ratio)
     lz4ChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
     mdCtx = EVP_MD_CTX_new();
     hashBuf = (uint8_t *)malloc(CHUNK_HASH_SIZE * sizeof(uint8_t));
-    deltaMaxChunkBuffer = (uint8_t *)malloc(2 * CONTAINER_MAX_SIZE * sizeof(uint8_t));
+    deltaMaxChunkBuffer = (uint8_t *)malloc(CONTAINER_MAX_SIZE * sizeof(uint8_t));
     // only biSearch has
     β = ratio; // impact the filter
     plchunk.chunkId = -1;
@@ -23,29 +23,42 @@ BiSearch::~BiSearch()
 
 bool BiSearch::estimateGain(uint64_t chunkSize, uint64_t deltaSize)
 {
-    // lz4 cost
-    double avgLz4CompressionRatio = (double)lz4LogicalSize / (double)lz4UniqueSize;
-    double CostSelf = chunkSize - (chunkSize / avgLz4CompressionRatio);
-    double newDeltaNum = deltachunkNum / basechunkNum;
-    double deltaGain = DCESum_INT / deltachunkNum;
+    // // lz4 cost
+    // double avgLz4CompressionRatio = (double)lz4LogicalSize / (double)lz4UniqueSize;
+    // double CostSelf = chunkSize - (chunkSize / avgLz4CompressionRatio);
+    // double newDeltaNum = deltachunkNum / basechunkNum;
+    // double deltaGain = DCESum_INT / deltachunkNum;
 
-    double futureDeltaCost = deltaGain * newDeltaNum;
-    if (IsFalseFilter)
-    {
-        if (avgLz4CompressionRatio + futureDeltaCost * β > (chunkSize / deltaSize))
-            return false;
-        else
-            return true;
-    }
-    else
-    // When the filter is turned off
-    {
-        if (AcceptThreshold > (chunkSize / deltaSize))
-            return false;
-        else
-            return true;
-        // If AcceptThreshold is 0, all are accepted.
-    }
+    // double futureDeltaCost = deltaGain * newDeltaNum;
+    // if (IsFalseFilter)
+    // {
+    //     if (avgLz4CompressionRatio + futureDeltaCost * β > (chunkSize / deltaSize))
+    //     {
+    //         rejectNum++;
+    //         return false;
+    //     }
+    //     else
+    //     {
+    //         acceptNum++;
+    //         return true;
+    //     }
+    // }
+    // else
+    // // When the filter is turned off
+    // {
+    //     if (AcceptThreshold > (chunkSize / deltaSize))
+    //     {
+    //         rejectNum++;
+    //         return false;
+    //     }
+    //     else
+    //     {
+    //         acceptNum++;
+    //         return true;
+    //     }
+    //     // If AcceptThreshold is 0, all are accepted.
+    // }
+    return true;
 }
 
 void BiSearch::ProcessTrace()
@@ -206,8 +219,8 @@ void BiSearch::ProcessTrace()
                         basechunkID = table.SF_Find(superfeature);
                         SetTime(endFeatureMatch);
                         FeatureMatchTime += (endFeatureMatch - startFeatureMatch);
-
-                        if (tmpChunk.basechunkID == basechunkID && tmpChunk.deltaFlag != NO_DELTA)
+                        basechunkID = -1;
+                        if (false)
                         {
                             tmpChunk.deltaFlag = LOCAL_DELTA;
                             tmpChunk.saveSize = tmpdeltachunksize;
@@ -425,7 +438,7 @@ void BiSearch::ProcessTrace()
                     basechunkID = table.SF_Find(superfeature);
                     SetTime(endFeatureMatch);
                     FeatureMatchTime += (endFeatureMatch - startFeatureMatch);
-
+                    basechunkID = -1;
                     computeSFtimes++;
                     if (basechunkID == -1)
                     // odess try & not in locality windows &odess considered this is a base chunk
@@ -575,6 +588,7 @@ void BiSearch::ProcessTrace()
                 }
                 // dataWrite_->Chunk_Insert(tmpChunk);
                 uniquechunkSize += tmpChunk.saveSize;
+                deltaOnlySize += tmpChunk.saveSize;
                 uniquechunkNum++;
                 StatsFileHeaderCDC(tmpChunk); // breakdown header chunk CDC stats
             }
@@ -603,6 +617,7 @@ void BiSearch::ProcessTrace()
                 // DedupGap = 0;
                 // lz4LogicalSize += tmpChunk.chunkSize;
                 DedupReduct += tmpChunk.chunkSize;
+                deltaOnlySize += tmpChunk.saveSize;
             }
             if (tmpChunk.HeaderFlag == 0)
                 dataWrite_->Recipe_Insert(tmpChunk.chunkID);
@@ -632,9 +647,12 @@ void BiSearch::Version_log(double time, double chunktime)
     cout << "Header chunk base unique num: " << headerBaseChunkUniqueNum << endl;
     cout << "Header chunk delta logical num: " << headerDeltaChunkLogicalNum << endl;
     cout << "Header chunk delta unique num: " << headerDeltaChunkUniqueNum << endl;
+    cout << "AcceptNum is " << acceptNum << endl;
+    cout << "RejectNum is " << rejectNum << endl;
     cout << "-----------------CHUNK SIZE-----------------------" << endl;
     cout << "logicalchunkSize is " << logicalchunkSize << endl;
     cout << "uniquechunkSize is " << uniquechunkSize << endl;
+    cout << "deltaOnlySize is " << deltaOnlySize << endl;
     cout << "base chunk size: " << basechunkSize << endl;
     cout << "delta chunk size: " << deltachunkSize << endl;
     cout << "Header chunk logical size: " << headerChunkLogicalSize << endl;
@@ -645,6 +663,7 @@ void BiSearch::Version_log(double time, double chunktime)
     cout << "Header chunk delta unique size: " << headerDeltaChunkUniqueSize << endl;
     cout << "-----------------METRICS-------------------------" << endl;
     cout << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    cout << "OCR(no dedup): " << (double)logicalchunkSize / (double)deltaOnlySize << endl;
     cout << "OCR(+Recipe): " << (double)logicalchunkSize / (double)(uniquechunkSize + logicalchunkNum * 32) << endl;
     cout << "OCR(vsGit): " << (double)(logicalchunkSize - Header_chunk_oriSize) / (double)(uniquechunkSize - Header_chunk_saveSize) << endl;
     cout << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
@@ -722,6 +741,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
     out << "-----------------CHUNK SIZE-----------------------" << endl;
     out << "logical chunk size: " << logicalchunkSize << endl;
     out << "unique chunk size: " << uniquechunkSize << endl;
+    out << "delta only size: " << deltaOnlySize << endl;
     out << "base chunk size: " << basechunkSize << endl;
     out << "delta chunk size: " << deltachunkSize << endl;
     out << "Header chunk logical size: " << headerChunkLogicalSize << endl;
@@ -732,6 +752,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
     out << "Header chunk delta unique size: " << headerDeltaChunkUniqueSize << endl;
     out << "-----------------METRICS-------------------------" << endl;
     out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    out << "OCR(no dedup): " << (double)logicalchunkSize / (double)deltaOnlySize << endl;
     out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
     out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
     out << "DCE: " << DCESum / (double)deltachunkNum << endl;
@@ -800,6 +821,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
     out << "-----------------CHUNK SIZE-----------------------" << endl;
     out << "logical chunk size: " << logicalchunkSize << endl;
     out << "unique chunk size: " << uniquechunkSize << endl;
+    out << "delta only size: " << deltaOnlySize << endl;
     out << "base chunk size: " << basechunkSize << endl;
     out << "delta chunk size: " << deltachunkSize << endl;
     out << "Header chunk logical size: " << headerChunkLogicalSize << endl;
@@ -810,6 +832,7 @@ void BiSearch::PrintChunkInfo(string inputDirpath, int chunkingMethod, int metho
     out << "Header chunk delta unique size: " << headerDeltaChunkUniqueSize << endl;
     out << "-----------------METRICS-------------------------" << endl;
     out << "Overall Compression Ratio: " << (double)logicalchunkSize / (double)uniquechunkSize << endl;
+    out << "OCR(no dedup): " << (double)logicalchunkSize / (double)deltaOnlySize << endl;
     out << "DCC: " << (double)deltachunkNum / (double)uniquechunkNum << endl;
     out << "DCR: " << (double)deltachunkOriSize / (double)deltachunkSize << endl;
     out << "DCE: " << DCESum / (double)deltachunkNum << endl;

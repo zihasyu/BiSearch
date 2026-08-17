@@ -345,22 +345,11 @@ uint64_t Chunker::CutPointTarFast(const uint8_t *src, const uint64_t len)
     }
     case BIG_CHUNK:
     {
-        if (Big_Chunk_Size - Big_Chunk_Offset > maxChunkSize)
-        {
-            // Big_Chunk_Allowance--;
-            // cout << " BigChunkSize is " << Big_Chunk_Size << " BigChunkOffset is" << Big_Chunk_Offset << endl;
-            uint64_t cp = CutPointFastCDC(src,
-                                          Big_Chunk_Size - Big_Chunk_Offset);
-            Big_Chunk_Offset += cp;
-            // cout << "offset is " << Big_Chunk_Offset << " cp is " << cp << endl;
-            return cp;
-            // return CONTAINER_MAX_SIZE;
-        }
-        else
-        {
-            Next_Chunk_Type = FILE_HEADER;
-            return Big_Chunk_Size - Big_Chunk_Offset;
-        }
+        // 不再使用 CDC 切分，整个大块作为一个完整文件块输出
+        uint64_t remaining = Big_Chunk_Size - Big_Chunk_Offset;
+        Next_Chunk_Type = FILE_HEADER;
+        Big_Chunk_Offset = Big_Chunk_Size; // 标记整块已消费
+        return remaining;
         break;
     }
     }
@@ -516,23 +505,16 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
     else
     {
         // cout << " Next_Chunk_Type is " << Next_Chunk_Type << endl;
-        //  不以header为开头只可能是bigchunk，这里想要的处理的bigchunk开头时
+        // 不以header为开头只可能是bigchunk（大文件延续），整块作为完整文件块输出，不使用 CDC 切分
         // boundaries_.push_back({current_offset_, len, 'B'});
-        while (Next_Chunk_Type != FILE_HEADER && cpSum < CONTAINER_MAX_SIZE - MAX_CHUNK_SIZE)
-        // 当前是H下一个块也是H时，认为当前的H不指导切块，例如是目录，所以可以断。
-        // 当前是D下一个块也是D时，应该是大块，也是可以断的。
-        // 当前是D下一个块是H时，是正常的HD组合，也可以断。
-        // 总结一下就是，当前为H，下一块为D时不可以断
+        while (Next_Chunk_Type != FILE_HEADER && cpSum < len)
         {
             localType = Next_Chunk_Type;
             uint32_t cp = CutPointTarFast(src + cpSum, len - cpSum);
-            // cout << "big cdc size is " << cp << endl;
+            // CutPointTarFast 的 BIG_CHUNK 分支已改为直接返回完整剩余块大小
             if (localType == FILE_HEADER)
             {
                 std::cout << "cut_bug";
-                // memcpy(headerBuffer + HeaderCp, src + cpSum, cp);
-                // HeaderCp += cp;
-                // blockTypeMask = blockTypeMask;
             }
             else
             {
@@ -543,7 +525,7 @@ uint64_t Chunker::CutPointTarHeader(const uint8_t *src, const uint64_t len)
                 chunk.NameExist = true;
                 chunk.CDCFlag = true;
                 // chunk.name = name;
-                if (!outputMQ_->Push(chunk)) // cdc-chunks
+                if (!outputMQ_->Push(chunk)) // file-level-chunks (no CDC)
                 {
                     tool::Logging(myName_.c_str(), "insert chunk to output MQ error.\n");
                     exit(EXIT_FAILURE);

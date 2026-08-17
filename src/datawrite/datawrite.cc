@@ -178,6 +178,7 @@ bool dataWrite::Chunk_Insert(Chunk_t chunk, uint8_t *lz4Buffer)
 {
     int tmpSize = 0;
     tmpSize = chunk.saveSize;
+    // cout << "chunk size is " << chunk.chunkSize << endl;
     // cout << "flag is " << static_cast<int>(chunk.deltaFlag) << endl;
     chunkNum++;
     containerSize += chunk.saveSize;

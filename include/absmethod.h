@@ -92,6 +92,8 @@ public:
     uint64_t localchunkSize = 0;
     uint64_t localPrechunkSize = 0;
 
+    uint64_t deltaOnlySize = 0;
+
     uint64_t ContainerNum = 0;
     uint64_t ContainerSize = 0;
     // impact reduct
@@ -121,6 +123,8 @@ public:
     // evaluation for false filter
     bool IsFalseFilter = true;
     double AcceptThreshold = 0;
+    uint64_t acceptNum = 0;
+    uint64_t rejectNum = 0;
     // evaluation for Metadata-guided
     bool TurnOnNameHash = true;
     long sameCount = 0;
