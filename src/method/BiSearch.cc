@@ -23,42 +23,29 @@ BiSearch::~BiSearch()
 
 bool BiSearch::estimateGain(uint64_t chunkSize, uint64_t deltaSize)
 {
-    // // lz4 cost
-    // double avgLz4CompressionRatio = (double)lz4LogicalSize / (double)lz4UniqueSize;
-    // double CostSelf = chunkSize - (chunkSize / avgLz4CompressionRatio);
-    // double newDeltaNum = deltachunkNum / basechunkNum;
-    // double deltaGain = DCESum_INT / deltachunkNum;
+    // lz4 cost
+    double avgLz4CompressionRatio = (double)lz4LogicalSize / (double)lz4UniqueSize;
+    double CostSelf = chunkSize - (chunkSize / avgLz4CompressionRatio);
+    double newDeltaNum = deltachunkNum / basechunkNum;
+    double deltaGain = DCESum_INT / deltachunkNum;
 
-    // double futureDeltaCost = deltaGain * newDeltaNum;
-    // if (IsFalseFilter)
-    // {
-    //     if (avgLz4CompressionRatio + futureDeltaCost * β > (chunkSize / deltaSize))
-    //     {
-    //         rejectNum++;
-    //         return false;
-    //     }
-    //     else
-    //     {
-    //         acceptNum++;
-    //         return true;
-    //     }
-    // }
-    // else
-    // // When the filter is turned off
-    // {
-    //     if (AcceptThreshold > (chunkSize / deltaSize))
-    //     {
-    //         rejectNum++;
-    //         return false;
-    //     }
-    //     else
-    //     {
-    //         acceptNum++;
-    //         return true;
-    //     }
-    //     // If AcceptThreshold is 0, all are accepted.
-    // }
-    return true;
+    double futureDeltaCost = deltaGain * newDeltaNum;
+    if (IsFalseFilter)
+    {
+        if (avgLz4CompressionRatio + futureDeltaCost * β > (chunkSize / deltaSize))
+            return false;
+        else
+            return true;
+    }
+    else
+    // When the filter is turned off
+    {
+        if (AcceptThreshold > (chunkSize / deltaSize))
+            return false;
+        else
+            return true;
+        // If AcceptThreshold is 0, all are accepted.
+    }
 }
 
 void BiSearch::ProcessTrace()
@@ -219,8 +206,8 @@ void BiSearch::ProcessTrace()
                         basechunkID = table.SF_Find(superfeature);
                         SetTime(endFeatureMatch);
                         FeatureMatchTime += (endFeatureMatch - startFeatureMatch);
-                        basechunkID = -1;
-                        if (false)
+
+                        if (tmpChunk.basechunkID == basechunkID && tmpChunk.deltaFlag != NO_DELTA)
                         {
                             tmpChunk.deltaFlag = LOCAL_DELTA;
                             tmpChunk.saveSize = tmpdeltachunksize;
@@ -438,7 +425,6 @@ void BiSearch::ProcessTrace()
                     basechunkID = table.SF_Find(superfeature);
                     SetTime(endFeatureMatch);
                     FeatureMatchTime += (endFeatureMatch - startFeatureMatch);
-                    basechunkID = -1;
                     computeSFtimes++;
                     if (basechunkID == -1)
                     // odess try & not in locality windows &odess considered this is a base chunk

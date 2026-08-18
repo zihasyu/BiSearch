@@ -131,6 +131,7 @@ int main(int argc, char **argv)
     chunkerObj->SetOutputMQ(chunkerMQ);
     absMethodObj->SetInputMQ(chunkerMQ);
     absMethodObj->dataWrite_ = new dataWrite();
+    absMethodObj->dataWrite_->SetBigChunkSize(CmdLine.BigChunkSize);
     absMethodObj->AcceptThreshold = CmdLine.AcceptThreshold;
     absMethodObj->IsFalseFilter = CmdLine.IsFalseFilter;
     absMethodObj->TurnOnNameHash = CmdLine.TurnOnNameHash;

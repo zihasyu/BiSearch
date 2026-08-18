@@ -64,6 +64,7 @@ private:
     uint64_t Big_Chunk_Last_Size = 0; // CutPointTar
     uint64_t Big_Chunk_Size = 0;      // CutPointTarFast
     uint64_t Big_Chunk_Offset = 0;    // CutPointTarFast
+    int BigChunkSize = CONTAINER_MAX_SIZE; // threshold for FILE_CHUNK vs BIG_CHUNK, set by -B
     uint32_t minChunkSize = 4096;
     uint32_t avgChunkSize = 8192;
     uint32_t maxChunkSize = 16384;
@@ -74,6 +75,10 @@ private:
     uint8_t *lz4SafeChunkBuffer;
 
 public:
+    void SetBigChunkSize(int size)
+    {
+        BigChunkSize = size;
+    }
     void SetFilename(string name);
     vector<Chunk_t> chunklist;
     void writing();

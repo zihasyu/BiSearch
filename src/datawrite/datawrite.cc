@@ -1093,20 +1093,13 @@ uint32_t dataWrite::CutPointTarFast(const uint8_t *src, const uint32_t len)
         }
         if (*(src + 156) == REGTYPE)
         {
-            if (Next_Chunk_Size <= CONTAINER_MAX_SIZE)
+            if (Next_Chunk_Size <= BigChunkSize)
                 Next_Chunk_Type = FILE_CHUNK;
             else
             {
                 Next_Chunk_Type = BIG_CHUNK;
                 Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
                 Big_Chunk_Offset = 0;
-                // Big_Chunk_Allowance = Next_Chunk_Size / CONTAINER_MAX_SIZE;
-                // Big_Chunk_Last_Size = Next_Chunk_Size % CONTAINER_MAX_SIZE;
-                // if (Big_Chunk_Last_Size == 0)
-                // {
-                //     Big_Chunk_Allowance--;
-                //     Big_Chunk_Last_Size = CONTAINER_MAX_SIZE;
-                // }
             }
         }
         if (*(src + 156) == AREGTYPE)
@@ -1116,20 +1109,13 @@ uint32_t dataWrite::CutPointTarFast(const uint8_t *src, const uint32_t len)
             {
                 Next_Chunk_Size = Next_Chunk_Size * 8 + data[i];
             }
-            if (Next_Chunk_Size <= CONTAINER_MAX_SIZE)
+            if (Next_Chunk_Size <= BigChunkSize)
                 Next_Chunk_Type = FILE_CHUNK;
             else
             {
                 Next_Chunk_Type = BIG_CHUNK;
                 Big_Chunk_Size = (Next_Chunk_Size + 511) / 512 * 512;
                 Big_Chunk_Offset = 0;
-                // Big_Chunk_Allowance = Next_Chunk_Size / CONTAINER_MAX_SIZE;
-                // Big_Chunk_Last_Size = Next_Chunk_Size % CONTAINER_MAX_SIZE;
-                // if (Big_Chunk_Last_Size == 0)
-                // {
-                //     Big_Chunk_Allowance--;
-                //     Big_Chunk_Last_Size = CONTAINER_MAX_SIZE;
-                // }
             }
         }
         if (*(src + 156) == 'x' || *(src + 156) == GNUTYPE_LONGNAME)
@@ -1166,22 +1152,11 @@ uint32_t dataWrite::CutPointTarFast(const uint8_t *src, const uint32_t len)
     }
     case BIG_CHUNK:
     {
-        if (Big_Chunk_Size - Big_Chunk_Offset > maxChunkSize)
-        {
-            // Big_Chunk_Allowance--;
-            // cout << " BigChunkSize is " << Big_Chunk_Size << " BigChunkOffset is" << Big_Chunk_Offset << endl;
-            uint32_t cp = CutPointFastCDC(src,
-                                          Big_Chunk_Size - Big_Chunk_Offset);
-            Big_Chunk_Offset += cp;
-            // cout << "offset is " << Big_Chunk_Offset << " cp is " << cp << endl;
-            return cp;
-            // return CONTAINER_MAX_SIZE;
-        }
-        else
-        {
-            Next_Chunk_Type = FILE_HEADER;
-            return Big_Chunk_Size - Big_Chunk_Offset;
-        }
+        // 与 chunker.cc 保持一致：整个大块作为一个完整文件块输出
+        uint64_t remaining = Big_Chunk_Size - Big_Chunk_Offset;
+        Next_Chunk_Type = FILE_HEADER;
+        Big_Chunk_Offset = Big_Chunk_Size;
+        return remaining;
         break;
     }
     }
